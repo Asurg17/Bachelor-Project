@@ -7,9 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EA9A47A628159280006F8409 /* SignUpPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47A528159280006F8409 /* SignUpPageController.swift */; };
+		EA9A47B22815A391006F8409 /* DesignableUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47B12815A391006F8409 /* DesignableUITextField.swift */; };
+		EA9A47C22815B45B006F8409 /* CustomTextFieldOuterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47C12815B45B006F8409 /* CustomTextFieldOuterView.swift */; };
+		EA9A47C42817295C006F8409 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47C32817295B006F8409 /* Extensions.swift */; };
 		EA9E6BC627FCB93E00101170 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9E6BC527FCB93E00101170 /* AppDelegate.swift */; };
 		EA9E6BC827FCB93E00101170 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9E6BC727FCB93E00101170 /* SceneDelegate.swift */; };
-		EA9E6BCA27FCB93E00101170 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9E6BC927FCB93E00101170 /* ViewController.swift */; };
+		EA9E6BCA27FCB93E00101170 /* SignInPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9E6BC927FCB93E00101170 /* SignInPageController.swift */; };
 		EA9E6BCD27FCB93E00101170 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EA9E6BCB27FCB93E00101170 /* Main.storyboard */; };
 		EA9E6BD027FCB93E00101170 /* SociaLight.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = EA9E6BCE27FCB93E00101170 /* SociaLight.xcdatamodeld */; };
 		EA9E6BD227FCB94100101170 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA9E6BD127FCB94100101170 /* Assets.xcassets */; };
@@ -17,10 +21,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EA9A47A528159280006F8409 /* SignUpPageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPageController.swift; sourceTree = "<group>"; };
+		EA9A47B12815A391006F8409 /* DesignableUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignableUITextField.swift; sourceTree = "<group>"; };
+		EA9A47C12815B45B006F8409 /* CustomTextFieldOuterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextFieldOuterView.swift; sourceTree = "<group>"; };
+		EA9A47C32817295B006F8409 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		EA9E6BC227FCB93E00101170 /* SociaLight.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SociaLight.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA9E6BC527FCB93E00101170 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EA9E6BC727FCB93E00101170 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		EA9E6BC927FCB93E00101170 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		EA9E6BC927FCB93E00101170 /* SignInPageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInPageController.swift; sourceTree = "<group>"; };
 		EA9E6BCC27FCB93E00101170 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		EA9E6BCF27FCB93E00101170 /* SociaLight.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SociaLight.xcdatamodel; sourceTree = "<group>"; };
 		EA9E6BD127FCB94100101170 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -39,6 +47,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EA9A47A42815922A006F8409 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				EA9E6BC927FCB93E00101170 /* SignInPageController.swift */,
+				EA9A47A528159280006F8409 /* SignUpPageController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		EA9A47A728159A36006F8409 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				EA9A47C32817295B006F8409 /* Extensions.swift */,
+				EA9A47B12815A391006F8409 /* DesignableUITextField.swift */,
+				EA9A47C12815B45B006F8409 /* CustomTextFieldOuterView.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		EA9E6BB927FCB93E00101170 = {
 			isa = PBXGroup;
 			children = (
@@ -58,9 +85,10 @@
 		EA9E6BC427FCB93E00101170 /* SociaLight */ = {
 			isa = PBXGroup;
 			children = (
+				EA9A47A728159A36006F8409 /* Shared */,
+				EA9A47A42815922A006F8409 /* Controllers */,
 				EA9E6BC527FCB93E00101170 /* AppDelegate.swift */,
 				EA9E6BC727FCB93E00101170 /* SceneDelegate.swift */,
-				EA9E6BC927FCB93E00101170 /* ViewController.swift */,
 				EA9E6BCB27FCB93E00101170 /* Main.storyboard */,
 				EA9E6BD127FCB94100101170 /* Assets.xcassets */,
 				EA9E6BD327FCB94100101170 /* LaunchScreen.storyboard */,
@@ -141,8 +169,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EA9E6BCA27FCB93E00101170 /* ViewController.swift in Sources */,
+				EA9E6BCA27FCB93E00101170 /* SignInPageController.swift in Sources */,
+				EA9A47C22815B45B006F8409 /* CustomTextFieldOuterView.swift in Sources */,
+				EA9A47A628159280006F8409 /* SignUpPageController.swift in Sources */,
+				EA9A47C42817295C006F8409 /* Extensions.swift in Sources */,
 				EA9E6BC627FCB93E00101170 /* AppDelegate.swift in Sources */,
+				EA9A47B22815A391006F8409 /* DesignableUITextField.swift in Sources */,
 				EA9E6BD027FCB93E00101170 /* SociaLight.xcdatamodeld in Sources */,
 				EA9E6BC827FCB93E00101170 /* SceneDelegate.swift in Sources */,
 			);
