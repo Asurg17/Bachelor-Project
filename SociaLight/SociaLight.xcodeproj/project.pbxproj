@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EA6C5A80281D724F00721D7F /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6C5A7F281D724F00721D7F /* Service.swift */; };
 		EA9A47A628159280006F8409 /* SignUpPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47A528159280006F8409 /* SignUpPageController.swift */; };
 		EA9A47B22815A391006F8409 /* DesignableUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47B12815A391006F8409 /* DesignableUITextField.swift */; };
 		EA9A47C22815B45B006F8409 /* CustomTextFieldOuterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47C12815B45B006F8409 /* CustomTextFieldOuterView.swift */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EA6C5A7F281D724F00721D7F /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		EA9A47A528159280006F8409 /* SignUpPageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPageController.swift; sourceTree = "<group>"; };
 		EA9A47B12815A391006F8409 /* DesignableUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignableUITextField.swift; sourceTree = "<group>"; };
 		EA9A47C12815B45B006F8409 /* CustomTextFieldOuterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextFieldOuterView.swift; sourceTree = "<group>"; };
@@ -47,6 +49,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EA6C5A7D281D6CC100721D7F /* ReusableViews */ = {
+			isa = PBXGroup;
+			children = (
+				EA9A47B12815A391006F8409 /* DesignableUITextField.swift */,
+				EA9A47C12815B45B006F8409 /* CustomTextFieldOuterView.swift */,
+			);
+			path = ReusableViews;
+			sourceTree = "<group>";
+		};
+		EA6C5A7E281D723A00721D7F /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				EA6C5A7F281D724F00721D7F /* Service.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		EA9A47A42815922A006F8409 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -56,14 +75,12 @@
 			path = Controllers;
 			sourceTree = "<group>";
 		};
-		EA9A47A728159A36006F8409 /* Shared */ = {
+		EA9A47A728159A36006F8409 /* SharedExtensions */ = {
 			isa = PBXGroup;
 			children = (
 				EA9A47C32817295B006F8409 /* Extensions.swift */,
-				EA9A47B12815A391006F8409 /* DesignableUITextField.swift */,
-				EA9A47C12815B45B006F8409 /* CustomTextFieldOuterView.swift */,
 			);
-			path = Shared;
+			path = SharedExtensions;
 			sourceTree = "<group>";
 		};
 		EA9E6BB927FCB93E00101170 = {
@@ -85,8 +102,10 @@
 		EA9E6BC427FCB93E00101170 /* SociaLight */ = {
 			isa = PBXGroup;
 			children = (
-				EA9A47A728159A36006F8409 /* Shared */,
+				EA9A47A728159A36006F8409 /* SharedExtensions */,
+				EA6C5A7D281D6CC100721D7F /* ReusableViews */,
 				EA9A47A42815922A006F8409 /* Controllers */,
+				EA6C5A7E281D723A00721D7F /* Services */,
 				EA9E6BC527FCB93E00101170 /* AppDelegate.swift */,
 				EA9E6BC727FCB93E00101170 /* SceneDelegate.swift */,
 				EA9E6BCB27FCB93E00101170 /* Main.storyboard */,
@@ -174,6 +193,7 @@
 				EA9A47A628159280006F8409 /* SignUpPageController.swift in Sources */,
 				EA9A47C42817295C006F8409 /* Extensions.swift in Sources */,
 				EA9E6BC627FCB93E00101170 /* AppDelegate.swift in Sources */,
+				EA6C5A80281D724F00721D7F /* Service.swift in Sources */,
 				EA9A47B22815A391006F8409 /* DesignableUITextField.swift in Sources */,
 				EA9E6BD027FCB93E00101170 /* SociaLight.xcdatamodeld in Sources */,
 				EA9E6BC827FCB93E00101170 /* SceneDelegate.swift in Sources */,

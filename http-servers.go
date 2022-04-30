@@ -1,8 +1,8 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
+	"log"
 	"net/http"
 
 	_ "github.com/lib/pq"
@@ -17,24 +17,31 @@ const (
 )
 
 func registerClient(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, "hello\n")
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
+	fmt.Println(req)
+	fmt.Fprint(w, "Hellow World")
 
-	db, err := sql.Open("postgres", psqlconn)
-	CheckError(err)
+	// psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
 
-	defer db.Close()
+	// db, err := sql.Open("postgres", psqlconn)
+	// CheckError(err)
 
-	insertSmt := `insert into "test_table" ("Id", "name") values(9, '{~}')`
-	_, e := db.Exec(insertSmt)
+	// defer db.Close()
 
-	CheckError(e)
+	// insertSmt := `insert into "test_table" ("Id", "name") values(9, '{~}')`
+	// _, e := db.Exec(insertSmt)
+
+	// CheckError(e)
 }
 
 func main() {
+	// handle `/` route
+	http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
+		fmt.Fprint(res, "Hello World!")
+	})
+
+	log.Fatal(http.ListenAndServeTLS(":9000", "localhost.crt", "localhost.key", nil))
 	http.HandleFunc("/registerClient", registerClient)
-	http.ListenAndServe(":8080", nil)
 }
 
 func CheckError(err error) {

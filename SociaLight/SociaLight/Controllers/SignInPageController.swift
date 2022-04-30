@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import CloudKit
 
-class SignInPageController: UIViewController, UITextFieldDelegate {
+class SignInPageController: UIViewController {
     
     @IBOutlet var usernameOuterView: CustomTextFieldOuterView!
     @IBOutlet var passwordOuterView: CustomTextFieldOuterView!
@@ -20,15 +21,10 @@ class SignInPageController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        registerForKeyboardNotifications()
         setupViews()
+        registerForKeyboardNotifications()
     }
     
-    func registerForKeyboardNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-
     func setupViews() {
         usernameTextField.delegate = self
         passwordTextField.delegate = self
@@ -36,6 +32,40 @@ class SignInPageController: UIViewController, UITextFieldDelegate {
         logInButton.layer.cornerRadius = logInButton.frame.size.height / 3
         logInButton.clipsToBounds = true
     }
+    
+    func registerForKeyboardNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    func signIn() {
+        print("AAAA")
+    }
+    
+    @IBAction func signUp() {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let signUpPageController = storyBoard.instantiateViewController(withIdentifier: "SignUpPage") as! UINavigationController
+        self.navigationController?.present(signUpPageController, animated: true)
+    }
+    
+
+    @objc func keyboardWillShow(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            if self.view.frame.origin.y == 0 {
+                self.view.frame.origin.y -= keyboardSize.height
+            }
+        }
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
+        }
+    }
+    
+}
+
+extension SignInPageController: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if let field = textField as? DesignableUITextField {
@@ -63,32 +93,21 @@ class SignInPageController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField == usernameTextField && string.contains(" ") { return false }
+        return true
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.view.endEditing(true)
-        return false
-    }
-    
-    
-    @IBAction func signUp() {
-        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let signUpPageController = storyBoard.instantiateViewController(withIdentifier: "SignUpPage") as! UINavigationController
-        self.navigationController?.present(signUpPageController, animated: true)
-    }
-    
-
-    @objc func keyboardWillShow(notification: NSNotification) {
-        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            if self.view.frame.origin.y == 0 {
-                self.view.frame.origin.y -= keyboardSize.height
-            }
+        switch textField {
+        case usernameTextField:
+            passwordTextField.becomeFirstResponder()
+        default:
+            textField.resignFirstResponder()
+            signIn()
         }
-    }
-
-    @objc func keyboardWillHide(notification: NSNotification) {
-        if self.view.frame.origin.y != 0 {
-            self.view.frame.origin.y = 0
-        }
+        
+        return true
     }
     
 }
-

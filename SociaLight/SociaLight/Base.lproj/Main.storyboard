@@ -42,7 +42,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="311" height="50"/>
                                                 <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                <textInputTraits key="textInputTraits" textContentType="username"/>
+                                                <textInputTraits key="textInputTraits" returnKeyType="next" textContentType="username"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="leadingImage">
                                                         <imageReference key="value" image="person" catalog="system" symbolScale="medium"/>
@@ -72,7 +72,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="311" height="50"/>
                                                 <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                <textInputTraits key="textInputTraits" secureTextEntry="YES" textContentType="password"/>
+                                                <textInputTraits key="textInputTraits" returnKeyType="go" secureTextEntry="YES" textContentType="password"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="leadingImage">
                                                         <imageReference key="value" image="lock.shield" catalog="system" symbolScale="small"/>
@@ -170,6 +170,22 @@
             </objects>
             <point key="canvasLocation" x="353.62318840579712" y="68.973214285714278"/>
         </scene>
+        <!--View Controller-->
+        <scene sceneID="MLX-Gk-BT6">
+            <objects>
+                <viewController id="wAu-KK-8DF" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="nxN-IT-9O5">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="Ugn-Mh-VkM"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="6iU-5s-5Pi"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Jiv-5l-Jwe" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3561" y="43"/>
+        </scene>
         <!--Sign Up Page Controller-->
         <scene sceneID="gX1-oh-92j">
             <objects>
@@ -200,7 +216,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="311" height="50"/>
                                                 <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                <textInputTraits key="textInputTraits" textContentType="name"/>
+                                                <textInputTraits key="textInputTraits" returnKeyType="next" textContentType="name"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="leadingImage">
                                                         <imageReference key="value" image="person" catalog="system" symbolScale="medium"/>
@@ -230,7 +246,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="311" height="50"/>
                                                 <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                <textInputTraits key="textInputTraits" textContentType="username"/>
+                                                <textInputTraits key="textInputTraits" returnKeyType="next" textContentType="username"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="number" keyPath="leadingPadding">
                                                         <real key="value" value="20"/>
@@ -260,7 +276,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="311" height="50"/>
                                                 <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                <textInputTraits key="textInputTraits" keyboardType="phonePad" textContentType="tel"/>
+                                                <textInputTraits key="textInputTraits" keyboardType="phonePad" returnKeyType="next" textContentType="tel"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="leadingImage">
                                                         <imageReference key="value" image="iphone" catalog="system" symbolScale="medium"/>
@@ -290,7 +306,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="311" height="50"/>
                                                 <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                <textInputTraits key="textInputTraits" secureTextEntry="YES" textContentType="password"/>
+                                                <textInputTraits key="textInputTraits" returnKeyType="next" secureTextEntry="YES" textContentType="password"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="leadingImage">
                                                         <imageReference key="value" image="lock.shield" catalog="system" symbolScale="medium"/>
@@ -320,7 +336,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="311" height="50"/>
                                                 <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                <textInputTraits key="textInputTraits" secureTextEntry="YES" textContentType="password"/>
+                                                <textInputTraits key="textInputTraits" returnKeyType="go" secureTextEntry="YES" textContentType="password"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="leadingImage">
                                                         <imageReference key="value" image="lock.shield.fill" catalog="system" symbolScale="medium"/>
@@ -463,6 +479,78 @@
             </objects>
             <point key="canvasLocation" x="-562" y="864"/>
         </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="3YC-YS-dQY">
+            <objects>
+                <tabBarController storyboardIdentifier="MainPage" automaticallyAdjustsScrollViewInsets="NO" id="9lv-lO-zrp" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="IcY-aB-eDH">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="9dr-oT-mfn" kind="relationship" relationship="viewControllers" id="FUi-ph-fQV"/>
+                        <segue destination="JLw-ez-cxd" kind="relationship" relationship="viewControllers" id="yR0-Fn-gHv"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WBh-K5-pQ8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1889.8550724637682" y="433.92857142857139"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="XZW-Ne-ME4">
+            <objects>
+                <viewController id="gSM-Ws-pOo" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="chW-qQ-rdb">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="gv0-i0-Hux"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="4W8-3I-yJR"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="sgK-14-iz8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3561" y="787"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="n1Y-d4-2qE">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="9dr-oT-mfn" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="" image="homekit" catalog="system" id="qAB-UU-Dxb"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="4G4-3h-Ild">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="wAu-KK-8DF" kind="relationship" relationship="rootViewController" id="QL5-kD-S6i"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dQV-Za-6Wc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2746" y="43"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="aNv-ye-vX0">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="JLw-ez-cxd" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="" image="person.circle" catalog="system" id="B2n-Zz-aaK"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Sfs-y5-gzf">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="gSM-Ws-pOo" kind="relationship" relationship="rootViewController" id="FJ8-dC-o40"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2ST-KS-3NP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2745" y="787"/>
+        </scene>
     </scenes>
     <designables>
         <designable name="3ka-Kq-Gbb">
@@ -489,6 +577,7 @@
     </designables>
     <resources>
         <image name="arrow.backward" catalog="system" width="128" height="98"/>
+        <image name="homekit" catalog="system" width="128" height="106"/>
         <image name="iphone" catalog="system" width="108" height="128"/>
         <image name="lock.shield" catalog="system" width="128" height="118"/>
         <image name="lock.shield.fill" catalog="system" width="128" height="118"/>

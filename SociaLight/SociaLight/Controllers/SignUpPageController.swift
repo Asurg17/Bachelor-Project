@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SignUpPageController: UIViewController, UITextFieldDelegate {
+class SignUpPageController: UIViewController {
     
     @IBOutlet var fullNameOuterView:        CustomTextFieldOuterView!
     @IBOutlet var usernameOuterView:        CustomTextFieldOuterView!
@@ -22,17 +22,13 @@ class SignUpPageController: UIViewController, UITextFieldDelegate {
     @IBOutlet var confirmPasswordTextField: DesignableUITextField!
     
     @IBOutlet var signInButton: UIButton!
+    
+    private let service = Service()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        registerForKeyboardNotifications()
         setupViews()
-    }
-    
-    func registerForKeyboardNotifications() {
-//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
     func setupViews() {
@@ -45,6 +41,17 @@ class SignUpPageController: UIViewController, UITextFieldDelegate {
         signInButton.layer.cornerRadius = signInButton.frame.size.height / 3
         signInButton.clipsToBounds = true
     }
+    
+    func signUp(){
+        print("BBBB")
+    }
+    
+    @IBAction func signIn() {
+        self.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension SignUpPageController: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if let field = textField as? DesignableUITextField {
@@ -86,29 +93,27 @@ class SignUpPageController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField == usernameTextField && string.contains(" ") { return false }
+        return true
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.view.endEditing(true)
-        return false
-    }
-    
-    
-    
-    @IBAction func signIn() {
-        self.dismiss(animated: true, completion: nil)
-    }
-
-    
-    @objc func keyboardWillShow(notification: NSNotification) {
-        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            if self.view.frame.origin.y == 0 {
-                self.view.frame.origin.y -= keyboardSize.height
-            }
+        switch textField {
+        case fullNameTextField:
+            usernameTextField.becomeFirstResponder()
+        case usernameTextField:
+            phoneNumberTextField.becomeFirstResponder()
+        case phoneNumberTextField:
+            passwordTextField.becomeFirstResponder()
+        case passwordTextField:
+            confirmPasswordTextField.becomeFirstResponder()
+        default:
+            textField.resignFirstResponder()
+            signUp()
         }
+        
+        return true
     }
-
-    @objc func keyboardWillHide(notification: NSNotification) {
-        if self.view.frame.origin.y != 0 {
-            self.view.frame.origin.y = 0
-        }
-    }
+    
 }
