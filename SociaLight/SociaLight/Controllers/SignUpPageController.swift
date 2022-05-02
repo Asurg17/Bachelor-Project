@@ -23,6 +23,8 @@ class SignUpPageController: UIViewController {
     
     @IBOutlet var signInButton: UIButton!
     
+    @IBOutlet var loader: UIActivityIndicatorView!
+    
     private let service = Service()
 
     override func viewDidLoad() {
@@ -42,13 +44,74 @@ class SignUpPageController: UIViewController {
         signInButton.clipsToBounds = true
     }
     
-    func signUp(){
-        print("BBBB")
+    func registerClient(){
+        if checkIfAllViewsAreFilled() {
+            if checkIfPasswordsMatches() {
+                loader.startAnimating()
+                service.registerNewUser(
+                    username: usernameTextField.text!,
+                    firstName: getFirstName(),
+                    lastName: getLastName(),
+                    phoneNumber: phoneNumberTextField.text!,
+                    password: passwordTextField.text!
+                ) { [weak self] result in
+                    guard let self = self else { return }
+                    DispatchQueue.main.async {
+                        self.loader.stopAnimating()
+                        switch result {
+                        case .success(let response):
+                            self.handleSuccess(response: response)
+                        case .failure(let error):
+                            self.handleError(error: error.localizedDescription.description)
+                        }
+                    }
+                }
+            } else {
+                showWarningAlert(warningText: "Passwords doesn’t match!")
+            }
+        } else {
+            showWarningAlert(warningText: "Please fill all the fields!")
+        }
+    }
+    
+    func getFirstName() -> String {
+        return fullNameTextField.text!.components(separatedBy: " ")[0]
+    }
+    
+    func getLastName() -> String {
+        let words = fullNameTextField.text!.components(separatedBy: " ")
+        return words[1..<words.count].joined(separator: " ")
+    }
+    
+    func checkIfAllViewsAreFilled() -> Bool {
+        if fullNameTextField.text         == "" ||
+           usernameTextField.text         == "" ||
+           phoneNumberTextField.text      == "" ||
+           passwordTextField.text         == "" ||
+           confirmPasswordTextField.text  == "" { return false }
+        return true
+    }
+    
+    func checkIfPasswordsMatches() -> Bool {
+        return passwordTextField.text == confirmPasswordTextField.text
+    }
+    
+    func handleSuccess(response: String) {
+        print(response)
+    }
+    
+    func handleError(error: String?) {
+        showWarningAlert(warningText: error ?? "Unspecified Error!")
+    }
+    
+    @IBAction func signUp() {
+        registerClient()
     }
     
     @IBAction func signIn() {
         self.dismiss(animated: true, completion: nil)
     }
+    
 }
 
 extension SignUpPageController: UITextFieldDelegate {
@@ -95,7 +158,13 @@ extension SignUpPageController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if textField == usernameTextField && string.contains(" ") { return false }
+        if textField == phoneNumberTextField && !checkIfContainsOnlyNumbers(str: string) { return false }
         return true
+    }
+    
+    func checkIfContainsOnlyNumbers(str: String) -> Bool {
+        let digitCharacters = CharacterSet.decimalDigits
+        return str.rangeOfCharacter(from: digitCharacters) != nil
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -110,7 +179,7 @@ extension SignUpPageController: UITextFieldDelegate {
             confirmPasswordTextField.becomeFirstResponder()
         default:
             textField.resignFirstResponder()
-            signUp()
+            registerClient()
         }
         
         return true

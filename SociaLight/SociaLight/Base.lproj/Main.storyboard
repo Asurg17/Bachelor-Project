@@ -72,7 +72,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="311" height="50"/>
                                                 <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                <textInputTraits key="textInputTraits" returnKeyType="go" secureTextEntry="YES" textContentType="password"/>
+                                                <textInputTraits key="textInputTraits" returnKeyType="go" secureTextEntry="YES" textContentType="one-time-code"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="leadingImage">
                                                         <imageReference key="value" image="lock.shield" catalog="system" symbolScale="small"/>
@@ -135,6 +135,11 @@
                                     </button>
                                 </subviews>
                             </stackView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="fGh-Q0-Xit">
+                                <rect key="frame" x="197" y="438" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -159,6 +164,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="ia7-8l-yw5"/>
                     <connections>
+                        <outlet property="loader" destination="fGh-Q0-Xit" id="jop-ji-eTd"/>
                         <outlet property="logInButton" destination="aDH-VD-epg" id="jgg-r4-YnB"/>
                         <outlet property="passwordOuterView" destination="dcx-U8-iYb" id="Vpw-0a-LP5"/>
                         <outlet property="passwordTextField" destination="lx3-sJ-7TZ" id="7jl-B2-Y4k"/>
@@ -306,7 +312,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="311" height="50"/>
                                                 <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                <textInputTraits key="textInputTraits" returnKeyType="next" secureTextEntry="YES" textContentType="password"/>
+                                                <textInputTraits key="textInputTraits" returnKeyType="next" secureTextEntry="YES" textContentType="one-time-code"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="leadingImage">
                                                         <imageReference key="value" image="lock.shield" catalog="system" symbolScale="medium"/>
@@ -336,7 +342,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="311" height="50"/>
                                                 <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                <textInputTraits key="textInputTraits" returnKeyType="go" secureTextEntry="YES" textContentType="password"/>
+                                                <textInputTraits key="textInputTraits" returnKeyType="go" secureTextEntry="YES" textContentType="one-time-code"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="leadingImage">
                                                         <imageReference key="value" image="lock.shield.fill" catalog="system" symbolScale="medium"/>
@@ -372,6 +378,9 @@
                                 <state key="normal" title="CREATE">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
+                                <connections>
+                                    <action selector="signUp" destination="0EJ-WM-S2b" eventType="touchUpInside" id="Ilu-IU-Yeo"/>
+                                </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="N66-tg-KMB">
                                 <rect key="frame" x="80.5" y="822" width="253.5" height="32"/>
@@ -399,6 +408,10 @@
                                     </button>
                                 </subviews>
                             </stackView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="nQI-de-lLa">
+                                <rect key="frame" x="188.5" y="429.5" width="37" height="37"/>
+                                <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="bxh-ZI-uv9"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -413,8 +426,10 @@
                             <constraint firstItem="WP3-3w-XbO" firstAttribute="centerX" secondItem="8m9-43-gmv" secondAttribute="centerX" id="O9G-g2-9jQ"/>
                             <constraint firstItem="hML-xS-7wJ" firstAttribute="centerX" secondItem="8m9-43-gmv" secondAttribute="centerX" id="c7V-1V-KCo"/>
                             <constraint firstItem="hML-xS-7wJ" firstAttribute="top" secondItem="rnw-II-Kgk" secondAttribute="bottom" constant="32" id="fZ6-ZA-5lE"/>
+                            <constraint firstItem="nQI-de-lLa" firstAttribute="centerX" secondItem="8m9-43-gmv" secondAttribute="centerX" id="jJR-PU-39s"/>
                             <constraint firstItem="N66-tg-KMB" firstAttribute="centerX" secondItem="8m9-43-gmv" secondAttribute="centerX" id="oEh-QH-SIh"/>
                             <constraint firstItem="rnw-II-Kgk" firstAttribute="centerX" secondItem="8m9-43-gmv" secondAttribute="centerX" id="p7m-q3-Qct"/>
+                            <constraint firstItem="nQI-de-lLa" firstAttribute="centerY" secondItem="8m9-43-gmv" secondAttribute="centerY" id="sQk-P1-Bkw"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="wlT-76-tF1">
@@ -430,6 +445,7 @@
                         <outlet property="confirmPasswordTextField" destination="SmB-Gq-b8B" id="Hvj-Kz-NE9"/>
                         <outlet property="fullNameOuterView" destination="uu2-RY-WPa" id="HiS-6O-7sY"/>
                         <outlet property="fullNameTextField" destination="5O9-Jr-cfW" id="trN-HL-3z4"/>
+                        <outlet property="loader" destination="nQI-de-lLa" id="QfU-0J-oAW"/>
                         <outlet property="passwordOuterView" destination="iZt-Lj-oOI" id="FnL-zq-Nxp"/>
                         <outlet property="passwordTextField" destination="sUG-qE-wi9" id="aZm-N4-lNT"/>
                         <outlet property="phoneNumberOuterView" destination="g21-hn-bOK" id="zZM-XJ-veP"/>

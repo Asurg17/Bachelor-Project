@@ -68,3 +68,34 @@ extension UIColor {
         }
     }
 }
+
+enum ServiceError: Error {
+    case noData
+    case invalidParameters
+}
+
+extension UIViewController {
+
+    func showWarningAlert(warningText: String) {
+        let alert = UIAlertController(
+            title: "Warning",
+            message: warningText,
+            preferredStyle: .alert
+        )
+        alert.addAction(
+            UIAlertAction(
+                title: "Ok",
+                style: .default,
+                handler: nil
+            )
+        )
+        present(alert, animated: true, completion: nil)
+    }
+    
+}
+
+extension Collection where Indices.Iterator.Element == Index {
+   public subscript(safe index: Index) -> Iterator.Element? {
+     return (startIndex <= index && index < endIndex) ? self[index] : nil
+   }
+}

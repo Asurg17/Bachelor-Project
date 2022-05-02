@@ -17,6 +17,8 @@ class SignInPageController: UIViewController {
     @IBOutlet var passwordTextField: DesignableUITextField!
     
     @IBOutlet var logInButton: UIButton!
+    
+    @IBOutlet var loader: UIActivityIndicatorView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
