@@ -108,6 +108,9 @@
                                 <state key="normal" title="SIGN IN">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
+                                <connections>
+                                    <action selector="signInToAccount" destination="BYZ-38-t0r" eventType="touchUpInside" id="m8z-sr-PP3"/>
+                                </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="xwa-dp-DB9">
                                 <rect key="frame" x="84" y="822" width="246" height="32"/>
@@ -176,10 +179,10 @@
             </objects>
             <point key="canvasLocation" x="353.62318840579712" y="68.973214285714278"/>
         </scene>
-        <!--View Controller-->
+        <!--Main Page Controller-->
         <scene sceneID="MLX-Gk-BT6">
             <objects>
-                <viewController id="wAu-KK-8DF" sceneMemberID="viewController">
+                <viewController id="wAu-KK-8DF" customClass="MainPageController" customModule="SociaLight" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="nxN-IT-9O5">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -498,9 +501,11 @@
         <!--Tab Bar Controller-->
         <scene sceneID="3YC-YS-dQY">
             <objects>
-                <tabBarController storyboardIdentifier="MainPage" automaticallyAdjustsScrollViewInsets="NO" id="9lv-lO-zrp" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="MainPage" automaticallyAdjustsScrollViewInsets="NO" id="9lv-lO-zrp" customClass="TabBarController" customModule="SociaLight" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <nil key="simulatedTopBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="IcY-aB-eDH">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
@@ -513,10 +518,10 @@
             </objects>
             <point key="canvasLocation" x="1889.8550724637682" y="433.92857142857139"/>
         </scene>
-        <!--View Controller-->
+        <!--Profile Page Controller-->
         <scene sceneID="XZW-Ne-ME4">
             <objects>
-                <viewController id="gSM-Ws-pOo" sceneMemberID="viewController">
+                <viewController id="gSM-Ws-pOo" customClass="ProfilePageController" customModule="SociaLight" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="chW-qQ-rdb">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

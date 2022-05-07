@@ -97,7 +97,9 @@ class SignUpPageController: UIViewController {
     }
     
     func handleSuccess(response: String) {
-        print(response)
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let signUpPageController = storyBoard.instantiateViewController(withIdentifier: "MainPage") as! UITabBarController
+        self.navigationController?.pushViewController(signUpPageController, animated: true)
     }
     
     func handleError(error: String?) {
@@ -163,6 +165,7 @@ extension SignUpPageController: UITextFieldDelegate {
     }
     
     func checkIfContainsOnlyNumbers(str: String) -> Bool {
+        if (str == "") { return true }
         let digitCharacters = CharacterSet.decimalDigits
         return str.rangeOfCharacter(from: digitCharacters) != nil
     }

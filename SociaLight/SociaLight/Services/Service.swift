@@ -24,8 +24,8 @@ class Service {
         lastName: String,
         phoneNumber: String,
         password: String,
-        completion: @escaping (Result<String, Error>) -> ()
-    ) {
+        completion: @escaping (Result<String, Error>) -> ()) {
+        
         components.path = "/registerClient"
         
         let parameters = [
@@ -53,25 +53,24 @@ class Service {
                     
                     if let httpUrlResponse = response as? HTTPURLResponse {
                         if httpUrlResponse.statusCode == 200 {
-                            print(data)
                             completion(.success(""))
                         } else {
                             if (httpUrlResponse.value(forHTTPHeaderField: "Error") ?? "").contains("duplicate key") {
                                 completion(.failure(NSError(domain: "",
                                                             code: 400,
-                                                            userInfo: [ NSLocalizedDescriptionKey: "Such username already exists!"]
+                                                            userInfo: [NSLocalizedDescriptionKey: "Such username already exists!"]
                                                            )))
                             } else {
                                 completion(.failure(NSError(domain: "",
                                                             code: 400,
-                                                            userInfo: [ NSLocalizedDescriptionKey: "Can't register new user!"]
+                                                            userInfo: [NSLocalizedDescriptionKey: "Can't register new user!"]
                                                            )))
                             }
                         }
                     } else {
                        completion(.failure(NSError(domain: "",
                                                    code: 400,
-                                                   userInfo: [ NSLocalizedDescriptionKey: "Bad response!"]
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
                                                   )))
                     }
                 })
@@ -82,6 +81,51 @@ class Service {
         
     }
     
+    func checkUser(username: String, password: String, completion: @escaping (Result<String, Error>) -> ()) {
+        
+        components.path = "/checkUser"
+        
+        let parameters = [
+            "username": username,
+            "password": password
+        ]
     
+        components.queryItems = parameters.map { key, value in
+           return URLQueryItem(name: key, value: value)
+        }
+        
+        if let url = components.url {
+            let request = URLRequest(url: url)
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            completion(.success(""))
+                        } else {
+                            completion(.failure(NSError(domain: "",
+                                                        code: 400,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                       )))
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    
+    }
     
 }

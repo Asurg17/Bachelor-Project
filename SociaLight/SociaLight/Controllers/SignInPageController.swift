@@ -19,6 +19,8 @@ class SignInPageController: UIViewController {
     @IBOutlet var logInButton: UIButton!
     
     @IBOutlet var loader: UIActivityIndicatorView!
+    
+    private let service = Service()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,7 +43,46 @@ class SignInPageController: UIViewController {
     }
     
     func signIn() {
-        print("AAAA")
+        if checkIfAllViewsAreFilled() {
+            loader.startAnimating()
+            service.checkUser(
+                username: usernameTextField.text!,
+                password: passwordTextField.text!
+            ) { [weak self] result in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.loader.stopAnimating()
+                    switch result {
+                    case .success(let response):
+                        self.handleSuccess(response: response)
+                    case .failure(let error):
+                        self.handleError(error: error.localizedDescription.description)
+                    }
+                }
+            }
+        } else {
+            showWarningAlert(warningText: "Please fill all the fields!")
+        }
+    }
+    
+    func checkIfAllViewsAreFilled() -> Bool {
+        if usernameTextField.text == "" || passwordTextField.text == "" { return false }
+        return true
+    }
+    
+    func handleSuccess(response: String) {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let signUpPageController = storyBoard.instantiateViewController(withIdentifier: "MainPage") as! UITabBarController
+        self.navigationController?.pushViewController(signUpPageController, animated: true)
+    }
+    
+    func handleError(error: String?) {
+        showWarningAlert(warningText: error ?? "Unspecified Error!")
+    }
+    
+    
+    @IBAction func signInToAccount() {
+        signIn()
     }
     
     @IBAction func signUp() {
