@@ -1,0 +1,6 @@
+use_frameworks!
+
+target 'SociaLight' do
+  pod 'SDWebImage'
+  pod 'KeychainSwift'
+end

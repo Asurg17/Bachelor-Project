@@ -44,19 +44,21 @@ class SignInPageController: UIViewController {
     
     func signIn() {
         if checkIfAllViewsAreFilled() {
-            loader.startAnimating()
-            service.checkUser(
-                username: usernameTextField.text!,
-                password: passwordTextField.text!
-            ) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.loader.stopAnimating()
-                    switch result {
-                    case .success(let response):
-                        self.handleSuccess(response: response)
-                    case .failure(let error):
-                        self.handleError(error: error.localizedDescription.description)
+            if checkPasswordLength(password: passwordTextField.text!) {
+                loader.startAnimating()
+                service.checkUser(
+                    username: usernameTextField.text!,
+                    password: passwordTextField.text!
+                ) { [weak self] result in
+                    guard let self = self else { return }
+                    DispatchQueue.main.async {
+                        self.loader.stopAnimating()
+                        switch result {
+                        case .success(let response):
+                            self.handleSuccess(response: response)
+                        case .failure(let error):
+                            self.handleError(error: error.localizedDescription.description)
+                        }
                     }
                 }
             }

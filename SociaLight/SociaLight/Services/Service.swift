@@ -55,6 +55,7 @@ class Service {
                         if httpUrlResponse.statusCode == 200 {
                             completion(.success(""))
                         } else {
+                            print(httpUrlResponse.value(forHTTPHeaderField: "Error") ?? "")
                             if (httpUrlResponse.value(forHTTPHeaderField: "Error") ?? "").contains("duplicate key") {
                                 completion(.failure(NSError(domain: "",
                                                             code: 400,

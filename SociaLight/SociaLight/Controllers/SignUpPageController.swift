@@ -47,22 +47,24 @@ class SignUpPageController: UIViewController {
     func registerClient(){
         if checkIfAllViewsAreFilled() {
             if checkIfPasswordsMatches() {
-                loader.startAnimating()
-                service.registerNewUser(
-                    username: usernameTextField.text!,
-                    firstName: getFirstName(),
-                    lastName: getLastName(),
-                    phoneNumber: phoneNumberTextField.text!,
-                    password: passwordTextField.text!
-                ) { [weak self] result in
-                    guard let self = self else { return }
-                    DispatchQueue.main.async {
-                        self.loader.stopAnimating()
-                        switch result {
-                        case .success(let response):
-                            self.handleSuccess(response: response)
-                        case .failure(let error):
-                            self.handleError(error: error.localizedDescription.description)
+                if checkPasswordLength(password: passwordTextField.text!) {
+                    loader.startAnimating()
+                    service.registerNewUser(
+                        username: usernameTextField.text!,
+                        firstName: getFirstName(),
+                        lastName: getLastName(),
+                        phoneNumber: phoneNumberTextField.text!,
+                        password: passwordTextField.text!
+                    ) { [weak self] result in
+                        guard let self = self else { return }
+                        DispatchQueue.main.async {
+                            self.loader.stopAnimating()
+                            switch result {
+                            case .success(let response):
+                                self.handleSuccess(response: response)
+                            case .failure(let error):
+                                self.handleError(error: error.localizedDescription.description)
+                            }
                         }
                     }
                 }

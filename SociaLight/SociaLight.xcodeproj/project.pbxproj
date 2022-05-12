@@ -22,9 +22,11 @@
 		EA9E6BD227FCB94100101170 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA9E6BD127FCB94100101170 /* Assets.xcassets */; };
 		EA9E6BD527FCB94100101170 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EA9E6BD327FCB94100101170 /* LaunchScreen.storyboard */; };
 		EABCC6622826A4410098EDCA /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABCC6612826A4410098EDCA /* TabBarController.swift */; };
+		F21DA156E41A52151EC9B022 /* Pods_SociaLight.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1BC7C4C89B91A205EEBBDFE /* Pods_SociaLight.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		02F2774E4532FB5D866A1FE7 /* Pods-SociaLight.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SociaLight.release.xcconfig"; path = "Target Support Files/Pods-SociaLight/Pods-SociaLight.release.xcconfig"; sourceTree = "<group>"; };
 		EA6C5A7F281D724F00721D7F /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		EA6C5A81281FD13400721D7F /* MainPageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPageController.swift; sourceTree = "<group>"; };
 		EA6C5A84281FD19000721D7F /* ProfilePageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePageController.swift; sourceTree = "<group>"; };
@@ -42,6 +44,8 @@
 		EA9E6BD427FCB94100101170 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EA9E6BD627FCB94100101170 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EABCC6612826A4410098EDCA /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		F1BC7C4C89B91A205EEBBDFE /* Pods_SociaLight.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SociaLight.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F5C82A3A81D808E813941DB8 /* Pods-SociaLight.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SociaLight.debug.xcconfig"; path = "Target Support Files/Pods-SociaLight/Pods-SociaLight.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,12 +53,31 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F21DA156E41A52151EC9B022 /* Pods_SociaLight.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		48D5B1C6C6B5535CEC7D2FDA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F1BC7C4C89B91A205EEBBDFE /* Pods_SociaLight.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EA3DB8BC59679CE3D7B93FCC /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				F5C82A3A81D808E813941DB8 /* Pods-SociaLight.debug.xcconfig */,
+				02F2774E4532FB5D866A1FE7 /* Pods-SociaLight.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		EA6C5A7D281D6CC100721D7F /* ReusableViews */ = {
 			isa = PBXGroup;
 			children = (
@@ -97,6 +120,8 @@
 			children = (
 				EA9E6BC427FCB93E00101170 /* SociaLight */,
 				EA9E6BC327FCB93E00101170 /* Products */,
+				EA3DB8BC59679CE3D7B93FCC /* Pods */,
+				48D5B1C6C6B5535CEC7D2FDA /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -133,9 +158,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EA9E6BD927FCB94100101170 /* Build configuration list for PBXNativeTarget "SociaLight" */;
 			buildPhases = (
+				07BCC248CD7C3EF1A8F82DF5 /* [CP] Check Pods Manifest.lock */,
 				EA9E6BBE27FCB93E00101170 /* Sources */,
 				EA9E6BBF27FCB93E00101170 /* Frameworks */,
 				EA9E6BC027FCB93E00101170 /* Resources */,
+				750BF9F0D0673A2070DDC658 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -191,6 +218,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		07BCC248CD7C3EF1A8F82DF5 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SociaLight-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		750BF9F0D0673A2070DDC658 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SociaLight/Pods-SociaLight-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SociaLight/Pods-SociaLight-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SociaLight/Pods-SociaLight-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		EA9E6BBE27FCB93E00101170 /* Sources */ = {
@@ -350,6 +419,7 @@
 		};
 		EA9E6BDA27FCB94100101170 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F5C82A3A81D808E813941DB8 /* Pods-SociaLight.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -377,6 +447,7 @@
 		};
 		EA9E6BDB27FCB94100101170 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 02F2774E4532FB5D866A1FE7 /* Pods-SociaLight.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

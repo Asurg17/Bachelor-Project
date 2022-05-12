@@ -1,7 +1,9 @@
 package main
 
 import (
+	"crypto/sha256"
 	"database/sql"
+	"encoding/hex"
 	"fmt"
 	"net/http"
 
@@ -38,8 +40,13 @@ func registerClient(w http.ResponseWriter, req *http.Request) {
 
 	defer db.Close()
 
+	hash := sha256.New()
+	hash.Write([]byte(password))
+	md := hash.Sum(nil)
+	mdStr := hex.EncodeToString(md)
+
 	insertSmt := `insert into "users" ("username", "password", "first_name", "last_name") values($1, $2, $3, $4)`
-	_, e := db.Exec(insertSmt, username, password, firstName, lastName)
+	_, e := db.Exec(insertSmt, username, mdStr, firstName, lastName)
 	if e != nil {
 		w.Header().Set("Error", e.Error())
 		w.WriteHeader(400)
@@ -88,7 +95,12 @@ func checkUser(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if givenPassword != actualPassword {
+	hash := sha256.New()
+	hash.Write([]byte(givenPassword))
+	md := hash.Sum(nil)
+	mdStr := hex.EncodeToString(md)
+
+	if mdStr != actualPassword {
 		w.Header().Set("Error", "Incorrect Password!")
 		w.WriteHeader(400)
 		http.Error(w, "Incorrect Password!", http.StatusInternalServerError)

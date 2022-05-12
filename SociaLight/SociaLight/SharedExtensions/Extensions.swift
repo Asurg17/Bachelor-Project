@@ -92,6 +92,14 @@ extension UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
+    func checkPasswordLength(password: String) -> Bool {
+        if password.count < 6 {
+            showWarningAlert(warningText: "Password should be at least 6 characters long!")
+            return false
+        }
+        return true
+    }
+    
 }
 
 extension Collection where Indices.Iterator.Element == Index {
