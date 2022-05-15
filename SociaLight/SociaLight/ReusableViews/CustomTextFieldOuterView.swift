@@ -18,7 +18,7 @@ class CustomTextFieldOuterView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        self.layer.cornerRadius = 25
+        self.layer.cornerRadius = self.frame.size.height / 1.90
         self.layer.borderWidth = 1.2
         self.layer.borderColor = borderColor
     }

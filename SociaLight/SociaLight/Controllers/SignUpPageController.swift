@@ -47,7 +47,8 @@ class SignUpPageController: UIViewController {
     
     func registerClient(){
         if checkIfAllViewsAreFilled() {
-            if checkIfPasswordsMatches() {
+            if checkIfPasswordsMatches(pass1: passwordTextField.text!,
+                                       pass2: confirmPasswordTextField.text!) {
                 if checkPasswordLength(password: passwordTextField.text!) {
                     loader.startAnimating()
                     service.registerNewUser(
@@ -69,8 +70,6 @@ class SignUpPageController: UIViewController {
                         }
                     }
                 }
-            } else {
-                showWarningAlert(warningText: "Passwords doesn’t match!")
             }
         } else {
             showWarningAlert(warningText: "Please fill all the fields!")

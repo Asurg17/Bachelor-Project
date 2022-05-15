@@ -231,7 +231,7 @@ func changePassword(w http.ResponseWriter, req *http.Request) {
 	newPasswordMd := newPasswordHash.Sum(nil)
 	newPasswordMdStr := hex.EncodeToString(newPasswordMd)
 
-	updateQuery := `update users s set s.password = $1 where s.user_id = $2`
+	updateQuery := `update users set password = $1 where user_id = $2`
 
 	_, e := db.Exec(updateQuery, newPasswordMdStr, userId)
 	if e != nil {

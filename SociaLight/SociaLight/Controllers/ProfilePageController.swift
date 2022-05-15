@@ -51,7 +51,7 @@ class ProfilePageController: UIViewController {
     
     func loadUserInfo() {
         let keychain = KeychainSwift()
-        if  let userId = keychain.get("userId") {
+        if let userId = keychain.get("userId") {
             loader.startAnimating()
             service.getUserInfo(userId: userId) { [weak self] result in
                 guard let self = self else { return }
@@ -93,16 +93,7 @@ class ProfilePageController: UIViewController {
     @IBAction func signOut() {
         self.parent?.navigationController?.popToRootViewController(animated: true)
     }
-    
-    @IBAction func changePassword() {
-        let keychain = KeychainSwift()
-        print(keychain.get("userId")!)
-    }
-    
-    @IBAction func personalInfo() {
-        
-    }
-    
+
     
     @objc func imageViewTapped(_ sender:AnyObject){
         print("wefwefew")

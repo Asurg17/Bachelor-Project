@@ -92,6 +92,15 @@ extension UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
+    func checkIfPasswordsMatches(pass1: String, pass2: String) -> Bool {
+        if (pass1 == pass2) {
+            return true
+        } else {
+            showWarningAlert(warningText: "Passwords doesn’t match!")
+            return false
+        }
+    }
+    
     func checkPasswordLength(password: String) -> Bool {
         if password.count < 6 {
             showWarningAlert(warningText: "Password should be at least 6 characters long!")
