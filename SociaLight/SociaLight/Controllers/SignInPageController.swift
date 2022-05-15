@@ -7,6 +7,7 @@
 
 import UIKit
 import CloudKit
+import KeychainSwift
 
 class SignInPageController: UIViewController {
     
@@ -73,6 +74,11 @@ class SignInPageController: UIViewController {
     }
     
     func handleSuccess(response: String) {
+        clearAllTextFields()
+        
+        let keychain = KeychainSwift()
+        keychain.set(response, forKey: "userId")
+        
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let signUpPageController = storyBoard.instantiateViewController(withIdentifier: "MainPage") as! UITabBarController
         self.navigationController?.pushViewController(signUpPageController, animated: true)
@@ -82,6 +88,10 @@ class SignInPageController: UIViewController {
         showWarningAlert(warningText: error ?? "Unspecified Error!")
     }
     
+    func clearAllTextFields() {
+        usernameTextField.text = ""
+        passwordTextField.text = ""
+    }
     
     @IBAction func signInToAccount() {
         signIn()

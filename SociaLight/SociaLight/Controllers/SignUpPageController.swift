@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import KeychainSwift
 
 class SignUpPageController: UIViewController {
     
@@ -99,6 +100,11 @@ class SignUpPageController: UIViewController {
     }
     
     func handleSuccess(response: String) {
+        clearAllTextFields()
+        
+        let keychain = KeychainSwift()
+        keychain.set(response, forKey: "userId")
+        
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let signUpPageController = storyBoard.instantiateViewController(withIdentifier: "MainPage") as! UITabBarController
         self.navigationController?.pushViewController(signUpPageController, animated: true)
@@ -106,6 +112,14 @@ class SignUpPageController: UIViewController {
     
     func handleError(error: String?) {
         showWarningAlert(warningText: error ?? "Unspecified Error!")
+    }
+    
+    func clearAllTextFields() {
+        fullNameTextField.text = ""
+        usernameTextField.text = ""
+        phoneNumberTextField.text = ""
+        passwordTextField.text = ""
+        confirmPasswordTextField.text = ""
     }
     
     @IBAction func signUp() {

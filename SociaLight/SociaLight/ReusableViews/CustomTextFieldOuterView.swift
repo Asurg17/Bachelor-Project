@@ -7,7 +7,6 @@
 
 import UIKit
 
-
 @IBDesignable
 class CustomTextFieldOuterView: UIView {
     
@@ -15,10 +14,6 @@ class CustomTextFieldOuterView: UIView {
         didSet {
             changeBorderColor()
         }
-    }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
     }
     
     override func layoutSubviews() {

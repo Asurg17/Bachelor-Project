@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EA06AE7C282D56B200D84D7A /* RoundUIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA06AE7B282D56B200D84D7A /* RoundUIImageView.swift */; };
 		EA6C5A80281D724F00721D7F /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6C5A7F281D724F00721D7F /* Service.swift */; };
 		EA6C5A82281FD13500721D7F /* MainPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6C5A81281FD13400721D7F /* MainPageController.swift */; };
 		EA6C5A85281FD19000721D7F /* ProfilePageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6C5A84281FD19000721D7F /* ProfilePageController.swift */; };
@@ -22,11 +23,13 @@
 		EA9E6BD227FCB94100101170 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA9E6BD127FCB94100101170 /* Assets.xcassets */; };
 		EA9E6BD527FCB94100101170 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EA9E6BD327FCB94100101170 /* LaunchScreen.storyboard */; };
 		EABCC6622826A4410098EDCA /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABCC6612826A4410098EDCA /* TabBarController.swift */; };
+		EADFCF6F283115D50025EEA6 /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADFCF6E283115D50025EEA6 /* Entities.swift */; };
 		F21DA156E41A52151EC9B022 /* Pods_SociaLight.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1BC7C4C89B91A205EEBBDFE /* Pods_SociaLight.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		02F2774E4532FB5D866A1FE7 /* Pods-SociaLight.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SociaLight.release.xcconfig"; path = "Target Support Files/Pods-SociaLight/Pods-SociaLight.release.xcconfig"; sourceTree = "<group>"; };
+		EA06AE7B282D56B200D84D7A /* RoundUIImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundUIImageView.swift; sourceTree = "<group>"; };
 		EA6C5A7F281D724F00721D7F /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		EA6C5A81281FD13400721D7F /* MainPageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPageController.swift; sourceTree = "<group>"; };
 		EA6C5A84281FD19000721D7F /* ProfilePageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePageController.swift; sourceTree = "<group>"; };
@@ -44,6 +47,7 @@
 		EA9E6BD427FCB94100101170 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EA9E6BD627FCB94100101170 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EABCC6612826A4410098EDCA /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		EADFCF6E283115D50025EEA6 /* Entities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entities.swift; sourceTree = "<group>"; };
 		F1BC7C4C89B91A205EEBBDFE /* Pods_SociaLight.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SociaLight.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5C82A3A81D808E813941DB8 /* Pods-SociaLight.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SociaLight.debug.xcconfig"; path = "Target Support Files/Pods-SociaLight/Pods-SociaLight.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -74,7 +78,6 @@
 				F5C82A3A81D808E813941DB8 /* Pods-SociaLight.debug.xcconfig */,
 				02F2774E4532FB5D866A1FE7 /* Pods-SociaLight.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -83,6 +86,7 @@
 			children = (
 				EA9A47B12815A391006F8409 /* DesignableUITextField.swift */,
 				EA9A47C12815B45B006F8409 /* CustomTextFieldOuterView.swift */,
+				EA06AE7B282D56B200D84D7A /* RoundUIImageView.swift */,
 			);
 			path = ReusableViews;
 			sourceTree = "<group>";
@@ -136,6 +140,7 @@
 		EA9E6BC427FCB93E00101170 /* SociaLight */ = {
 			isa = PBXGroup;
 			children = (
+				EADFCF6D283115C80025EEA6 /* Entities */,
 				EA9A47A728159A36006F8409 /* SharedExtensions */,
 				EA6C5A7D281D6CC100721D7F /* ReusableViews */,
 				EA6C5A7E281D723A00721D7F /* Services */,
@@ -149,6 +154,14 @@
 				EA9E6BCE27FCB93E00101170 /* SociaLight.xcdatamodeld */,
 			);
 			path = SociaLight;
+			sourceTree = "<group>";
+		};
+		EADFCF6D283115C80025EEA6 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				EADFCF6E283115D50025EEA6 /* Entities.swift */,
+			);
+			path = Entities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -270,12 +283,14 @@
 				EA9A47C22815B45B006F8409 /* CustomTextFieldOuterView.swift in Sources */,
 				EA9A47A628159280006F8409 /* SignUpPageController.swift in Sources */,
 				EA9A47C42817295C006F8409 /* Extensions.swift in Sources */,
+				EADFCF6F283115D50025EEA6 /* Entities.swift in Sources */,
 				EA9E6BC627FCB93E00101170 /* AppDelegate.swift in Sources */,
 				EA6C5A82281FD13500721D7F /* MainPageController.swift in Sources */,
 				EA6C5A85281FD19000721D7F /* ProfilePageController.swift in Sources */,
 				EA6C5A80281D724F00721D7F /* Service.swift in Sources */,
 				EA9A47B22815A391006F8409 /* DesignableUITextField.swift in Sources */,
 				EABCC6622826A4410098EDCA /* TabBarController.swift in Sources */,
+				EA06AE7C282D56B200D84D7A /* RoundUIImageView.swift in Sources */,
 				EA9E6BD027FCB93E00101170 /* SociaLight.xcdatamodeld in Sources */,
 				EA9E6BC827FCB93E00101170 /* SceneDelegate.swift in Sources */,
 			);
