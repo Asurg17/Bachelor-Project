@@ -8,7 +8,7 @@
 import UIKit
 import KeychainSwift
 
-class ProfilePageController: UIViewController {
+class ProfilePageController: UIViewController, DismissProtocol {
     
     @IBOutlet var profileImage: UIImageView!
     @IBOutlet var usernameLabel: UILabel!
@@ -30,6 +30,12 @@ class ProfilePageController: UIViewController {
         loadUserInfo()
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let destination = segue.destination as? PersonalInfoPopupController {
+            destination.delegate = self
+        }
+    }
+   
     func setupViews() {
         profileImage.isUserInteractionEnabled = true
         profileImage.addGestureRecognizer(
@@ -38,6 +44,10 @@ class ProfilePageController: UIViewController {
                 action: #selector(imageViewTapped(_:))
             )
         )
+    }
+    
+    func refresh() {
+        loadUserInfo()
     }
     
     func loadUserInfo() {
@@ -77,6 +87,13 @@ class ProfilePageController: UIViewController {
         locationLabel.text = userInfo.location
         birthDateLabel.text = userInfo.birthDate
         phoneLabel.text = userInfo.phone
+        saveInfo(userInfo: userInfo)
+    }
+    
+    func saveInfo(userInfo: UserInfoResponse) {
+        UserDefaults.standard.set(userInfo.age, forKey: "user.age")
+        UserDefaults.standard.set(userInfo.phone, forKey: "user.phone")
+        UserDefaults.standard.set(userInfo.birthDate, forKey: "user.birthDate")
     }
     
     
@@ -89,4 +106,8 @@ class ProfilePageController: UIViewController {
         print("wefwefew")
     }
     
+}
+
+protocol DismissProtocol {
+    func refresh()
 }

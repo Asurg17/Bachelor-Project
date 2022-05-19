@@ -244,6 +244,39 @@ func changePassword(w http.ResponseWriter, req *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func changePersonalInfo(w http.ResponseWriter, req *http.Request) {
+
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
+
+	db, err := sql.Open("postgres", psqlconn)
+	if err != nil {
+		print(err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	defer db.Close()
+
+	userId := req.URL.Query().Get("userId")
+	age := req.URL.Query().Get("age")
+	phoneNumber := req.URL.Query().Get("phoneNumber")
+	birthDate := req.URL.Query().Get("birthDate")
+
+	updateQuery := `update users set age = $1, phone = $2, birthdate = $3 where user_id = $4`
+
+	_, e := db.Exec(updateQuery, age, phoneNumber, birthDate, userId)
+	if e != nil {
+		w.Header().Set("Error", "Can't save Changes!")
+		w.WriteHeader(400)
+		http.Error(w, e.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
 func main() {
 	// // handle `/` route
 	// http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
@@ -256,6 +289,7 @@ func main() {
 	http.HandleFunc("/checkUser", checkUser)
 	http.HandleFunc("/getUserInfo", getUserInfo)
 	http.HandleFunc("/changePassword", changePassword)
+	http.HandleFunc("/changePersonalInfo", changePersonalInfo)
 	http.ListenAndServe(":9000", nil)
 }
 

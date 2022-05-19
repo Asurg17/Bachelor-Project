@@ -17,7 +17,6 @@
 		EA6C5A85281FD19000721D7F /* ProfilePageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6C5A84281FD19000721D7F /* ProfilePageController.swift */; };
 		EA9A47A628159280006F8409 /* SignUpPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47A528159280006F8409 /* SignUpPageController.swift */; };
 		EA9A47B22815A391006F8409 /* DesignableUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47B12815A391006F8409 /* DesignableUITextField.swift */; };
-		EA9A47C22815B45B006F8409 /* CustomTextFieldOuterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47C12815B45B006F8409 /* CustomTextFieldOuterView.swift */; };
 		EA9A47C42817295C006F8409 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47C32817295B006F8409 /* Extensions.swift */; };
 		EA9E6BC627FCB93E00101170 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9E6BC527FCB93E00101170 /* AppDelegate.swift */; };
 		EA9E6BC827FCB93E00101170 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9E6BC727FCB93E00101170 /* SceneDelegate.swift */; };
@@ -43,7 +42,6 @@
 		EA6C5A84281FD19000721D7F /* ProfilePageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePageController.swift; sourceTree = "<group>"; };
 		EA9A47A528159280006F8409 /* SignUpPageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPageController.swift; sourceTree = "<group>"; };
 		EA9A47B12815A391006F8409 /* DesignableUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignableUITextField.swift; sourceTree = "<group>"; };
-		EA9A47C12815B45B006F8409 /* CustomTextFieldOuterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextFieldOuterView.swift; sourceTree = "<group>"; };
 		EA9A47C32817295B006F8409 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		EA9E6BC227FCB93E00101170 /* SociaLight.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SociaLight.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA9E6BC527FCB93E00101170 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -98,6 +96,14 @@
 			path = "Sign In&Up Controllers";
 			sourceTree = "<group>";
 		};
+		EA481B332836A32C00719282 /* AdditionalControllers */ = {
+			isa = PBXGroup;
+			children = (
+				EABCC6612826A4410098EDCA /* TabBarController.swift */,
+			);
+			path = AdditionalControllers;
+			sourceTree = "<group>";
+		};
 		EA6B195C283178450042B65B /* PopupControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -111,7 +117,6 @@
 			isa = PBXGroup;
 			children = (
 				EA9A47B12815A391006F8409 /* DesignableUITextField.swift */,
-				EA9A47C12815B45B006F8409 /* CustomTextFieldOuterView.swift */,
 				EA06AE7B282D56B200D84D7A /* RoundUIImageView.swift */,
 				EA481B2E283676AE00719282 /* PopUpView.swift */,
 				EA481B302836778300719282 /* RoundButton.swift */,
@@ -130,11 +135,11 @@
 		EA9A47A42815922A006F8409 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				EA481B332836A32C00719282 /* AdditionalControllers */,
 				EA481B322836A08500719282 /* Sign In&Up Controllers */,
 				EA6B195C283178450042B65B /* PopupControllers */,
 				EA6C5A81281FD13400721D7F /* MainPageController.swift */,
 				EA6C5A84281FD19000721D7F /* ProfilePageController.swift */,
-				EABCC6612826A4410098EDCA /* TabBarController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -310,7 +315,6 @@
 				EA481B312836778300719282 /* RoundButton.swift in Sources */,
 				EA9E6BCA27FCB93E00101170 /* SignInPageController.swift in Sources */,
 				EA481B2F283676AE00719282 /* PopUpView.swift in Sources */,
-				EA9A47C22815B45B006F8409 /* CustomTextFieldOuterView.swift in Sources */,
 				EA9A47A628159280006F8409 /* SignUpPageController.swift in Sources */,
 				EA6B195E2831789A0042B65B /* PersonalInfoPopupController.swift in Sources */,
 				EA9A47C42817295C006F8409 /* Extensions.swift in Sources */,

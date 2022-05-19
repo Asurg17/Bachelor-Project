@@ -16,6 +16,8 @@ class PersonalInfoPopupController: UIViewController {
     
     @IBOutlet var loader: UIActivityIndicatorView!
     
+    var delegate: DismissProtocol?
+    
     private let service = Service()
     
     override func viewDidLoad() {
@@ -30,6 +32,7 @@ class PersonalInfoPopupController: UIViewController {
         birthDateTextField.delegate = self
         
         setupDatePicker()
+        setCurrentUserInfo()
     }
     
     func setupDatePicker() {
@@ -43,10 +46,77 @@ class PersonalInfoPopupController: UIViewController {
         birthDateTextField.inputView = datePicker
     }
     
-    func saveChanges() {
-        
+    func setCurrentUserInfo() {
+        if UserDefaults.standard.string(forKey: "user.age") != "-" {
+            ageTextField.text = UserDefaults.standard.string(forKey: "user.age")
+        }
+        if UserDefaults.standard.string(forKey: "user.phone") != "-" {
+            phoneTextField.text = UserDefaults.standard.string(forKey: "user.phone")
+        }
+        if UserDefaults.standard.string(forKey: "user.birthDate") != "-" {
+            birthDateTextField.text = UserDefaults.standard.string(forKey: "user.birthDate")
+        }
     }
     
+    func saveChanges() {
+        if checkForChanges() {
+            let keychain = KeychainSwift()
+            if let userId = keychain.get("userId") {
+                loader.startAnimating()
+                service.changePersonalInfo(
+                    userId: userId,
+                    age: ageTextField.text ?? "",
+                    phoneNumber: phoneTextField.text ?? "",
+                    birthDate: birthDateTextField.text ?? ""
+                ) { [weak self] result in
+                    guard let self = self else { return }
+                    DispatchQueue.main.async {
+                        self.loader.stopAnimating()
+                        switch result {
+                        case .success(let response):
+                            self.handleSuccess(response: response)
+                        case .failure(let error):
+                            self.handleError(error: error.localizedDescription.description)
+                        }
+                    }
+                }
+            } else {
+                showWarningAlert(warningText: "Can't save Changes!")
+            }
+        } else {
+            showWarningAlert(warningText: "Nothing to Change!")
+        }
+    }
+    
+    func checkForChanges() -> Bool {
+        if ageTextField.text != UserDefaults.standard.string(forKey: "user.age") ||
+           phoneTextField.text != UserDefaults.standard.string(forKey: "user.phone") ||
+           birthDateTextField.text != UserDefaults.standard.string(forKey: "user.birthDate") { return true }
+        return false
+    }
+    
+    func handleSuccess(response: String) {
+        let alert = UIAlertController(
+            title: "Success",
+            message: response,
+            preferredStyle: .alert
+        )
+        alert.addAction(
+            UIAlertAction(
+                title: "Ok",
+                style: .default,
+                handler: { [unowned self] _ in
+                    delegate?.refresh()
+                    self.dismissPopup()
+                }
+            )
+        )
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func handleError(error: String?) {
+        showWarningAlert(warningText: error ?? "Unspecified Error!")
+    }
     
     @IBAction func saveMadeChanges() {
         saveChanges()
@@ -85,9 +155,9 @@ extension PersonalInfoPopupController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         switch textField {
         case ageTextField:
-            phoneTextField.becomeFirstResponder()
-        case phoneTextField:
             birthDateTextField.becomeFirstResponder()
+        case birthDateTextField:
+            phoneTextField.becomeFirstResponder()
         default:
             textField.resignFirstResponder()
             saveChanges()
