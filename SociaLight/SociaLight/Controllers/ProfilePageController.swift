@@ -14,14 +14,10 @@ class ProfilePageController: UIViewController {
     @IBOutlet var usernameLabel: UILabel!
     @IBOutlet var firstNameLabel: UILabel!
     @IBOutlet var lastNameLabel: UILabel!
-    @IBOutlet var genderLabel: UILabel!
     @IBOutlet var ageLabel: UILabel!
     @IBOutlet var locationLabel: UILabel!
     @IBOutlet var birthDateLabel: UILabel!
     @IBOutlet var phoneLabel: UILabel!
-    
-    @IBOutlet var changePaswordButton: UIButton!
-    @IBOutlet var personalInfoButton: UIButton!
     
     @IBOutlet var loader: UIActivityIndicatorView!
     
@@ -42,11 +38,6 @@ class ProfilePageController: UIViewController {
                 action: #selector(imageViewTapped(_:))
             )
         )
-        
-        changePaswordButton.layer.cornerRadius = changePaswordButton.frame.size.height / 3
-        changePaswordButton.clipsToBounds = true
-        personalInfoButton.layer.cornerRadius = personalInfoButton.frame.size.height / 3
-        personalInfoButton.clipsToBounds = true
     }
     
     func loadUserInfo() {
@@ -82,7 +73,6 @@ class ProfilePageController: UIViewController {
         usernameLabel.text = userInfo.username
         firstNameLabel.text = userInfo.firstName
         lastNameLabel.text = userInfo.lastName
-        genderLabel.text = userInfo.gender
         ageLabel.text = userInfo.age
         locationLabel.text = userInfo.location
         birthDateLabel.text = userInfo.birthDate

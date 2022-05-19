@@ -18,13 +18,21 @@ class CustomTextFieldOuterView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        self.layer.cornerRadius = self.frame.size.height / 1.90
+        self.layer.cornerRadius = self.frame.size.height / 2
         self.layer.borderWidth = 1.2
         self.layer.borderColor = borderColor
+        
+        let gesture = UITapGestureRecognizer(target: self, action:  #selector(self.checkAction))
+        self.addGestureRecognizer(gesture)
+
     }
     
     func changeBorderColor() {
         self.layer.borderColor = borderColor
+    }
+    
+    @objc func checkAction(sender : UITapGestureRecognizer) {
+        print("a")
     }
     
 }

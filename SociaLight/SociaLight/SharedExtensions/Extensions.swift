@@ -7,6 +7,49 @@
 
 import UIKit
 
+extension UIViewController {
+
+    func showWarningAlert(warningText: String) {
+        let alert = UIAlertController(
+            title: "Warning",
+            message: warningText,
+            preferredStyle: .alert
+        )
+        alert.addAction(
+            UIAlertAction(
+                title: "Ok",
+                style: .default,
+                handler: nil
+            )
+        )
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func checkIfPasswordsMatches(pass1: String, pass2: String) -> Bool {
+        if (pass1 == pass2) {
+            return true
+        } else {
+            showWarningAlert(warningText: "Passwords doesn’t match!")
+            return false
+        }
+    }
+    
+    func checkPasswordLength(password: String) -> Bool {
+        if password.count < 6 {
+            showWarningAlert(warningText: "Password should be at least 6 characters long!")
+            return false
+        }
+        return true
+    }
+    
+    func formatDate(date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM dd yyyy"
+        return formatter.string(from: date)
+    }
+    
+}
+
 extension UIColor {
     
     convenience init(red: Int, green: Int, blue: Int) {
@@ -72,43 +115,6 @@ extension UIColor {
 enum ServiceError: Error {
     case noData
     case invalidParameters
-}
-
-extension UIViewController {
-
-    func showWarningAlert(warningText: String) {
-        let alert = UIAlertController(
-            title: "Warning",
-            message: warningText,
-            preferredStyle: .alert
-        )
-        alert.addAction(
-            UIAlertAction(
-                title: "Ok",
-                style: .default,
-                handler: nil
-            )
-        )
-        present(alert, animated: true, completion: nil)
-    }
-    
-    func checkIfPasswordsMatches(pass1: String, pass2: String) -> Bool {
-        if (pass1 == pass2) {
-            return true
-        } else {
-            showWarningAlert(warningText: "Passwords doesn’t match!")
-            return false
-        }
-    }
-    
-    func checkPasswordLength(password: String) -> Bool {
-        if password.count < 6 {
-            showWarningAlert(warningText: "Password should be at least 6 characters long!")
-            return false
-        }
-        return true
-    }
-    
 }
 
 extension Collection where Indices.Iterator.Element == Index {

@@ -11,13 +11,8 @@ import KeychainSwift
 
 class SignInPageController: UIViewController {
     
-    @IBOutlet var usernameOuterView: CustomTextFieldOuterView!
-    @IBOutlet var passwordOuterView: CustomTextFieldOuterView!
-    
     @IBOutlet var usernameTextField: DesignableUITextField!
     @IBOutlet var passwordTextField: DesignableUITextField!
-    
-    @IBOutlet var logInButton: UIButton!
     
     @IBOutlet var loader: UIActivityIndicatorView!
     
@@ -33,9 +28,6 @@ class SignInPageController: UIViewController {
     func setupViews() {
         usernameTextField.delegate = self
         passwordTextField.delegate = self
-        
-        logInButton.layer.cornerRadius = logInButton.frame.size.height / 3
-        logInButton.clipsToBounds = true
     }
     
     func registerForKeyboardNotifications() {
@@ -126,12 +118,7 @@ extension SignInPageController: UITextFieldDelegate {
         if let field = textField as? DesignableUITextField {
             field.textColor = UIColor.FlatColor.Blue.Mariner
             field.color = UIColor.FlatColor.Blue.Mariner
-        }
-        
-        if textField == usernameTextField {
-            usernameOuterView.borderColor = UIColor.FlatColor.Blue.Mariner.cgColor
-        } else {
-            passwordOuterView.borderColor = UIColor.FlatColor.Blue.Mariner.cgColor
+            field.borderColor = UIColor.FlatColor.Blue.Mariner.cgColor
         }
     }
     
@@ -139,12 +126,7 @@ extension SignInPageController: UITextFieldDelegate {
         if let field = textField as? DesignableUITextField {
             field.textColor = UIColor.lightGray
             field.color = UIColor.lightGray
-        }
-        
-        if textField == usernameTextField {
-            usernameOuterView.borderColor = UIColor.gray.cgColor
-        } else {
-            passwordOuterView.borderColor = UIColor.gray.cgColor
+            field.borderColor = UIColor.gray.cgColor
         }
     }
     

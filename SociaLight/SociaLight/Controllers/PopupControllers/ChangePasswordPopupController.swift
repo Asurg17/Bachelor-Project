@@ -10,17 +10,9 @@ import KeychainSwift
 
 class ChangePasswordPopupController: UIViewController {
     
-    @IBOutlet var popupView: UIView!
-    
-    @IBOutlet var oldPasswordOuterView: CustomTextFieldOuterView!
-    @IBOutlet var newPasswordOuterView: CustomTextFieldOuterView!
-    @IBOutlet var confirmPasswordOuterView: CustomTextFieldOuterView!
-    
     @IBOutlet var oldPasswordTextField: DesignableUITextField!
     @IBOutlet var newPasswordTextField: DesignableUITextField!
     @IBOutlet var confirmPasswordTextField: DesignableUITextField!
-    
-    @IBOutlet var changePasswordButton: UIButton!
     
     @IBOutlet var loader: UIActivityIndicatorView!
     
@@ -36,11 +28,6 @@ class ChangePasswordPopupController: UIViewController {
         oldPasswordTextField.delegate = self
         newPasswordTextField.delegate = self
         confirmPasswordTextField.delegate = self
-        
-        popupView.layer.cornerRadius = popupView.frame.size.width / 10
-        
-        changePasswordButton.layer.cornerRadius = changePasswordButton.frame.size.height / 3
-        changePasswordButton.clipsToBounds = true
     }
     
     func changeUserPassword(){
@@ -127,31 +114,15 @@ extension ChangePasswordPopupController: UITextFieldDelegate {
         if let field = textField as? DesignableUITextField {
             field.textColor = UIColor.FlatColor.Blue.Mariner
             field.color = UIColor.FlatColor.Blue.Mariner
-        }
-        
-        switch textField {
-        case oldPasswordTextField:
-            oldPasswordOuterView.borderColor = UIColor.FlatColor.Blue.Mariner.cgColor
-        case newPasswordTextField:
-            newPasswordOuterView.borderColor = UIColor.FlatColor.Blue.Mariner.cgColor
-        default:
-            confirmPasswordOuterView.borderColor = UIColor.FlatColor.Blue.Mariner.cgColor
+            field.borderColor = UIColor.FlatColor.Blue.Mariner.cgColor
         }
     }
-    
+
     func textFieldDidEndEditing(_ textField: UITextField) {
         if let field = textField as? DesignableUITextField {
             field.textColor = UIColor.lightGray
             field.color = UIColor.lightGray
-        }
-        
-        switch textField {
-        case oldPasswordTextField:
-            oldPasswordOuterView.borderColor = UIColor.gray.cgColor
-        case newPasswordTextField:
-            newPasswordOuterView.borderColor = UIColor.gray.cgColor
-        default:
-            confirmPasswordOuterView.borderColor = UIColor.gray.cgColor
+            field.borderColor = UIColor.gray.cgColor
         }
     }
     

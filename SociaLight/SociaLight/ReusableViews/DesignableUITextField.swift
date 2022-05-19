@@ -10,6 +10,12 @@ import UIKit
 @IBDesignable
 class DesignableUITextField: UITextField {
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.layer.cornerRadius = self.frame.size.height / 2
+        self.layer.borderWidth = 1.2
+    }
+    
     // Provides left padding for images
     override func leftViewRect(forBounds bounds: CGRect) -> CGRect {
         var textRect = super.leftViewRect(forBounds: bounds)
@@ -38,6 +44,12 @@ class DesignableUITextField: UITextField {
         }
     }
     
+    @IBInspectable var borderColor = UIColor.gray.cgColor {
+        didSet {
+            updateView()
+        }
+    }
+    
     @IBInspectable var rtl: Bool = false {
         didSet {
             updateView()
@@ -54,6 +66,7 @@ class DesignableUITextField: UITextField {
             let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
             imageView.image = image
             imageView.tintColor = color
+            self.layer.borderColor = borderColor
             
             if rtl {
                 rightViewMode = UITextField.ViewMode.always
@@ -68,6 +81,4 @@ class DesignableUITextField: UITextField {
         attributedPlaceholder = NSAttributedString(string: placeholder != nil ?  placeholder! : "", attributes:[NSAttributedString.Key.foregroundColor: color])
     }
 }
-
-
 

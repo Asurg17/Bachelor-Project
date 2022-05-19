@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		EA06AE7C282D56B200D84D7A /* RoundUIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA06AE7B282D56B200D84D7A /* RoundUIImageView.swift */; };
+		EA481B2F283676AE00719282 /* PopUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA481B2E283676AE00719282 /* PopUpView.swift */; };
+		EA481B312836778300719282 /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA481B302836778300719282 /* RoundButton.swift */; };
 		EA6B195B283163670042B65B /* ChangePasswordPopupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6B195A283163670042B65B /* ChangePasswordPopupController.swift */; };
 		EA6B195E2831789A0042B65B /* PersonalInfoPopupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6B195D2831789A0042B65B /* PersonalInfoPopupController.swift */; };
 		EA6C5A80281D724F00721D7F /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6C5A7F281D724F00721D7F /* Service.swift */; };
@@ -32,6 +34,8 @@
 /* Begin PBXFileReference section */
 		02F2774E4532FB5D866A1FE7 /* Pods-SociaLight.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SociaLight.release.xcconfig"; path = "Target Support Files/Pods-SociaLight/Pods-SociaLight.release.xcconfig"; sourceTree = "<group>"; };
 		EA06AE7B282D56B200D84D7A /* RoundUIImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundUIImageView.swift; sourceTree = "<group>"; };
+		EA481B2E283676AE00719282 /* PopUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpView.swift; sourceTree = "<group>"; };
+		EA481B302836778300719282 /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
 		EA6B195A283163670042B65B /* ChangePasswordPopupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordPopupController.swift; sourceTree = "<group>"; };
 		EA6B195D2831789A0042B65B /* PersonalInfoPopupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalInfoPopupController.swift; sourceTree = "<group>"; };
 		EA6C5A7F281D724F00721D7F /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
@@ -85,6 +89,15 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		EA481B322836A08500719282 /* Sign In&Up Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				EA9E6BC927FCB93E00101170 /* SignInPageController.swift */,
+				EA9A47A528159280006F8409 /* SignUpPageController.swift */,
+			);
+			path = "Sign In&Up Controllers";
+			sourceTree = "<group>";
+		};
 		EA6B195C283178450042B65B /* PopupControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -100,6 +113,8 @@
 				EA9A47B12815A391006F8409 /* DesignableUITextField.swift */,
 				EA9A47C12815B45B006F8409 /* CustomTextFieldOuterView.swift */,
 				EA06AE7B282D56B200D84D7A /* RoundUIImageView.swift */,
+				EA481B2E283676AE00719282 /* PopUpView.swift */,
+				EA481B302836778300719282 /* RoundButton.swift */,
 			);
 			path = ReusableViews;
 			sourceTree = "<group>";
@@ -115,9 +130,8 @@
 		EA9A47A42815922A006F8409 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				EA481B322836A08500719282 /* Sign In&Up Controllers */,
 				EA6B195C283178450042B65B /* PopupControllers */,
-				EA9E6BC927FCB93E00101170 /* SignInPageController.swift */,
-				EA9A47A528159280006F8409 /* SignUpPageController.swift */,
 				EA6C5A81281FD13400721D7F /* MainPageController.swift */,
 				EA6C5A84281FD19000721D7F /* ProfilePageController.swift */,
 				EABCC6612826A4410098EDCA /* TabBarController.swift */,
@@ -293,7 +307,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA481B312836778300719282 /* RoundButton.swift in Sources */,
 				EA9E6BCA27FCB93E00101170 /* SignInPageController.swift in Sources */,
+				EA481B2F283676AE00719282 /* PopUpView.swift in Sources */,
 				EA9A47C22815B45B006F8409 /* CustomTextFieldOuterView.swift in Sources */,
 				EA9A47A628159280006F8409 /* SignUpPageController.swift in Sources */,
 				EA6B195E2831789A0042B65B /* PersonalInfoPopupController.swift in Sources */,

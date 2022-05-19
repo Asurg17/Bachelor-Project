@@ -10,19 +10,11 @@ import KeychainSwift
 
 class SignUpPageController: UIViewController {
     
-    @IBOutlet var fullNameOuterView:        CustomTextFieldOuterView!
-    @IBOutlet var usernameOuterView:        CustomTextFieldOuterView!
-    @IBOutlet var phoneNumberOuterView:     CustomTextFieldOuterView!
-    @IBOutlet var passwordOuterView:        CustomTextFieldOuterView!
-    @IBOutlet var confirmPasswordOuterView: CustomTextFieldOuterView!
-    
     @IBOutlet var fullNameTextField:        DesignableUITextField!
     @IBOutlet var usernameTextField:        DesignableUITextField!
     @IBOutlet var phoneNumberTextField:     DesignableUITextField!
     @IBOutlet var passwordTextField:        DesignableUITextField!
     @IBOutlet var confirmPasswordTextField: DesignableUITextField!
-    
-    @IBOutlet var signInButton: UIButton!
     
     @IBOutlet var loader: UIActivityIndicatorView!
     
@@ -40,9 +32,6 @@ class SignUpPageController: UIViewController {
         phoneNumberTextField.delegate = self
         passwordTextField.delegate = self
         confirmPasswordTextField.delegate = self
-        
-        signInButton.layer.cornerRadius = signInButton.frame.size.height / 3
-        signInButton.clipsToBounds = true
     }
     
     func registerClient(){
@@ -137,19 +126,7 @@ extension SignUpPageController: UITextFieldDelegate {
         if let field = textField as? DesignableUITextField {
             field.textColor = UIColor.FlatColor.Blue.Mariner
             field.color = UIColor.FlatColor.Blue.Mariner
-        }
-        
-        switch textField {
-        case fullNameTextField:
-            fullNameOuterView.borderColor = UIColor.FlatColor.Blue.Mariner.cgColor
-        case usernameTextField:
-            usernameOuterView.borderColor = UIColor.FlatColor.Blue.Mariner.cgColor
-        case phoneNumberTextField:
-            phoneNumberOuterView.borderColor = UIColor.FlatColor.Blue.Mariner.cgColor
-        case passwordTextField:
-            passwordOuterView.borderColor = UIColor.FlatColor.Blue.Mariner.cgColor
-        default:
-            confirmPasswordOuterView.borderColor = UIColor.FlatColor.Blue.Mariner.cgColor
+            field.borderColor = UIColor.FlatColor.Blue.Mariner.cgColor
         }
     }
     
@@ -157,19 +134,7 @@ extension SignUpPageController: UITextFieldDelegate {
         if let field = textField as? DesignableUITextField {
             field.textColor = UIColor.lightGray
             field.color = UIColor.lightGray
-        }
-        
-        switch textField {
-        case fullNameTextField:
-            fullNameOuterView.borderColor = UIColor.gray.cgColor
-        case usernameTextField:
-            usernameOuterView.borderColor = UIColor.gray.cgColor
-        case phoneNumberTextField:
-            phoneNumberOuterView.borderColor = UIColor.gray.cgColor
-        case passwordTextField:
-            passwordOuterView.borderColor = UIColor.gray.cgColor
-        default:
-            confirmPasswordOuterView.borderColor = UIColor.gray.cgColor
+            field.borderColor = UIColor.gray.cgColor
         }
     }
     
