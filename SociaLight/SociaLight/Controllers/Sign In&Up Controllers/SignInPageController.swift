@@ -23,6 +23,7 @@ class SignInPageController: UIViewController {
         
         setupViews()
         registerForKeyboardNotifications()
+        checkIfAlreadySignedIn()
     }
     
     func setupViews() {
@@ -33,6 +34,13 @@ class SignInPageController: UIViewController {
     func registerForKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    func checkIfAlreadySignedIn() {
+        let keychain = KeychainSwift()
+        if let _ = keychain.get("userId") {
+            navigateToMainPage()
+        }
     }
     
     func signIn() {
@@ -71,9 +79,7 @@ class SignInPageController: UIViewController {
         let keychain = KeychainSwift()
         keychain.set(response, forKey: "userId")
         
-        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let signUpPageController = storyBoard.instantiateViewController(withIdentifier: "MainPage") as! UITabBarController
-        self.navigationController?.pushViewController(signUpPageController, animated: true)
+        navigateToMainPage()
     }
     
     func handleError(error: String?) {
@@ -83,6 +89,12 @@ class SignInPageController: UIViewController {
     func clearAllTextFields() {
         usernameTextField.text = ""
         passwordTextField.text = ""
+    }
+    
+    func navigateToMainPage() {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let signUpPageController = storyBoard.instantiateViewController(withIdentifier: "MainPage") as! UITabBarController
+        self.navigationController?.pushViewController(signUpPageController, animated: true)
     }
     
     @IBAction func signInToAccount() {

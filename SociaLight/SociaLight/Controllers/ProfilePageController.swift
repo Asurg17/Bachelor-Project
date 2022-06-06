@@ -98,6 +98,8 @@ class ProfilePageController: UIViewController, DismissProtocol {
     
     
     @IBAction func signOut() {
+        let keychain = KeychainSwift()
+        keychain.delete("userId")
         self.parent?.navigationController?.popToRootViewController(animated: true)
     }
 
@@ -106,8 +108,4 @@ class ProfilePageController: UIViewController, DismissProtocol {
         print("wefwefew")
     }
     
-}
-
-protocol DismissProtocol {
-    func refresh()
 }

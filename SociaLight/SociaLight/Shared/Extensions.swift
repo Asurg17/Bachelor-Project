@@ -48,6 +48,14 @@ extension UIViewController {
         return formatter.string(from: date)
     }
     
+    struct Constants {
+        static let itemCountInLine: CGFloat = 3
+        static let spacing: CGFloat = 10
+        static let lineSpacing: CGFloat = 20
+        static let topBottomSpacing: CGFloat = 20
+        static let additionalSpacing: CGFloat = 1 //10
+    }
+    
 }
 
 extension UIColor {

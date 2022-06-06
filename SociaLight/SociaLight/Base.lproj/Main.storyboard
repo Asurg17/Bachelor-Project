@@ -153,21 +153,91 @@
             </objects>
             <point key="canvasLocation" x="353.62318840579712" y="68.973214285714278"/>
         </scene>
-        <!--Main Page Controller-->
+        <!--Groups-->
         <scene sceneID="MLX-Gk-BT6">
             <objects>
                 <viewController id="wAu-KK-8DF" customClass="MainPageController" customModule="SociaLight" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="nxN-IT-9O5">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cum-4Q-QwI">
+                                <rect key="frame" x="0.0" y="104" width="414" height="50"/>
+                                <subviews>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Group Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7AY-jI-NVq" customClass="RoundCornerTextField" customModule="SociaLight" customModuleProvider="target">
+                                        <rect key="frame" x="41.5" y="2.5" width="331" height="45"/>
+                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="paddingLeft">
+                                                <real key="value" value="20"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="paddingRight">
+                                                <real key="value" value="20"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </textField>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="7AY-jI-NVq" firstAttribute="centerX" secondItem="cum-4Q-QwI" secondAttribute="centerX" id="3Cr-G5-7y8"/>
+                                    <constraint firstItem="7AY-jI-NVq" firstAttribute="height" secondItem="cum-4Q-QwI" secondAttribute="height" multiplier="0.9" id="Lce-DR-nut"/>
+                                    <constraint firstAttribute="height" constant="50" id="Rdl-jW-T59"/>
+                                    <constraint firstItem="7AY-jI-NVq" firstAttribute="width" secondItem="cum-4Q-QwI" secondAttribute="width" multiplier="0.8" id="bBe-rN-1hD"/>
+                                    <constraint firstItem="7AY-jI-NVq" firstAttribute="centerY" secondItem="cum-4Q-QwI" secondAttribute="centerY" id="tVB-T9-dTB"/>
+                                </constraints>
+                            </view>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="bIc-eU-SZY">
+                                <rect key="frame" x="0.0" y="170" width="414" height="643"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="4EV-aD-QCr">
+                                    <size key="itemSize" width="128" height="128"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells/>
+                            </collectionView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="hK8-EF-4bE">
+                                <rect key="frame" x="188.5" y="429.5" width="37" height="37"/>
+                                <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </activityIndicatorView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="Ugn-Mh-VkM"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="hK8-EF-4bE" firstAttribute="centerY" secondItem="nxN-IT-9O5" secondAttribute="centerY" id="0LS-gQ-0ve"/>
+                            <constraint firstItem="bIc-eU-SZY" firstAttribute="leading" secondItem="Ugn-Mh-VkM" secondAttribute="leading" id="IhP-5R-rnm"/>
+                            <constraint firstItem="cum-4Q-QwI" firstAttribute="width" secondItem="nxN-IT-9O5" secondAttribute="width" id="KT9-ca-Fch"/>
+                            <constraint firstItem="hK8-EF-4bE" firstAttribute="centerX" secondItem="nxN-IT-9O5" secondAttribute="centerX" id="MYT-N8-p0c"/>
+                            <constraint firstItem="cum-4Q-QwI" firstAttribute="centerX" secondItem="nxN-IT-9O5" secondAttribute="centerX" id="aif-cU-92J"/>
+                            <constraint firstItem="Ugn-Mh-VkM" firstAttribute="bottom" secondItem="bIc-eU-SZY" secondAttribute="bottom" id="bo5-PS-isa"/>
+                            <constraint firstItem="bIc-eU-SZY" firstAttribute="top" secondItem="cum-4Q-QwI" secondAttribute="bottom" constant="16" id="q3D-Yc-ITu"/>
+                            <constraint firstItem="Ugn-Mh-VkM" firstAttribute="trailing" secondItem="bIc-eU-SZY" secondAttribute="trailing" id="qdy-CU-xh4"/>
+                            <constraint firstItem="cum-4Q-QwI" firstAttribute="top" secondItem="Ugn-Mh-VkM" secondAttribute="top" constant="16" id="rKr-j6-FMn"/>
+                        </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="6iU-5s-5Pi"/>
+                    <navigationItem key="navigationItem" title="Groups" id="6iU-5s-5Pi">
+                        <barButtonItem key="leftBarButtonItem" image="plus" catalog="system" id="KKO-uW-vha">
+                            <connections>
+                                <action selector="createGroup" destination="wAu-KK-8DF" id="jxl-ux-TTx"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" image="magnifyingglass" catalog="system" id="1us-eV-RUS">
+                            <connections>
+                                <action selector="searchGroup" destination="wAu-KK-8DF" id="7qe-yH-9Zy"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="collectionView" destination="bIc-eU-SZY" id="hBE-A2-tQb"/>
+                        <outlet property="loader" destination="hK8-EF-4bE" id="iQl-CW-6oe"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jiv-5l-Jwe" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3561" y="43"/>
+            <point key="canvasLocation" x="3560.8695652173915" y="42.857142857142854"/>
         </scene>
         <!--Sign Up Page Controller-->
         <scene sceneID="gX1-oh-92j">
@@ -1086,6 +1156,9 @@
         <designable name="6ae-VL-KCI">
             <size key="intrinsicContentSize" width="115" height="33"/>
         </designable>
+        <designable name="7AY-jI-NVq">
+            <size key="intrinsicContentSize" width="121.5" height="18.5"/>
+        </designable>
         <designable name="PiK-JQ-r9Q">
             <size key="intrinsicContentSize" width="612" height="489"/>
         </designable>
@@ -1098,8 +1171,14 @@
         <designable name="ZIq-23-Uxr">
             <size key="intrinsicContentSize" width="146" height="33"/>
         </designable>
+        <designable name="aDH-VD-epg">
+            <size key="intrinsicContentSize" width="63" height="33"/>
+        </designable>
         <designable name="cLO-ue-g6S">
             <size key="intrinsicContentSize" width="109.5" height="19.5"/>
+        </designable>
+        <designable name="iMN-gP-Y7z">
+            <size key="intrinsicContentSize" width="107" height="33"/>
         </designable>
         <designable name="j5I-vs-chp">
             <size key="intrinsicContentSize" width="110.5" height="19.5"/>
@@ -1109,6 +1188,9 @@
         </designable>
         <designable name="mBI-QS-r4u">
             <size key="intrinsicContentSize" width="139.5" height="19.5"/>
+        </designable>
+        <designable name="ndg-ji-YrA">
+            <size key="intrinsicContentSize" width="66" height="33"/>
         </designable>
         <designable name="oHy-lM-yhv">
             <size key="intrinsicContentSize" width="110" height="19.5"/>
@@ -1121,6 +1203,9 @@
         </designable>
         <designable name="sUG-qE-wi9">
             <size key="intrinsicContentSize" width="106" height="18"/>
+        </designable>
+        <designable name="z0C-3Y-uWm">
+            <size key="intrinsicContentSize" width="146" height="33"/>
         </designable>
     </designables>
     <resources>
@@ -1138,9 +1223,11 @@
         <image name="lock.shield" catalog="system" width="128" height="118"/>
         <image name="lock.shield.fill" catalog="system" width="128" height="118"/>
         <image name="lock.slash" catalog="system" width="124" height="128"/>
+        <image name="magnifyingglass" catalog="system" width="128" height="115"/>
         <image name="person" catalog="system" width="128" height="117"/>
         <image name="person.circle" catalog="system" width="128" height="121"/>
         <image name="person.fill" catalog="system" width="128" height="120"/>
+        <image name="plus" catalog="system" width="128" height="113"/>
         <image name="rectangle.portrait.and.arrow.right" catalog="system" width="128" height="108"/>
         <image name="sign_in_page_image" width="2000" height="1333"/>
         <systemColor name="systemBackgroundColor">
