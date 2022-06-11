@@ -232,6 +232,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="bIc-eU-SZY" id="hBE-A2-tQb"/>
+                        <outlet property="filterTextField" destination="7AY-jI-NVq" id="BSb-z3-7fU"/>
                         <outlet property="loader" destination="hK8-EF-4bE" id="iQl-CW-6oe"/>
                     </connections>
                 </viewController>

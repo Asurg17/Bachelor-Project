@@ -13,6 +13,7 @@ class GroupCell: UICollectionViewCell {
     
     @IBOutlet var groupImage: UIImageView!
     @IBOutlet var groupLabel: UILabel!
+    @IBOutlet var groupDescriptionLabel: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -25,6 +26,7 @@ class GroupCell: UICollectionViewCell {
     func configure(with group: UserGroup){
         //groupImage.image = "image"
         groupLabel.text = group.groupTitle
+        //groupDescriptionLabel.text = group.groupDescription
     }
 
 }

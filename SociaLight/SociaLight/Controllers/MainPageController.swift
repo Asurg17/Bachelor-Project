@@ -13,6 +13,8 @@ class MainPageController: UIViewController {
     @IBOutlet var loader: UIActivityIndicatorView!
     @IBOutlet var collectionView: UICollectionView!
     
+    @IBOutlet var filterTextField: RoundCornerTextField!
+    
     private let service = Service()
     
     lazy var flowLayout: UICollectionViewFlowLayout = {
@@ -21,13 +23,19 @@ class MainPageController: UIViewController {
         return flowLayout
     }()
     
+    var collectionData: [UserGroup] = []
     var groups: [UserGroup] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupViews()
         configureCollectionView()
         getUserGroups()
+    }
+    
+    func setupViews() {
+        filterTextField.addTarget(self, action: #selector(MainPageController.textFieldDidChange(_:)), for: .editingChanged)
     }
     
     func configureCollectionView() {
@@ -71,11 +79,11 @@ class MainPageController: UIViewController {
         } else {
             showWarningAlert(warningText: "Could not get user Info!")
         }
-//        handleSuccess(response: UserGroups(groups: [UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa"),UserGroup(groupName: "rgerg", groupCode: "aaaaa")]))
     }
     
     func handleSuccess(response: UserGroups) {
         groups = response.groups
+        collectionData = response.groups
         collectionView.reloadData()
     }
     
@@ -83,10 +91,31 @@ class MainPageController: UIViewController {
         showWarningAlert(warningText: error ?? "Unspecified Error!")
     }
     
+    func filterGroups(filterString: String) {
+        loader.startAnimating()
+        var filteredGroups: [UserGroup] = []
+        if filterString != "" {
+            for group in groups {
+                if(group.groupTitle.lowercased().contains(filterString.lowercased())) {
+                    filteredGroups.append(group)
+                }
+            }
+        } else {
+            filteredGroups = groups
+        }
+        collectionData = filteredGroups
+        collectionView.reloadData()
+        loader.stopAnimating()
+    }
+    
     func navigateToGroupPage(grouId: String) {
         print("Navigate To " + grouId)
     }
     
+    
+    @objc func textFieldDidChange(_ textField: UITextField) {
+        filterGroups(filterString: textField.text ?? "")
+    }
     
     @objc func handleTap(guesture: UITapGestureRecognizer) {
         if(guesture.state == UIGestureRecognizer.State.ended) {
@@ -94,8 +123,8 @@ class MainPageController: UIViewController {
             if let indexPath = collectionView.indexPathForItem(at: location) {
                 if let _ = collectionView.cellForItem(at: indexPath) {
                     print(indexPath.row)
-                    if groups.indices.contains(indexPath.row) {
-                        navigateToGroupPage(grouId: groups[indexPath.row].groupId)
+                    if collectionData.indices.contains(indexPath.row) {
+                        navigateToGroupPage(grouId: collectionData[indexPath.row].groupId)
                     }
                 }
             }
@@ -120,13 +149,13 @@ extension MainPageController: UICollectionViewDelegate {
 extension MainPageController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return groups.count
+        return collectionData.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GroupCell", for: indexPath)
         if let groupCell = cell as? GroupCell {
-            groupCell.configure(with: groups[indexPath.row])
+            groupCell.configure(with: collectionData[indexPath.row])
         }
         cell.layoutIfNeeded()
         return cell
@@ -156,7 +185,7 @@ extension MainPageController: UICollectionViewDelegateFlowLayout {
     ) -> CGSize {
         let spareWidth = collectionView.frame.width - (2 * Constants.spacing) - ((Constants.itemCountInLine - 1) * Constants.spacing) - Constants.additionalSpacing
         let cellWidth = spareWidth / Constants.itemCountInLine
-        let cellHeight = cellWidth * 1.20
+        let cellHeight = cellWidth * 1.40
         return CGSize(width: cellWidth, height: cellHeight)
     }
     

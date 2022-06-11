@@ -11,37 +11,47 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="GroupCell" customModule="SociaLight" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="138" height="185"/>
+            <rect key="frame" x="0.0" y="0.0" width="138" height="208"/>
             <autoresizingMask key="autoresizingMask"/>
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                <rect key="frame" x="0.0" y="0.0" width="138" height="185"/>
+                <rect key="frame" x="0.0" y="0.0" width="138" height="208"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZZ0-4V-gph">
-                        <rect key="frame" x="0.0" y="0.0" width="138" height="185"/>
+                        <rect key="frame" x="0.0" y="0.0" width="138" height="208"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="GroupIcon" translatesAutoresizingMaskIntoConstraints="NO" id="da7-eP-LpN" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
-                                <rect key="frame" x="7" y="8" width="124" height="124"/>
+                                <rect key="frame" x="14" y="8" width="110" height="110.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="da7-eP-LpN" secondAttribute="height" multiplier="1:1" id="LAX-Uc-YZu"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Group Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cXk-mz-n3k">
-                                <rect key="frame" x="8" y="159" width="122" height="18"/>
+                                <rect key="frame" x="8" y="124.5" width="122" height="18"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Group Description baby babu aaaaf erferf ref erfe f erf er" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C3w-Ga-9oc">
+                                <rect key="frame" x="12" y="148.5" width="114" height="29"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="cXk-mz-n3k" firstAttribute="centerX" secondItem="ZZ0-4V-gph" secondAttribute="centerX" id="89v-85-MdR"/>
+                            <constraint firstAttribute="trailing" secondItem="C3w-Ga-9oc" secondAttribute="trailing" constant="12" id="AbF-mv-y6E"/>
+                            <constraint firstItem="C3w-Ga-9oc" firstAttribute="leading" secondItem="ZZ0-4V-gph" secondAttribute="leading" constant="12" id="GhH-Wg-odI"/>
                             <constraint firstItem="cXk-mz-n3k" firstAttribute="leading" secondItem="ZZ0-4V-gph" secondAttribute="leading" constant="8" id="Idz-oC-RuF"/>
+                            <constraint firstItem="cXk-mz-n3k" firstAttribute="top" secondItem="da7-eP-LpN" secondAttribute="bottom" constant="6" id="Ipe-y2-r3w"/>
+                            <constraint firstItem="C3w-Ga-9oc" firstAttribute="centerX" secondItem="ZZ0-4V-gph" secondAttribute="centerX" id="JsD-7t-6Ta"/>
                             <constraint firstItem="da7-eP-LpN" firstAttribute="centerX" secondItem="ZZ0-4V-gph" secondAttribute="centerX" id="LKV-Qs-0IR"/>
                             <constraint firstAttribute="trailing" secondItem="cXk-mz-n3k" secondAttribute="trailing" constant="8" id="NEc-o6-xc7"/>
-                            <constraint firstItem="da7-eP-LpN" firstAttribute="width" secondItem="ZZ0-4V-gph" secondAttribute="width" multiplier="0.9" id="YvD-4H-FAb"/>
+                            <constraint firstItem="da7-eP-LpN" firstAttribute="width" secondItem="ZZ0-4V-gph" secondAttribute="width" multiplier="0.8" id="YvD-4H-FAb"/>
                             <constraint firstItem="da7-eP-LpN" firstAttribute="top" secondItem="ZZ0-4V-gph" secondAttribute="top" constant="8" id="cGf-S3-0Ez"/>
-                            <constraint firstAttribute="bottom" secondItem="cXk-mz-n3k" secondAttribute="bottom" constant="8" id="gDt-mm-d4H"/>
+                            <constraint firstItem="C3w-Ga-9oc" firstAttribute="top" secondItem="cXk-mz-n3k" secondAttribute="bottom" constant="6" id="jy6-ZF-xOe"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -53,13 +63,14 @@
                 <constraint firstItem="ZZ0-4V-gph" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="PLB-T9-y2H"/>
                 <constraint firstItem="ZZ0-4V-gph" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="bw3-xX-eIc"/>
             </constraints>
-            <size key="customSize" width="138" height="185"/>
+            <size key="customSize" width="138" height="208"/>
             <connections>
+                <outlet property="groupDescriptionLabel" destination="C3w-Ga-9oc" id="8RN-bH-byx"/>
                 <outlet property="groupImage" destination="da7-eP-LpN" id="yQD-0A-RJP"/>
                 <outlet property="groupLabel" destination="cXk-mz-n3k" id="WdT-Uu-bFG"/>
                 <outlet property="outerView" destination="ZZ0-4V-gph" id="OPB-Pn-QnG"/>
             </connections>
-            <point key="canvasLocation" x="-5.7971014492753632" y="116.85267857142857"/>
+            <point key="canvasLocation" x="-5.7971014492753632" y="124.55357142857142"/>
         </collectionViewCell>
     </objects>
     <designables>
