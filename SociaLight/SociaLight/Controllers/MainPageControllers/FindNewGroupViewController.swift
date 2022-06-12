@@ -1,19 +1,19 @@
 //
-//  MainPageController.swift
+//  FindNewGroupViewController.swift
 //  SociaLight
 //
-//  Created by Sandro Surguladze on 02.05.22.
+//  Created by Sandro Surguladze on 12.06.22.
 //
 
 import UIKit
 import KeychainSwift
 
-class MainPageController: UIViewController {
+class FindNewGroupViewController: UIViewController {
     
     @IBOutlet var loader: UIActivityIndicatorView!
     @IBOutlet var collectionView: UICollectionView!
     
-    @IBOutlet var filterTextField: RoundCornerTextField!
+    @IBOutlet var groupNameTextField: RoundCornerTextField!
     
     private let service = Service()
     
@@ -24,18 +24,11 @@ class MainPageController: UIViewController {
     }()
     
     var collectionData: [UserGroup] = []
-    var groups: [UserGroup] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupViews()
         configureCollectionView()
-        getUserGroups()
-    }
-    
-    func setupViews() {
-        filterTextField.addTarget(self, action: #selector(MainPageController.textFieldDidChange(_:)), for: .editingChanged)
     }
     
     func configureCollectionView() {
@@ -60,11 +53,11 @@ class MainPageController: UIViewController {
         )
     }
     
-    func getUserGroups() {
+    func searchUserGroups(groupName: String) {
         let keychain = KeychainSwift()
         if let userId = keychain.get("userId") {
             loader.startAnimating()
-            service.getUserGroups(userId: userId) { [weak self] result in
+            service.searchUserGroups(userId: userId, groupName: groupName) { [weak self] result in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     self.loader.stopAnimating()
@@ -82,7 +75,6 @@ class MainPageController: UIViewController {
     }
     
     func handleSuccess(response: UserGroups) {
-        groups = response.groups
         collectionData = response.groups
         collectionView.reloadData()
     }
@@ -91,31 +83,10 @@ class MainPageController: UIViewController {
         showWarningAlert(warningText: error ?? "Unspecified Error!")
     }
     
-    func filterGroups(filterString: String) {
-        loader.startAnimating()
-        var filteredGroups: [UserGroup] = []
-        if filterString != "" {
-            for group in groups {
-                if(group.groupTitle.lowercased().contains(filterString.lowercased())) {
-                    filteredGroups.append(group)
-                }
-            }
-        } else {
-            filteredGroups = groups
-        }
-        collectionData = filteredGroups
-        collectionView.reloadData()
-        loader.stopAnimating()
-    }
-    
     func navigateToGroupPage(grouId: String) {
         print("Navigate To " + grouId)
     }
     
-    
-    @objc func textFieldDidChange(_ textField: UITextField) {
-        filterGroups(filterString: textField.text ?? "")
-    }
     
     @objc func handleTap(guesture: UITapGestureRecognizer) {
         if(guesture.state == UIGestureRecognizer.State.ended) {
@@ -132,21 +103,20 @@ class MainPageController: UIViewController {
     }
     
     
-    @IBAction func searchGroup() {
-        print("Search for Group")
+    @IBAction func searchGroups() {
+        if let groupName = groupNameTextField.text {
+            if groupName != "" {
+                searchUserGroups(groupName: groupName)
+            }
+        }
     }
-    
-    @IBAction func createGroup() {
-        print("Create new Group")
-    }
+}
+
+extension FindNewGroupViewController: UICollectionViewDelegate {
     
 }
 
-extension MainPageController: UICollectionViewDelegate {
-    
-}
-
-extension MainPageController: UICollectionViewDataSource {
+extension FindNewGroupViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return collectionData.count
@@ -163,7 +133,7 @@ extension MainPageController: UICollectionViewDataSource {
     
 }
 
-extension MainPageController: UICollectionViewDelegateFlowLayout {
+extension FindNewGroupViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(
         _ collectionView: UICollectionView,

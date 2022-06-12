@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		EA06AE7C282D56B200D84D7A /* RoundUIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA06AE7B282D56B200D84D7A /* RoundUIImageView.swift */; };
+		EA071DD1285648AA008CC78C /* FindNewGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA071DD0285648AA008CC78C /* FindNewGroupViewController.swift */; };
 		EA481B2F283676AE00719282 /* PopUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA481B2E283676AE00719282 /* PopUpView.swift */; };
 		EA481B312836778300719282 /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA481B302836778300719282 /* RoundButton.swift */; };
 		EA481B352836BA2F00719282 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA481B342836BA2E00719282 /* Protocols.swift */; };
@@ -37,6 +38,7 @@
 /* Begin PBXFileReference section */
 		02F2774E4532FB5D866A1FE7 /* Pods-SociaLight.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SociaLight.release.xcconfig"; path = "Target Support Files/Pods-SociaLight/Pods-SociaLight.release.xcconfig"; sourceTree = "<group>"; };
 		EA06AE7B282D56B200D84D7A /* RoundUIImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundUIImageView.swift; sourceTree = "<group>"; };
+		EA071DD0285648AA008CC78C /* FindNewGroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindNewGroupViewController.swift; sourceTree = "<group>"; };
 		EA481B2E283676AE00719282 /* PopUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpView.swift; sourceTree = "<group>"; };
 		EA481B302836778300719282 /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
 		EA481B342836BA2E00719282 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
@@ -84,6 +86,15 @@
 				F1BC7C4C89B91A205EEBBDFE /* Pods_SociaLight.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EA071DCF28564846008CC78C /* MainPageControllers */ = {
+			isa = PBXGroup;
+			children = (
+				EA6C5A81281FD13400721D7F /* MainPageController.swift */,
+				EA071DD0285648AA008CC78C /* FindNewGroupViewController.swift */,
+			);
+			path = MainPageControllers;
 			sourceTree = "<group>";
 		};
 		EA3DB8BC59679CE3D7B93FCC /* Pods */ = {
@@ -171,10 +182,10 @@
 		EA9A47A42815922A006F8409 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				EA071DCF28564846008CC78C /* MainPageControllers */,
 				EA481B332836A32C00719282 /* AdditionalControllers */,
 				EA481B322836A08500719282 /* Sign In&Up Controllers */,
 				EA6B195C283178450042B65B /* PopupControllers */,
-				EA6C5A81281FD13400721D7F /* MainPageController.swift */,
 				EA6C5A84281FD19000721D7F /* ProfilePageController.swift */,
 			);
 			path = Controllers;
@@ -203,8 +214,8 @@
 			children = (
 				EA485DD8284CC5F100077373 /* Cells */,
 				EA481B362836BA3E00719282 /* Shared */,
-				EA6C5A7D281D6CC100721D7F /* ReusableViews */,
 				EA6C5A7E281D723A00721D7F /* Services */,
+				EA6C5A7D281D6CC100721D7F /* ReusableViews */,
 				EA9A47A42815922A006F8409 /* Controllers */,
 				EA9E6BC527FCB93E00101170 /* AppDelegate.swift */,
 				EA9E6BC727FCB93E00101170 /* SceneDelegate.swift */,
@@ -333,6 +344,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA071DD1285648AA008CC78C /* FindNewGroupViewController.swift in Sources */,
 				EA481B312836778300719282 /* RoundButton.swift in Sources */,
 				EA9E6BCA27FCB93E00101170 /* SignInPageController.swift in Sources */,
 				EA481B2F283676AE00719282 /* PopUpView.swift in Sources */,

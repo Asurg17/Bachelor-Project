@@ -245,6 +245,60 @@ class Service {
         }
     }
     
+    func searchUserGroups(userId: String, groupName: String, completion: @escaping (Result<UserGroups, Error>) -> ()) {
+        
+        components.path = "/searchUserGroups"
+        
+        let parameters = [
+            "userId": userId,
+            "groupName": groupName
+        ]
+        
+        components.queryItems = parameters.map { key, value in
+           return URLQueryItem(name: key, value: value)
+        }
+        
+        if let url = components.url {
+            let request = URLRequest(url: url)
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            if let data = data {
+                                let decoder = JSONDecoder()
+                                do {
+                                    let response = try decoder.decode(UserGroups.self, from: data)
+                                    completion(.success(response))
+                                } catch {
+                                    completion(.failure(error))
+                                }
+                            } else {
+                                completion(.failure(ServiceError.noData))
+                            }
+                        } else {
+                            completion(.failure(NSError(domain: "",
+                                                        code: 400,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                       )))
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    }
+    
     func changePassword(userId: String,
                         oldPassword: String,
                         newPassword: String,

@@ -226,7 +226,7 @@
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" image="magnifyingglass" catalog="system" id="1us-eV-RUS">
                             <connections>
-                                <action selector="searchGroup" destination="wAu-KK-8DF" id="7qe-yH-9Zy"/>
+                                <segue destination="zSn-0i-V7D" kind="presentation" id="6vc-lz-Rbw"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -239,6 +239,118 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jiv-5l-Jwe" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3560.8695652173915" y="42.857142857142854"/>
+        </scene>
+        <!--Find New Group-->
+        <scene sceneID="Mlm-BL-QQS">
+            <objects>
+                <viewController id="mks-Df-4Px" customClass="FindNewGroupViewController" customModule="SociaLight" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="KH3-My-vWl">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nf6-kk-ym6">
+                                <rect key="frame" x="0.0" y="72" width="414" height="50"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vNx-cu-msO">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="50"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2jn-Qf-1ev">
+                                                <rect key="frame" x="0.0" y="0.0" width="62" height="50"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            </view>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Group Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="i7c-ah-vlw" customClass="RoundCornerTextField" customModule="SociaLight" customModuleProvider="target">
+                                                <rect key="frame" x="62" y="0.0" width="290" height="50"/>
+                                                <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="paddingLeft">
+                                                        <real key="value" value="20"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="paddingRight">
+                                                        <real key="value" value="20"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </textField>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bQg-xj-hNJ">
+                                                <rect key="frame" x="352" y="0.0" width="62" height="50"/>
+                                                <subviews>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="arh-aW-k2E">
+                                                        <rect key="frame" x="8.5" y="2.5" width="45" height="45"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" secondItem="arh-aW-k2E" secondAttribute="height" multiplier="1:1" id="qqb-aE-ge4"/>
+                                                        </constraints>
+                                                        <state key="normal" title="Button"/>
+                                                        <buttonConfiguration key="configuration" style="plain" image="magnifyingglass" catalog="system"/>
+                                                        <connections>
+                                                            <action selector="searchGroups" destination="mks-Df-4Px" eventType="touchUpInside" id="sub-Ag-UXL"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                <constraints>
+                                                    <constraint firstItem="arh-aW-k2E" firstAttribute="centerX" secondItem="bQg-xj-hNJ" secondAttribute="centerX" id="WFc-Wm-SXT"/>
+                                                    <constraint firstItem="arh-aW-k2E" firstAttribute="centerY" secondItem="bQg-xj-hNJ" secondAttribute="centerY" id="nfJ-Js-3eR"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="arh-aW-k2E" firstAttribute="height" secondItem="vNx-cu-msO" secondAttribute="height" multiplier="0.9" id="Uie-5G-fGy"/>
+                                        </constraints>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="i7c-ah-vlw" firstAttribute="width" secondItem="Nf6-kk-ym6" secondAttribute="width" multiplier="0.7" id="4zF-Ra-71z"/>
+                                    <constraint firstAttribute="bottom" secondItem="vNx-cu-msO" secondAttribute="bottom" id="ABQ-73-msY"/>
+                                    <constraint firstItem="2jn-Qf-1ev" firstAttribute="width" secondItem="Nf6-kk-ym6" secondAttribute="width" multiplier="0.15" id="CyD-eV-MfX"/>
+                                    <constraint firstItem="bQg-xj-hNJ" firstAttribute="width" secondItem="Nf6-kk-ym6" secondAttribute="width" multiplier="0.15" id="I9X-PZ-E0h"/>
+                                    <constraint firstItem="vNx-cu-msO" firstAttribute="leading" secondItem="Nf6-kk-ym6" secondAttribute="leading" id="IdR-Ga-vOp"/>
+                                    <constraint firstAttribute="height" constant="50" id="MKC-Ne-Aif"/>
+                                    <constraint firstItem="vNx-cu-msO" firstAttribute="top" secondItem="Nf6-kk-ym6" secondAttribute="top" id="O3Q-sz-8ak"/>
+                                    <constraint firstAttribute="trailing" secondItem="vNx-cu-msO" secondAttribute="trailing" id="TZn-zS-d9E"/>
+                                </constraints>
+                            </view>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Bj7-eY-5ha">
+                                <rect key="frame" x="0.0" y="138" width="414" height="704"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="MA7-uN-DxW">
+                                    <size key="itemSize" width="128" height="128"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells/>
+                            </collectionView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="GD7-26-Qfg">
+                                <rect key="frame" x="188.5" y="402.5" width="37" height="37"/>
+                                <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </activityIndicatorView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="nEy-w2-mPx"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Bj7-eY-5ha" firstAttribute="leading" secondItem="nEy-w2-mPx" secondAttribute="leading" id="B27-30-tnV"/>
+                            <constraint firstItem="GD7-26-Qfg" firstAttribute="centerX" secondItem="KH3-My-vWl" secondAttribute="centerX" id="H7D-nf-bCT"/>
+                            <constraint firstItem="nEy-w2-mPx" firstAttribute="trailing" secondItem="Bj7-eY-5ha" secondAttribute="trailing" id="RPg-eq-xN4"/>
+                            <constraint firstItem="Nf6-kk-ym6" firstAttribute="centerX" secondItem="KH3-My-vWl" secondAttribute="centerX" id="cQ5-OY-AkV"/>
+                            <constraint firstItem="GD7-26-Qfg" firstAttribute="centerY" secondItem="KH3-My-vWl" secondAttribute="centerY" id="eSw-DE-E1n"/>
+                            <constraint firstItem="Nf6-kk-ym6" firstAttribute="width" secondItem="KH3-My-vWl" secondAttribute="width" id="fYG-al-6Tb"/>
+                            <constraint firstAttribute="bottom" secondItem="Bj7-eY-5ha" secondAttribute="bottom" id="iqQ-YW-qSe"/>
+                            <constraint firstItem="Nf6-kk-ym6" firstAttribute="top" secondItem="nEy-w2-mPx" secondAttribute="top" constant="16" id="kNe-uD-6Vt"/>
+                            <constraint firstItem="Bj7-eY-5ha" firstAttribute="top" secondItem="Nf6-kk-ym6" secondAttribute="bottom" constant="16" id="qte-xL-EYq"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Find New Group" id="kcQ-3E-zLF"/>
+                    <connections>
+                        <outlet property="collectionView" destination="Bj7-eY-5ha" id="LCb-3g-sJU"/>
+                        <outlet property="groupNameTextField" destination="i7c-ah-vlw" id="5Qh-q9-BsJ"/>
+                        <outlet property="loader" destination="GD7-26-Qfg" id="wCl-W3-GPz"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Q0T-dB-YLU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5471.0144927536239" y="42.857142857142854"/>
         </scene>
         <!--Sign Up Page Controller-->
         <scene sceneID="gX1-oh-92j">
@@ -1143,6 +1255,24 @@
             </objects>
             <point key="canvasLocation" x="3192.753623188406" y="1530.8035714285713"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="4OO-1V-pbT">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="zSn-0i-V7D" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="wbp-5S-jJB">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="56"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="mks-Df-4Px" kind="relationship" relationship="rootViewController" id="16j-dk-ZC4"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="GwL-0F-GOF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4560.8695652173919" y="42.857142857142854"/>
+        </scene>
     </scenes>
     <designables>
         <designable name="1nf-3O-zvb">
@@ -1177,6 +1307,9 @@
         </designable>
         <designable name="cLO-ue-g6S">
             <size key="intrinsicContentSize" width="109.5" height="19.5"/>
+        </designable>
+        <designable name="i7c-ah-vlw">
+            <size key="intrinsicContentSize" width="121.5" height="18.5"/>
         </designable>
         <designable name="iMN-gP-Y7z">
             <size key="intrinsicContentSize" width="107" height="33"/>

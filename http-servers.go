@@ -246,6 +246,67 @@ func getUserGroups(w http.ResponseWriter, req *http.Request) {
 	w.Write(jsonResp)
 }
 
+func searchUserGroups(w http.ResponseWriter, req *http.Request) {
+
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
+
+	db, err := sql.Open("postgres", psqlconn)
+	if err != nil {
+		print(err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	userId := req.URL.Query().Get("userId")
+	groupName := req.URL.Query().Get("groupName")
+
+	getQuery := "select g.group_id, g.group_title, g.group_description from groups g where lower(g.group_title) like lower('%" + groupName + "%') and exists (select * from users s where s.user_id = $1);"
+
+	rows, err := db.Query(getQuery, userId)
+	if err != nil && err != sql.ErrNoRows {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(400)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	groups := make([]map[string]string, 0)
+
+	for rows.Next() {
+		var groupId string
+		var groupTitle string
+		var groupDescription string
+		err = rows.Scan(&groupId, &groupTitle, &groupDescription)
+		if err != nil {
+			w.Header().Set("Error", err.Error())
+			w.WriteHeader(400)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		group := make(map[string]string)
+		group["groupId"] = groupId
+		group["groupTitle"] = groupTitle
+		group["groupDescription"] = groupDescription
+
+		groups = append(groups, group)
+	}
+
+	response := make(map[string][]map[string]string)
+	response["groups"] = groups
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	jsonResp, err := json.Marshal(response)
+	if err != nil {
+		print("Error happened in JSON marshal. Err: %s", err)
+	}
+	w.Write(jsonResp)
+}
+
 func changePassword(w http.ResponseWriter, req *http.Request) {
 
 	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
@@ -356,7 +417,9 @@ func main() {
 	http.HandleFunc("/getUserInfo", getUserInfo)
 	http.HandleFunc("/getUserGroups", getUserGroups)
 	http.HandleFunc("/changePassword", changePassword)
+	http.HandleFunc("/searchUserGroups", searchUserGroups)
 	http.HandleFunc("/changePersonalInfo", changePersonalInfo)
+
 	http.ListenAndServe(":9000", nil)
 }
 
