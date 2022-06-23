@@ -31,3 +31,14 @@ struct UserGroup: Codable {
     let groupTitle: String
     let groupDescription: String
 }
+
+struct UserFriends: Codable {
+    let freinds: [UserFriend]
+}
+
+struct UserFriend: Codable {
+    let friendId: String
+    let friendFirstName: String
+    let friendLastName: String
+    let friendPhone: String
+}

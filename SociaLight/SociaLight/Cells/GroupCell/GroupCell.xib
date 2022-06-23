@@ -4,7 +4,6 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -20,37 +19,47 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZZ0-4V-gph">
                         <rect key="frame" x="0.0" y="0.0" width="138" height="208"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="GroupIcon" translatesAutoresizingMaskIntoConstraints="NO" id="da7-eP-LpN" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
-                                <rect key="frame" x="14" y="8" width="110" height="110.5"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TAU-L5-0At">
+                                <rect key="frame" x="17.5" y="8" width="103.5" height="103.5"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="GroupIcon" translatesAutoresizingMaskIntoConstraints="NO" id="da7-eP-LpN" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
+                                        <rect key="frame" x="7.5" y="8" width="88" height="87.5"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="da7-eP-LpN" secondAttribute="height" multiplier="1:1" id="LAX-Uc-YZu"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="da7-eP-LpN" secondAttribute="height" multiplier="1:1" id="LAX-Uc-YZu"/>
+                                    <constraint firstItem="da7-eP-LpN" firstAttribute="centerX" secondItem="TAU-L5-0At" secondAttribute="centerX" id="7mQ-sV-Q9B"/>
+                                    <constraint firstItem="da7-eP-LpN" firstAttribute="width" secondItem="TAU-L5-0At" secondAttribute="width" multiplier="0.85" id="MpX-jX-JUh"/>
+                                    <constraint firstAttribute="width" secondItem="TAU-L5-0At" secondAttribute="height" multiplier="1:1" id="RQa-9n-U5y"/>
+                                    <constraint firstItem="da7-eP-LpN" firstAttribute="centerY" secondItem="TAU-L5-0At" secondAttribute="centerY" id="RTt-QK-jcu"/>
                                 </constraints>
-                            </imageView>
+                            </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Group Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cXk-mz-n3k">
-                                <rect key="frame" x="8" y="124.5" width="122" height="18"/>
+                                <rect key="frame" x="8" y="117.5" width="122" height="18"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Group Description baby babu aaaaf erferf ref erfe f erf er" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C3w-Ga-9oc">
-                                <rect key="frame" x="12" y="148.5" width="114" height="29"/>
+                                <rect key="frame" x="12" y="141.5" width="114" height="29"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="cXk-mz-n3k" firstAttribute="centerX" secondItem="ZZ0-4V-gph" secondAttribute="centerX" id="89v-85-MdR"/>
                             <constraint firstAttribute="trailing" secondItem="C3w-Ga-9oc" secondAttribute="trailing" constant="12" id="AbF-mv-y6E"/>
+                            <constraint firstItem="cXk-mz-n3k" firstAttribute="top" secondItem="TAU-L5-0At" secondAttribute="bottom" constant="6" id="GOl-Ox-vJf"/>
                             <constraint firstItem="C3w-Ga-9oc" firstAttribute="leading" secondItem="ZZ0-4V-gph" secondAttribute="leading" constant="12" id="GhH-Wg-odI"/>
+                            <constraint firstItem="TAU-L5-0At" firstAttribute="width" secondItem="ZZ0-4V-gph" secondAttribute="width" multiplier="0.75" id="I9T-2S-RMF"/>
                             <constraint firstItem="cXk-mz-n3k" firstAttribute="leading" secondItem="ZZ0-4V-gph" secondAttribute="leading" constant="8" id="Idz-oC-RuF"/>
-                            <constraint firstItem="cXk-mz-n3k" firstAttribute="top" secondItem="da7-eP-LpN" secondAttribute="bottom" constant="6" id="Ipe-y2-r3w"/>
                             <constraint firstItem="C3w-Ga-9oc" firstAttribute="centerX" secondItem="ZZ0-4V-gph" secondAttribute="centerX" id="JsD-7t-6Ta"/>
-                            <constraint firstItem="da7-eP-LpN" firstAttribute="centerX" secondItem="ZZ0-4V-gph" secondAttribute="centerX" id="LKV-Qs-0IR"/>
                             <constraint firstAttribute="trailing" secondItem="cXk-mz-n3k" secondAttribute="trailing" constant="8" id="NEc-o6-xc7"/>
-                            <constraint firstItem="da7-eP-LpN" firstAttribute="width" secondItem="ZZ0-4V-gph" secondAttribute="width" multiplier="0.8" id="YvD-4H-FAb"/>
-                            <constraint firstItem="da7-eP-LpN" firstAttribute="top" secondItem="ZZ0-4V-gph" secondAttribute="top" constant="8" id="cGf-S3-0Ez"/>
+                            <constraint firstItem="TAU-L5-0At" firstAttribute="top" secondItem="ZZ0-4V-gph" secondAttribute="top" constant="8" id="ehI-Vo-yx7"/>
+                            <constraint firstItem="TAU-L5-0At" firstAttribute="centerX" secondItem="ZZ0-4V-gph" secondAttribute="centerX" id="ggG-YR-3ah"/>
                             <constraint firstItem="C3w-Ga-9oc" firstAttribute="top" secondItem="cXk-mz-n3k" secondAttribute="bottom" constant="6" id="jy6-ZF-xOe"/>
                         </constraints>
                     </view>
@@ -68,6 +77,7 @@
                 <outlet property="groupDescriptionLabel" destination="C3w-Ga-9oc" id="8RN-bH-byx"/>
                 <outlet property="groupImage" destination="da7-eP-LpN" id="yQD-0A-RJP"/>
                 <outlet property="groupLabel" destination="cXk-mz-n3k" id="WdT-Uu-bFG"/>
+                <outlet property="imageOuterView" destination="TAU-L5-0At" id="qKc-er-cxu"/>
                 <outlet property="outerView" destination="ZZ0-4V-gph" id="OPB-Pn-QnG"/>
             </connections>
             <point key="canvasLocation" x="-5.7971014492753632" y="124.55357142857142"/>
@@ -80,8 +90,5 @@
     </designables>
     <resources>
         <image name="GroupIcon" width="100" height="100"/>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
     </resources>
 </document>

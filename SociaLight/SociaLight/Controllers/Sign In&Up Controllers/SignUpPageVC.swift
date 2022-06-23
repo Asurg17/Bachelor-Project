@@ -8,7 +8,7 @@
 import UIKit
 import KeychainSwift
 
-class SignUpPageController: UIViewController {
+class SignUpPageVC: UIViewController {
     
     @IBOutlet var fullNameTextField:        DesignableUITextField!
     @IBOutlet var usernameTextField:        DesignableUITextField!
@@ -120,7 +120,7 @@ class SignUpPageController: UIViewController {
     
 }
 
-extension SignUpPageController: UITextFieldDelegate {
+extension SignUpPageVC: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if let field = textField as? DesignableUITextField {

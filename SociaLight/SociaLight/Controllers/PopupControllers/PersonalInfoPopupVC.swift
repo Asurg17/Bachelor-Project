@@ -8,7 +8,7 @@
 import UIKit
 import KeychainSwift
 
-class PersonalInfoPopupController: UIViewController {
+class PersonalInfoPopupVC: UIViewController {
     
     @IBOutlet var ageTextField: DesignableUITextField!
     @IBOutlet var phoneTextField: DesignableUITextField!
@@ -134,7 +134,7 @@ class PersonalInfoPopupController: UIViewController {
 
 }
 
-extension PersonalInfoPopupController: UITextFieldDelegate {
+extension PersonalInfoPopupVC: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if let field = textField as? DesignableUITextField {

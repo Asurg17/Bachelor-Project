@@ -10,6 +10,7 @@ import UIKit
 class GroupCell: UICollectionViewCell {
     
     @IBOutlet var outerView: UIView!
+    @IBOutlet var imageOuterView: UIView!
     
     @IBOutlet var groupImage: UIImageView!
     @IBOutlet var groupLabel: UILabel!
@@ -17,16 +18,15 @@ class GroupCell: UICollectionViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        
-//        outerView.layer.cornerRadius = 10
-//        outerView.layer.borderWidth = 1
-//        outerView.layer.borderColor = UIColor.gray.cgColor
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
     }
     
     func configure(with group: UserGroup){
-        //groupImage.image = "image"
         groupLabel.text = group.groupTitle
-        //groupDescriptionLabel.text = group.groupDescription
+        groupDescriptionLabel.text = group.groupDescription
     }
 
 }

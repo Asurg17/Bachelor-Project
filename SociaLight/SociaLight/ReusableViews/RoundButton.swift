@@ -2,7 +2,7 @@
 //  RoundButton.swift
 //  SociaLight
 //
-//  Created by Sandro Surguladze on 19.05.22.
+//  Created by Sandro Surguladze on 19.06.22.
 //
 
 import UIKit
@@ -12,9 +12,11 @@ class RoundButton: UIButton {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        self.clipsToBounds = true
-        self.layer.cornerRadius = self.frame.size.height / 3
+        
+        self.layer.shadowRadius = 5
+        self.layer.shadowOpacity = 0.8
+        self.layer.shadowOffset = CGSize(width: 0, height: 0)
+        self.layer.cornerRadius = self.frame.size.width / 2
     }
     
 }
-

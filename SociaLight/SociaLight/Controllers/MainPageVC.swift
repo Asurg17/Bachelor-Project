@@ -1,19 +1,21 @@
 //
-//  FindNewGroupViewController.swift
+//  MainPageController.swift
 //  SociaLight
 //
-//  Created by Sandro Surguladze on 12.06.22.
+//  Created by Sandro Surguladze on 02.05.22.
 //
 
 import UIKit
 import KeychainSwift
 
-class FindNewGroupViewController: UIViewController {
+class MainPageVC: UIViewController {
     
     @IBOutlet var loader: UIActivityIndicatorView!
     @IBOutlet var collectionView: UICollectionView!
     
-    @IBOutlet var groupNameTextField: RoundCornerTextField!
+    @IBOutlet var filterTextField: RoundCornerTextField!
+    
+    @IBOutlet var warningLabel: UILabel!
     
     private let service = Service()
     
@@ -23,12 +25,19 @@ class FindNewGroupViewController: UIViewController {
         return flowLayout
     }()
     
-    var collectionData: [UserGroup] = []
+    var collectionData = [UserGroup]()
+    var groups = [UserGroup]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupViews()
         configureCollectionView()
+        getUserGroups()
+    }
+    
+    func setupViews() {
+        filterTextField.addTarget(self, action: #selector(MainPageVC.textFieldDidChange(_:)), for: .editingChanged)
     }
     
     func configureCollectionView() {
@@ -53,11 +62,11 @@ class FindNewGroupViewController: UIViewController {
         )
     }
     
-    func searchUserGroups(groupName: String) {
+    func getUserGroups() {
         let keychain = KeychainSwift()
         if let userId = keychain.get("userId") {
             loader.startAnimating()
-            service.searchUserGroups(userId: userId, groupName: groupName) { [weak self] result in
+            service.getUserGroups(userId: userId) { [weak self] result in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     self.loader.stopAnimating()
@@ -75,6 +84,7 @@ class FindNewGroupViewController: UIViewController {
     }
     
     func handleSuccess(response: UserGroups) {
+        groups = response.groups
         collectionData = response.groups
         collectionView.reloadData()
     }
@@ -83,10 +93,39 @@ class FindNewGroupViewController: UIViewController {
         showWarningAlert(warningText: error ?? "Unspecified Error!")
     }
     
+    func filterGroups(filterString: String) {
+        loader.startAnimating()
+        var filteredGroups: [UserGroup] = []
+        if filterString != "" {
+            for group in groups {
+                if(group.groupTitle.lowercased().contains(filterString.lowercased())) {
+                    filteredGroups.append(group)
+                }
+            }
+        } else {
+            filteredGroups = groups
+        }
+        collectionData = filteredGroups
+        collectionView.reloadData()
+        loader.stopAnimating()
+    }
+    
+    func showWarningMessage() {
+        warningLabel.isHidden = false
+    }
+    
+    func hideWarningMessage() {
+        warningLabel.isHidden = true
+    }
+    
     func navigateToGroupPage(grouId: String) {
         print("Navigate To " + grouId)
     }
     
+    
+    @objc func textFieldDidChange(_ textField: UITextField) {
+        filterGroups(filterString: textField.text ?? "")
+    }
     
     @objc func handleTap(guesture: UITapGestureRecognizer) {
         if(guesture.state == UIGestureRecognizer.State.ended) {
@@ -101,24 +140,12 @@ class FindNewGroupViewController: UIViewController {
             }
         }
     }
-    
-    
-    @IBAction func searchGroups() {
-        if let groupName = groupNameTextField.text {
-            if groupName != "" {
-                searchUserGroups(groupName: groupName)
-            }
-        }
-    }
 }
 
-extension FindNewGroupViewController: UICollectionViewDelegate {
-    
-}
-
-extension FindNewGroupViewController: UICollectionViewDataSource {
+extension MainPageVC: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if (collectionData.count == 0) { showWarningMessage() } else { hideWarningMessage() }
         return collectionData.count
     }
     
@@ -133,7 +160,7 @@ extension FindNewGroupViewController: UICollectionViewDataSource {
     
 }
 
-extension FindNewGroupViewController: UICollectionViewDelegateFlowLayout {
+extension MainPageVC: UICollectionViewDelegateFlowLayout {
     
     func collectionView(
         _ collectionView: UICollectionView,

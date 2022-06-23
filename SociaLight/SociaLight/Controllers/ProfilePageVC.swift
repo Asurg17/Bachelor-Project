@@ -8,7 +8,7 @@
 import UIKit
 import KeychainSwift
 
-class ProfilePageController: UIViewController, DismissProtocol {
+class ProfilePageVC: UIViewController, DismissProtocol {
     
     @IBOutlet var profileImage: UIImageView!
     @IBOutlet var usernameLabel: UILabel!
@@ -31,7 +31,7 @@ class ProfilePageController: UIViewController, DismissProtocol {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destination = segue.destination as? PersonalInfoPopupController {
+        if let destination = segue.destination as? PersonalInfoPopupVC {
             destination.delegate = self
         }
     }

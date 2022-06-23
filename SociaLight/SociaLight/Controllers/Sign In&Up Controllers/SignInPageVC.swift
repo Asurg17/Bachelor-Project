@@ -9,7 +9,7 @@ import UIKit
 import CloudKit
 import KeychainSwift
 
-class SignInPageController: UIViewController {
+class SignInPageVC: UIViewController {
     
     @IBOutlet var usernameTextField: DesignableUITextField!
     @IBOutlet var passwordTextField: DesignableUITextField!
@@ -124,7 +124,7 @@ class SignInPageController: UIViewController {
     
 }
 
-extension SignInPageController: UITextFieldDelegate {
+extension SignInPageVC: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if let field = textField as? DesignableUITextField {

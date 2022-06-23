@@ -8,7 +8,7 @@
 import UIKit
 import KeychainSwift
 
-class ChangePasswordPopupController: UIViewController {
+class ChangePasswordPopupVC: UIViewController {
     
     @IBOutlet var oldPasswordTextField: DesignableUITextField!
     @IBOutlet var newPasswordTextField: DesignableUITextField!
@@ -108,7 +108,7 @@ class ChangePasswordPopupController: UIViewController {
 
 }
 
-extension ChangePasswordPopupController: UITextFieldDelegate {
+extension ChangePasswordPopupVC: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if let field = textField as? DesignableUITextField {

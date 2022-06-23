@@ -32,5 +32,9 @@ class RoundCornerTextField: UITextField {
         self.layer.borderColor = UIColor.darkGray.cgColor
     }
     
+     override func clearButtonRect(forBounds bounds: CGRect) -> CGRect {
+        let originalRect = super.clearButtonRect(forBounds: bounds)
+        return originalRect.offsetBy(dx: -10, dy: 0)
+    }
 }
 
