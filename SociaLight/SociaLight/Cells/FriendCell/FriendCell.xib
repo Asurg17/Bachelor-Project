@@ -5,7 +5,6 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -19,10 +18,10 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NrQ-rP-b5f">
-                        <rect key="frame" x="32" y="6" width="109" height="109"/>
+                        <rect key="frame" x="32" y="12" width="97" height="97"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user" translatesAutoresizingMaskIntoConstraints="NO" id="POM-NU-0Cv" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
-                                <rect key="frame" x="5.5" y="5.5" width="98" height="98"/>
+                                <rect key="frame" x="6.5" y="6.5" width="84" height="84"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="POM-NU-0Cv" secondAttribute="height" multiplier="1:1" id="hwG-vz-Paq"/>
@@ -31,23 +30,23 @@
                         </subviews>
                         <constraints>
                             <constraint firstItem="POM-NU-0Cv" firstAttribute="centerX" secondItem="NrQ-rP-b5f" secondAttribute="centerX" id="FVN-vF-s4c"/>
-                            <constraint firstItem="POM-NU-0Cv" firstAttribute="height" secondItem="NrQ-rP-b5f" secondAttribute="height" multiplier="0.9" id="H11-RQ-slT"/>
+                            <constraint firstItem="POM-NU-0Cv" firstAttribute="height" secondItem="NrQ-rP-b5f" secondAttribute="height" multiplier="0.87" id="H11-RQ-slT"/>
                             <constraint firstItem="POM-NU-0Cv" firstAttribute="centerY" secondItem="NrQ-rP-b5f" secondAttribute="centerY" id="TxE-Pr-3fG"/>
                             <constraint firstAttribute="width" secondItem="NrQ-rP-b5f" secondAttribute="height" multiplier="1:1" id="tN4-Oj-ehR"/>
                         </constraints>
                     </view>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="3Ob-1A-h8Z">
-                        <rect key="frame" x="157" y="24" width="334.5" height="73"/>
+                        <rect key="frame" x="145" y="24" width="346.5" height="73"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="John Doe" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ur1-9H-3MO">
-                                <rect key="frame" x="0.0" y="0.0" width="334.5" height="36.5"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <rect key="frame" x="0.0" y="0.0" width="346.5" height="36.5"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="571895483" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1yI-jq-fHL">
-                                <rect key="frame" x="0.0" y="36.5" width="334.5" height="36.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <rect key="frame" x="0.0" y="36.5" width="346.5" height="36.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -69,7 +68,7 @@
                                         <imageReference key="image" image="checkmark" catalog="system" symbolScale="small"/>
                                     </imageView>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="linkColor"/>
+                                <color key="backgroundColor" red="0.1928567662" green="0.46092396559999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="Fsb-f6-INH" secondAttribute="height" multiplier="1:1" id="045-tc-h3S"/>
                                     <constraint firstItem="aJi-8n-wO8" firstAttribute="centerY" secondItem="Fsb-f6-INH" secondAttribute="centerY" id="7S9-Va-Q52"/>
@@ -101,7 +100,7 @@
                     <constraint firstItem="ILZ-lJ-q8O" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="8LL-I5-4Lu"/>
                     <constraint firstItem="yjj-2m-N04" firstAttribute="leading" secondItem="3Ob-1A-h8Z" secondAttribute="trailing" constant="32" id="9Te-PT-Gue"/>
                     <constraint firstItem="yjj-2m-N04" firstAttribute="height" secondItem="H2p-sc-9uM" secondAttribute="height" multiplier="0.3" id="CYV-HU-q17"/>
-                    <constraint firstItem="NrQ-rP-b5f" firstAttribute="height" secondItem="H2p-sc-9uM" secondAttribute="height" multiplier="0.9" id="Ov1-Lz-qu7"/>
+                    <constraint firstItem="NrQ-rP-b5f" firstAttribute="height" secondItem="H2p-sc-9uM" secondAttribute="height" multiplier="0.8" id="Ov1-Lz-qu7"/>
                     <constraint firstItem="NrQ-rP-b5f" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="32" id="WAV-5g-GqF"/>
                     <constraint firstAttribute="trailing" secondItem="yjj-2m-N04" secondAttribute="trailing" constant="32" id="WdX-jA-k4j"/>
                     <constraint firstItem="NrQ-rP-b5f" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="YTn-FD-OFU"/>
@@ -133,8 +132,5 @@
     <resources>
         <image name="checkmark" catalog="system" width="128" height="114"/>
         <image name="user" width="512" height="512"/>
-        <systemColor name="linkColor">
-            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
     </resources>
 </document>

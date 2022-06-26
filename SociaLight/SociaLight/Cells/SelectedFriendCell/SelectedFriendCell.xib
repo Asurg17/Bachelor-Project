@@ -10,20 +10,20 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="SelectedFriendCell" customModule="SociaLight" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="186" height="192"/>
+            <rect key="frame" x="0.0" y="0.0" width="75" height="93"/>
             <autoresizingMask key="autoresizingMask"/>
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                <rect key="frame" x="0.0" y="0.0" width="186" height="192"/>
+                <rect key="frame" x="0.0" y="0.0" width="75" height="93"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1J7-HM-FXI">
-                        <rect key="frame" x="0.0" y="0.0" width="186" height="192"/>
+                        <rect key="frame" x="0.0" y="0.0" width="75" height="93"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zwr-7Z-8su">
-                                <rect key="frame" x="28" y="8" width="130" height="130"/>
+                                <rect key="frame" x="11.5" y="8" width="52.5" height="52.5"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user" translatesAutoresizingMaskIntoConstraints="NO" id="KHb-sd-9fu" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
-                                        <rect key="frame" x="6.5" y="6.5" width="117" height="117"/>
+                                        <rect key="frame" x="3" y="3.5" width="46" height="45.5"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="KHb-sd-9fu" secondAttribute="height" multiplier="1:1" id="fii-Ph-LAx"/>
@@ -34,19 +34,19 @@
                                     <constraint firstItem="KHb-sd-9fu" firstAttribute="centerY" secondItem="zwr-7Z-8su" secondAttribute="centerY" id="9L0-nZ-dAB"/>
                                     <constraint firstItem="KHb-sd-9fu" firstAttribute="centerX" secondItem="zwr-7Z-8su" secondAttribute="centerX" id="HEs-uf-Nx8"/>
                                     <constraint firstAttribute="width" secondItem="zwr-7Z-8su" secondAttribute="height" multiplier="1:1" id="PDQ-nb-PR5"/>
-                                    <constraint firstItem="KHb-sd-9fu" firstAttribute="height" secondItem="zwr-7Z-8su" secondAttribute="height" multiplier="0.9" id="dxD-On-WO8"/>
+                                    <constraint firstItem="KHb-sd-9fu" firstAttribute="height" secondItem="zwr-7Z-8su" secondAttribute="height" multiplier="0.87" id="dxD-On-WO8"/>
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Mike" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cj7-uM-gLi">
-                                <rect key="frame" x="75" y="146" width="36" height="20.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <rect key="frame" x="21" y="66.5" width="33" height="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="cj7-uM-gLi" firstAttribute="top" secondItem="zwr-7Z-8su" secondAttribute="bottom" constant="8" id="LTG-gi-AJG"/>
+                            <constraint firstItem="cj7-uM-gLi" firstAttribute="top" secondItem="zwr-7Z-8su" secondAttribute="bottom" constant="6" id="LTG-gi-AJG"/>
                             <constraint firstItem="zwr-7Z-8su" firstAttribute="width" secondItem="1J7-HM-FXI" secondAttribute="width" multiplier="0.7" id="VfF-dX-gIZ"/>
                             <constraint firstItem="zwr-7Z-8su" firstAttribute="width" secondItem="zwr-7Z-8su" secondAttribute="height" multiplier="1:1" id="giY-MB-AnF"/>
                             <constraint firstItem="zwr-7Z-8su" firstAttribute="centerX" secondItem="1J7-HM-FXI" secondAttribute="centerX" id="lSH-4y-2HB"/>
@@ -63,13 +63,13 @@
                 <constraint firstItem="1J7-HM-FXI" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="msa-fp-KhK"/>
                 <constraint firstItem="1J7-HM-FXI" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="xBz-ke-JKa"/>
             </constraints>
-            <size key="customSize" width="186" height="192"/>
+            <size key="customSize" width="75" height="93"/>
             <connections>
                 <outlet property="imageOuterView" destination="zwr-7Z-8su" id="pyw-9c-NKW"/>
                 <outlet property="selectedFriendFirstName" destination="cj7-uM-gLi" id="Gxp-Om-aRq"/>
                 <outlet property="selectedFriendImage" destination="KHb-sd-9fu" id="Wqz-wH-DES"/>
             </connections>
-            <point key="canvasLocation" x="101.44927536231884" y="131.91964285714286"/>
+            <point key="canvasLocation" x="21.014492753623191" y="112.83482142857142"/>
         </collectionViewCell>
     </objects>
     <designables>

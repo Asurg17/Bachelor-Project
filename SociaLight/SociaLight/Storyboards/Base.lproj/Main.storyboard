@@ -607,14 +607,21 @@
                                 </items>
                             </navigationBar>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Cmo-rG-eZ8">
-                                <rect key="frame" x="0.0" y="186" width="414" height="89.5"/>
+                                <rect key="frame" x="0.0" y="186" width="414" height="107.5"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="cuA-6S-0PV">
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="cuA-6S-0PV">
                                     <size key="itemSize" width="128" height="128"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
+                                <label key="backgroundView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Friend Selected" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="rm9-I4-oGA">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="107.5"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
                                 <cells/>
                             </collectionView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IDG-Bd-4uR">
@@ -646,15 +653,15 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yll-Tk-UCV">
-                                <rect key="frame" x="0.0" y="307.5" width="414" height="588.5"/>
+                                <rect key="frame" x="0.0" y="325.5" width="414" height="570.5"/>
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Np2-DB-Zv8">
-                                        <rect key="frame" x="0.0" y="16" width="414" height="572.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="570.5"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </tableView>
                                     <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Friend To Show" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V0I-Ba-ytw">
-                                        <rect key="frame" x="134" y="284" width="146" height="21"/>
+                                        <rect key="frame" x="134" y="275" width="146" height="21"/>
                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -665,7 +672,7 @@
                                     <constraint firstAttribute="trailing" secondItem="Np2-DB-Zv8" secondAttribute="trailing" id="2ZT-kz-csc"/>
                                     <constraint firstItem="Np2-DB-Zv8" firstAttribute="leading" secondItem="yll-Tk-UCV" secondAttribute="leading" id="6Xn-Ft-69K"/>
                                     <constraint firstAttribute="bottom" secondItem="Np2-DB-Zv8" secondAttribute="bottom" id="ZK4-It-r0v"/>
-                                    <constraint firstItem="Np2-DB-Zv8" firstAttribute="top" secondItem="yll-Tk-UCV" secondAttribute="top" constant="16" id="ZSX-wA-Upi"/>
+                                    <constraint firstItem="Np2-DB-Zv8" firstAttribute="top" secondItem="yll-Tk-UCV" secondAttribute="top" id="ZSX-wA-Upi"/>
                                     <constraint firstItem="V0I-Ba-ytw" firstAttribute="centerX" secondItem="yll-Tk-UCV" secondAttribute="centerX" id="aS3-1S-h2o"/>
                                     <constraint firstItem="V0I-Ba-ytw" firstAttribute="centerY" secondItem="yll-Tk-UCV" secondAttribute="centerY" id="kfl-9k-owT"/>
                                 </constraints>
@@ -707,7 +714,7 @@
                             <constraint firstItem="Wh1-R6-Mop" firstAttribute="top" secondItem="ZVW-9W-fnn" secondAttribute="top" id="Z2h-vF-5nF"/>
                             <constraint firstItem="xWD-9U-x3k" firstAttribute="width" secondItem="MKy-4q-FdM" secondAttribute="width" multiplier="0.2" id="cJj-6w-KFT"/>
                             <constraint firstItem="Cmo-rG-eZ8" firstAttribute="centerX" secondItem="MKy-4q-FdM" secondAttribute="centerX" id="dIW-BU-ur8"/>
-                            <constraint firstItem="Cmo-rG-eZ8" firstAttribute="height" secondItem="MKy-4q-FdM" secondAttribute="height" multiplier="0.1" id="f87-IT-ez6"/>
+                            <constraint firstItem="Cmo-rG-eZ8" firstAttribute="height" secondItem="MKy-4q-FdM" secondAttribute="height" multiplier="0.12" id="f87-IT-ez6"/>
                             <constraint firstAttribute="bottom" secondItem="xWD-9U-x3k" secondAttribute="bottom" constant="32" id="iX3-ht-nau"/>
                             <constraint firstAttribute="bottom" secondItem="PJt-IU-JbV" secondAttribute="bottom" id="k7W-V8-C53"/>
                             <constraint firstItem="ZVW-9W-fnn" firstAttribute="trailing" secondItem="Cmo-rG-eZ8" secondAttribute="trailing" id="pld-lI-tQe"/>
@@ -729,6 +736,7 @@
                         <outlet property="friendNameTextField" destination="h7D-Q5-Gbx" id="RVJ-45-0uJ"/>
                         <outlet property="tableView" destination="Np2-DB-Zv8" id="jwc-AN-n1X"/>
                         <outlet property="tableViewOuterView" destination="yll-Tk-UCV" id="QAy-jo-IYp"/>
+                        <outlet property="tableWarningLabel" destination="rm9-I4-oGA" id="12b-dS-KPy"/>
                         <outlet property="warningLabel" destination="V0I-Ba-ytw" id="aua-3Y-cmi"/>
                     </connections>
                 </viewController>

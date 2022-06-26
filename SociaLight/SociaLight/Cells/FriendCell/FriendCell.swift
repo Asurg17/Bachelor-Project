@@ -53,13 +53,20 @@ class FriendCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        let width = subviews[0].frame.width
+        for view in subviews where view != contentView {
+            if view.frame.width == width {
+                view.removeFromSuperview()
+            }
+        }
+        
         checkboxInnerView.layer.cornerRadius = checkboxInnerView.frame.size.width / 2
         
         checkboxOuterView.layer.borderWidth = 1
         checkboxOuterView.layer.borderColor = UIColor.gray.cgColor
         checkboxOuterView.layer.cornerRadius = checkboxOuterView.frame.size.width / 2
         
-        imageOuterView.layer.borderWidth = 1
+        imageOuterView.layer.borderWidth = 1.25
         imageOuterView.layer.borderColor = UIColor.random().cgColor
         imageOuterView.layer.cornerRadius = imageOuterView.frame.size.width / 2
     }
@@ -67,10 +74,8 @@ class FriendCell: UITableViewCell {
     func checkIfCellIsSelected() {
         if model.isSelected {
             checkboxInnerView.isHidden = false
-            checkboxOuterView.isHidden = true
         } else {
             checkboxInnerView.isHidden = true
-            checkboxOuterView.isHidden = false
         }
     }
     
