@@ -307,6 +307,75 @@ func searchUserGroups(w http.ResponseWriter, req *http.Request) {
 	w.Write(jsonResp)
 }
 
+func getUserFriends(w http.ResponseWriter, req *http.Request) {
+
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
+
+	db, err := sql.Open("postgres", psqlconn)
+	if err != nil {
+		print(err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	userId := req.URL.Query().Get("userId")
+
+	getQuery := `select s.user_id
+					,s.first_name
+					,coalesce(s.last_name, '-') last_name
+					,coalesce(s.phone, '-') phone
+				from users s
+				,friends f
+				where f.user_id = $1
+				and s.user_id = f.friend_id;`
+
+	rows, err := db.Query(getQuery, userId)
+	if err != nil && err != sql.ErrNoRows {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(400)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	friends := make([]map[string]string, 0)
+
+	for rows.Next() {
+		var friendId string
+		var friendFirstName string
+		var friendLastName string
+		var friendPhone string
+		err = rows.Scan(&friendId, &friendFirstName, &friendLastName, &friendPhone)
+		if err != nil {
+			w.Header().Set("Error", err.Error())
+			w.WriteHeader(400)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		friend := make(map[string]string)
+		friend["friendId"] = friendId
+		friend["friendFirstName"] = friendFirstName
+		friend["friendLastName"] = friendLastName
+		friend["friendPhone"] = friendPhone
+
+		friends = append(friends, friend)
+	}
+
+	response := make(map[string][]map[string]string)
+	response["friends"] = friends
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	jsonResp, err := json.Marshal(response)
+	if err != nil {
+		print("Error happened in JSON marshal. Err: %s", err)
+	}
+	w.Write(jsonResp)
+}
+
 func changePassword(w http.ResponseWriter, req *http.Request) {
 
 	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
@@ -416,6 +485,7 @@ func main() {
 	http.HandleFunc("/checkUser", checkUser)
 	http.HandleFunc("/getUserInfo", getUserInfo)
 	http.HandleFunc("/getUserGroups", getUserGroups)
+	http.HandleFunc("/getUserFriends", getUserFriends)
 	http.HandleFunc("/changePassword", changePassword)
 	http.HandleFunc("/searchUserGroups", searchUserGroups)
 	http.HandleFunc("/changePersonalInfo", changePersonalInfo)

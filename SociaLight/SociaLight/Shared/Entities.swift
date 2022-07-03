@@ -33,7 +33,7 @@ struct UserGroup: Codable {
 }
 
 struct UserFriends: Codable {
-    let freinds: [UserFriend]
+    let friends: [UserFriend]
 }
 
 struct UserFriend: Codable {

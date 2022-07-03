@@ -37,8 +37,8 @@
                                     <constraint firstItem="KHb-sd-9fu" firstAttribute="height" secondItem="zwr-7Z-8su" secondAttribute="height" multiplier="0.87" id="dxD-On-WO8"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Mike" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cj7-uM-gLi">
-                                <rect key="frame" x="21" y="66.5" width="33" height="18"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Mike" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cj7-uM-gLi">
+                                <rect key="frame" x="8" y="66.5" width="59" height="18"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -46,8 +46,10 @@
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="cj7-uM-gLi" secondAttribute="trailing" constant="8" id="It1-Le-3i6"/>
                             <constraint firstItem="cj7-uM-gLi" firstAttribute="top" secondItem="zwr-7Z-8su" secondAttribute="bottom" constant="6" id="LTG-gi-AJG"/>
                             <constraint firstItem="zwr-7Z-8su" firstAttribute="width" secondItem="1J7-HM-FXI" secondAttribute="width" multiplier="0.7" id="VfF-dX-gIZ"/>
+                            <constraint firstItem="cj7-uM-gLi" firstAttribute="leading" secondItem="1J7-HM-FXI" secondAttribute="leading" constant="8" id="cEt-h2-2Jy"/>
                             <constraint firstItem="zwr-7Z-8su" firstAttribute="width" secondItem="zwr-7Z-8su" secondAttribute="height" multiplier="1:1" id="giY-MB-AnF"/>
                             <constraint firstItem="zwr-7Z-8su" firstAttribute="centerX" secondItem="1J7-HM-FXI" secondAttribute="centerX" id="lSH-4y-2HB"/>
                             <constraint firstItem="zwr-7Z-8su" firstAttribute="top" secondItem="1J7-HM-FXI" secondAttribute="top" constant="8" id="mef-lh-YGn"/>

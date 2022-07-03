@@ -41,9 +41,21 @@ class NewGroupFirstVC: UIViewController {
         receiverVC.groupDescription = groupDescription.text
     }
     
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        return areViewsValid()
+    }
+    
     func setupViews() {
         groupName.delegate = self
         groupDescription.delegate = self
+    }
+    
+    func areViewsValid() -> Bool {
+        if let _ = pickerValue {} else {
+            showWarningAlert(warningText: "Please choose Members Count")
+            return false
+        }
+        return true
     }
 
     

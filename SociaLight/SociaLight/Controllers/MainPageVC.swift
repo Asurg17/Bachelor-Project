@@ -45,6 +45,7 @@ class MainPageVC: UIViewController {
         collectionView.dataSource = self
         
         collectionView.collectionViewLayout = flowLayout
+        collectionView.showsVerticalScrollIndicator = false
         
         collectionView.register(
             UINib(
@@ -180,7 +181,7 @@ extension MainPageVC: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        let spareWidth = collectionView.frame.width - (2 * Constants.spacing) - ((Constants.itemCountInLine - 1) * Constants.spacing) - Constants.additionalSpacing
+        let spareWidth = collectionView.frame.width - ((Constants.itemCountInLine + 1) * Constants.spacing) - Constants.additionalSpacing
         let cellWidth = spareWidth / Constants.itemCountInLine
         let cellHeight = cellWidth * 1.40
         return CGSize(width: cellWidth, height: cellHeight)

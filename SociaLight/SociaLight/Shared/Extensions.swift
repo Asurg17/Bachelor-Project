@@ -50,10 +50,13 @@ extension UIViewController {
     
     struct Constants {
         static let itemCountInLine: CGFloat = 3
-        static let spacing: CGFloat = 10
-        static let lineSpacing: CGFloat = 20
-        static let topBottomSpacing: CGFloat = 20
-        static let additionalSpacing: CGFloat = 1 //10
+        static let spacing: CGFloat = 10.0
+        static let lineSpacing: CGFloat = 20.0
+        static let topBottomSpacing: CGFloat = 20.0
+        static let additionalSpacing: CGFloat = 20.0
+        static let tableRowHeight = 80.0
+        static let tableViewOffset = 32.0
+        static let itemCount: CGFloat = 4
     }
     
 }

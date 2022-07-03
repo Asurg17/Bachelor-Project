@@ -17,9 +17,9 @@ class NewGroupSecondVC: UIViewController, FriendCellDelegate {
     @IBOutlet var warningLabel: UILabel!
     @IBOutlet var tableWarningLabel: UILabel!
     
-    let tableRowHeight = 80.0
-    let tableViewOffset = 32.0
+    @IBOutlet var loader: UIActivityIndicatorView!
     
+    private var friends = [FriendCellModel]()
     private var tableData = [FriendCellModel]()
     private var collectionData = [UserFriend]()
     
@@ -33,21 +33,20 @@ class NewGroupSecondVC: UIViewController, FriendCellDelegate {
     lazy var flowLayout: UICollectionViewFlowLayout = {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .horizontal
-//        flowLayout.minimumInteritemSpacing = 0;
-//        flowLayout.minimumLineSpacing = 0;
         return flowLayout
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tableData = [FriendCellModel(friendId: "1", friendFristName: "Anna", friendLastName: "Mitchelson", friendPhone: "576493709", isSelected: false, delegate: self),FriendCellModel(friendId: "2", friendFristName: "Mike", friendLastName: "Justundart", friendPhone: "689342375", isSelected: false, delegate: self),FriendCellModel(friendId: "3", friendFristName: "Ellen", friendLastName: "Levski", friendPhone: "78906543376", isSelected: false, delegate: self),FriendCellModel(friendId: "4", friendFristName: "Goldar", friendLastName: "Smith", friendPhone: "82375757", isSelected: false, delegate: self),FriendCellModel(friendId: "6", friendFristName: "Lika", friendLastName: "Khujadze", friendPhone: "578906543", isSelected: false, delegate: self),FriendCellModel(friendId: "5", friendFristName: "Mariam", friendLastName: "Nafetvaridze", friendPhone: "575678943", isSelected: false, delegate: self),FriendCellModel(friendId: "7", friendFristName: "Eka", friendLastName: "Jalaghonia", friendPhone: "543679022", isSelected: false, delegate: self),FriendCellModel(friendId: "9", friendFristName: "Maka", friendLastName: "Petri", friendPhone: "555768900", isSelected: false, delegate: self),FriendCellModel(friendId: "8", friendFristName: "Lisa", friendLastName: "Axlvediani", friendPhone: "571345890", isSelected: false, delegate: self)]
-        
+    
         setupViews()
+        getFiends()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        
+        friendNameTextField.addTarget(self, action: #selector(NewGroupSecondVC.textFieldDidChange(_:)), for: .editingChanged)
         
         tableViewOuterView.clipsToBounds = true
         tableViewOuterView.layer.cornerRadius = tableViewOuterView.frame.size.width / 10
@@ -65,6 +64,7 @@ class NewGroupSecondVC: UIViewController, FriendCellDelegate {
         }
     }
     
+    
     func setupViews() {
         configureTableView()
         configureCollectionView()
@@ -77,7 +77,7 @@ class NewGroupSecondVC: UIViewController, FriendCellDelegate {
         tableView.keyboardDismissMode = .interactive
         tableView.allowsSelection = true
         
-        tableView.separatorInset = UIEdgeInsets(top: 0, left: tableRowHeight + tableViewOffset, bottom: 0, right: tableViewOffset)
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: Constants.tableRowHeight + Constants.tableViewOffset, bottom: 0, right: Constants.tableViewOffset)
         
         tableView.register(
             UINib(
@@ -103,13 +103,50 @@ class NewGroupSecondVC: UIViewController, FriendCellDelegate {
             ),
             forCellWithReuseIdentifier: "SelectedFriendCell"
         )
-        
-//        collectionView.addGestureRecognizer(
-//            UITapGestureRecognizer(
-//                target: self,
-//                action: #selector(handleTap(guesture:))
-//            )
-//        )
+    }
+    
+    func getFiends() {
+        let keychain = KeychainSwift()
+        if let userId = keychain.get("userId") {
+            loader.startAnimating()
+            service.getUserFriends(userId: userId) { [weak self] result in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.loader.stopAnimating()
+                    switch result {
+                    case .success(let response):
+                        self.handleSuccess(response: response)
+                    case .failure(let error):
+                        self.handleError(error: error.localizedDescription.description)
+                    }
+                }
+            }
+        } else {
+            showWarningAlert(warningText: "Could not get user Info!")
+        }
+    }
+    
+    func handleSuccess(response: UserFriends) {
+        var userFriends = [FriendCellModel]()
+        for friend in response.friends {
+            userFriends.append(
+                FriendCellModel(
+                    friendId: friend.friendId,
+                    friendFristName: friend.friendFirstName,
+                    friendLastName: friend.friendLastName,
+                    friendPhone: friend.friendPhone,
+                    isSelected: false,
+                    delegate: self
+                )
+            )
+        }
+        friends = userFriends
+        tableData = userFriends
+        tableView.reloadData()
+    }
+    
+    func handleError(error: String?) {
+        showWarningAlert(warningText: error ?? "Unspecified Error!")
     }
     
     func showWarningMessage() {
@@ -130,19 +167,45 @@ class NewGroupSecondVC: UIViewController, FriendCellDelegate {
     
     func cellDidClick(_ friend: FriendCell) {
         if(friend.model.isSelected) {
-           collectionData.append(
-            UserFriend(
-                friendId: friend.model.friendId,
-                friendFirstName: friend.model.friendFristName,
-                friendLastName: friend.model.friendLastName,
-                friendPhone: friend.model.friendPhone
-            ))
+            if collectionData.count < (membersCount ?? 0) - 1 {
+                collectionData.append(
+                    UserFriend(
+                        friendId: friend.model.friendId,
+                        friendFirstName: friend.model.friendFristName,
+                        friendLastName: friend.model.friendLastName,
+                        friendPhone: friend.model.friendPhone
+                    )
+                )
+            } else {
+                friend.toggleSelection()
+                showWarningAlert(
+                    warningText: "Can't add new Member to the Group. Maximal number of members is reached!"
+                )
+            }
         } else {
             if let offset = collectionData.firstIndex(where: {$0.friendId == friend.model.friendId}) {
                 collectionData.remove(at: offset)
             }
         }
         collectionView.reloadData()
+    }
+    
+    func filterFriends(filterString: String) {
+        loader.startAnimating()
+        var filteredFriends: [FriendCellModel] = []
+        if filterString != "" {
+            for friend in friends {
+                if(friend.friendFristName.lowercased().contains(filterString.lowercased()) ||
+                   friend.friendLastName.lowercased().contains(filterString.lowercased())) {
+                    filteredFriends.append(friend)
+                }
+            }
+        } else {
+            filteredFriends = friends
+        }
+        tableData = filteredFriends
+        tableView.reloadData()
+        loader.stopAnimating()
     }
     
     
@@ -152,6 +215,11 @@ class NewGroupSecondVC: UIViewController, FriendCellDelegate {
     
     @IBAction func back() {
         dismiss(animated: true, completion: nil)
+    }
+    
+    
+    @objc func textFieldDidChange(_ textField: UITextField) {
+        filterFriends(filterString: textField.text ?? "")
     }
     
 }
@@ -182,7 +250,7 @@ extension NewGroupSecondVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return tableRowHeight
+        return Constants.tableRowHeight
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -221,9 +289,9 @@ extension NewGroupSecondVC: UICollectionViewDelegateFlowLayout {
         insetForSectionAt section: Int
     ) -> UIEdgeInsets {
         return UIEdgeInsets(
-            top: Constants.topBottomSpacing,
+            top: 0,
             left: Constants.spacing,
-            bottom: Constants.topBottomSpacing,
+            bottom: 0,
             right: Constants.spacing
         )
     }
@@ -233,11 +301,10 @@ extension NewGroupSecondVC: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        let spareWidth = collectionView.frame.width - ((4 - 1) * 10) - 10 - 50
-        let cellWidth = spareWidth / 4
-//        print(cellWidth)
-//        print(collectionView.frame.height)
+        let spareWidth = collectionView.frame.width - ((Double(Constants.itemCount) + 1.0) * Constants.spacing)
+        let cellWidth = spareWidth / Double(Constants.itemCount)
         let cellHeight = collectionView.frame.height
+        
         return CGSize(width: cellWidth, height: cellHeight)
     }
     
@@ -246,7 +313,7 @@ extension NewGroupSecondVC: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         minimumInteritemSpacingForSectionAt section: Int
     ) -> CGFloat {
-        return 10
+        return Constants.spacing
     }
     
 }

@@ -79,11 +79,13 @@ class FriendCell: UITableViewCell {
         }
     }
     
-    @IBAction func handleCellClick() {
+    func toggleSelection() {
         model.isSelected.toggle()
-
         checkIfCellIsSelected()
-
+    }
+    
+    @IBAction func handleCellClick() {
+        toggleSelection()
         model.delegate?.cellDidClick(self)
     }
     
