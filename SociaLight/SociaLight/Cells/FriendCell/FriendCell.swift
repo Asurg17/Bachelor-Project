@@ -6,21 +6,26 @@
 //
 
 import UIKit
+import SDWebImage
 
 class FriendCellModel {
     var friendId: String
     var friendFristName: String
     var friendLastName: String
+    var friendImageURL: String
+    var friendImage: UIImage
     var friendPhone: String
     var isSelected: Bool
     
     weak var delegate: FriendCellDelegate?
 
-    init(friendId: String, friendFristName: String, friendLastName: String, friendPhone: String, isSelected: Bool, delegate: FriendCellDelegate?) {
+    init(friendId: String, friendFristName: String, friendLastName: String, friendImageURL: String, friendPhone: String, isSelected: Bool, delegate: FriendCellDelegate?) {
         self.friendId = friendId
         self.friendFristName = friendFristName
         self.friendLastName = friendLastName
+        self.friendImageURL = friendImageURL
         self.friendPhone = friendPhone
+        self.friendImage = UIImage()
         self.isSelected = isSelected
         self.delegate = delegate
     }
@@ -33,7 +38,7 @@ protocol FriendCellDelegate: AnyObject {
 class FriendCell: UITableViewCell {
     
     @IBOutlet private var imageOuterView: UIView!
-    @IBOutlet private var friendImage: UIImageView!
+    @IBOutlet private var friendImageView: UIImageView!
     @IBOutlet private var friendName: UILabel!
     @IBOutlet private var friendPhone: UILabel!
     @IBOutlet private var checkboxOuterView: UIView!
@@ -43,6 +48,19 @@ class FriendCell: UITableViewCell {
     
     func configure(with model: FriendCellModel){
         self.model = model
+        
+        SDImageCache.shared.clearMemory()
+        SDImageCache.shared.clearDisk()
+        
+        friendImageView.sd_setImage(
+            with: URL(string: model.friendImageURL),
+            completed: { (image, error, cacheType, imageURL) in
+                if image == nil {
+                    self.friendImageView.image = UIImage(named: "user")
+                }
+                self.model.friendImage = self.friendImageView.image!
+            }
+        )
         
         friendName.text = model.friendFristName + " " + model.friendLastName
         friendPhone.text = model.friendPhone

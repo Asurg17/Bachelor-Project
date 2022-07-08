@@ -21,14 +21,15 @@ class NewGroupSecondVC: UIViewController, FriendCellDelegate {
     
     private var friends = [FriendCellModel]()
     private var tableData = [FriendCellModel]()
-    private var collectionData = [UserFriend]()
+    private var collectionData = [SelectedFriendCellModel]()
     
-    var image: String?
+    var image: UIImage?
     var membersCount: Int?
     var groupName: String?
     var groupDescription: String?
     
     private let service = Service()
+    private let keychain = KeychainSwift()
     
     lazy var flowLayout: UICollectionViewFlowLayout = {
         let flowLayout = UICollectionViewFlowLayout()
@@ -106,8 +107,7 @@ class NewGroupSecondVC: UIViewController, FriendCellDelegate {
     }
     
     func getFiends() {
-        let keychain = KeychainSwift()
-        if let userId = keychain.get("userId") {
+        if let userId = keychain.get(Constants.userIdKey) {
             loader.startAnimating()
             service.getUserFriends(userId: userId) { [weak self] result in
                 guard let self = self else { return }
@@ -122,7 +122,7 @@ class NewGroupSecondVC: UIViewController, FriendCellDelegate {
                 }
             }
         } else {
-            showWarningAlert(warningText: "Could not get user Info!")
+            showWarningAlert(warningText: Constants.getUserFriendsErrorText)
         }
     }
     
@@ -134,6 +134,7 @@ class NewGroupSecondVC: UIViewController, FriendCellDelegate {
                     friendId: friend.friendId,
                     friendFristName: friend.friendFirstName,
                     friendLastName: friend.friendLastName,
+                    friendImageURL: Constants.getImageURLPrefix + Constants.userImagePrefix + friend.friendId,
                     friendPhone: friend.friendPhone,
                     isSelected: false,
                     delegate: self
@@ -143,10 +144,6 @@ class NewGroupSecondVC: UIViewController, FriendCellDelegate {
         friends = userFriends
         tableData = userFriends
         tableView.reloadData()
-    }
-    
-    func handleError(error: String?) {
-        showWarningAlert(warningText: error ?? "Unspecified Error!")
     }
     
     func showWarningMessage() {
@@ -169,17 +166,16 @@ class NewGroupSecondVC: UIViewController, FriendCellDelegate {
         if(friend.model.isSelected) {
             if collectionData.count < (membersCount ?? 0) - 1 {
                 collectionData.append(
-                    UserFriend(
+                    SelectedFriendCellModel(
                         friendId: friend.model.friendId,
-                        friendFirstName: friend.model.friendFristName,
-                        friendLastName: friend.model.friendLastName,
-                        friendPhone: friend.model.friendPhone
+                        friendFristName: friend.model.friendFristName,
+                        friendImage: friend.model.friendImage
                     )
                 )
             } else {
                 friend.toggleSelection()
                 showWarningAlert(
-                    warningText: "Can't add new Member to the Group. Maximal number of members is reached!"
+                    warningText: Constants.maximalGroupMembersNumberReachedWarningText
                 )
             }
         } else {
@@ -208,9 +204,16 @@ class NewGroupSecondVC: UIViewController, FriendCellDelegate {
         loader.stopAnimating()
     }
     
+    func createNewGroup() {
+        if let userId = keychain.get(Constants.userIdKey) {
+            print("create group" + userId)
+        } else {
+            showWarningAlert(warningText: Constants.createGroupErrorText)
+        }
+    }
     
     @IBAction func createGroup() {
-        print("Create Group")
+        createNewGroup()
     }
     
     @IBAction func back() {

@@ -19,14 +19,14 @@ class MainPageVC: UIViewController {
     
     private let service = Service()
     
+    var collectionData = [GroupCellModel]()
+    var groups = [GroupCellModel]()
+    
     lazy var flowLayout: UICollectionViewFlowLayout = {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .vertical
         return flowLayout
     }()
-    
-    var collectionData = [UserGroup]()
-    var groups = [UserGroup]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,7 +65,7 @@ class MainPageVC: UIViewController {
     
     func getUserGroups() {
         let keychain = KeychainSwift()
-        if let userId = keychain.get("userId") {
+        if let userId = keychain.get(Constants.userIdKey) {
             loader.startAnimating()
             service.getUserGroups(userId: userId) { [weak self] result in
                 guard let self = self else { return }
@@ -80,23 +80,30 @@ class MainPageVC: UIViewController {
                 }
             }
         } else {
-            showWarningAlert(warningText: "Could not get user Info!")
+            showWarningAlert(warningText: Constants.getUserGroupsErrorText)
         }
     }
     
     func handleSuccess(response: UserGroups) {
-        groups = response.groups
-        collectionData = response.groups
+        var userGroups = [GroupCellModel]()
+        for group in response.groups {
+            userGroups.append(
+                GroupCellModel(
+                    groupId: group.groupId,
+                    groupTitle: group.groupTitle,
+                    groupDescription: group.groupDescription,
+                    groupImageURL: Constants.getImageURLPrefix + Constants.groupImagePrefix + group.groupId
+                )
+            )
+        }
+        groups = userGroups
+        collectionData = userGroups
         collectionView.reloadData()
-    }
-    
-    func handleError(error: String?) {
-        showWarningAlert(warningText: error ?? "Unspecified Error!")
     }
     
     func filterGroups(filterString: String) {
         loader.startAnimating()
-        var filteredGroups: [UserGroup] = []
+        var filteredGroups: [GroupCellModel] = []
         if filterString != "" {
             for group in groups {
                 if(group.groupTitle.lowercased().contains(filterString.lowercased())) {

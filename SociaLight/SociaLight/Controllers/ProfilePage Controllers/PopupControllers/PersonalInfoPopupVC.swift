@@ -61,7 +61,7 @@ class PersonalInfoPopupVC: UIViewController {
     func saveChanges() {
         if checkForChanges() {
             let keychain = KeychainSwift()
-            if let userId = keychain.get("userId") {
+            if let userId = keychain.get(Constants.userIdKey) {
                 loader.startAnimating()
                 service.changePersonalInfo(
                     userId: userId,
@@ -81,10 +81,10 @@ class PersonalInfoPopupVC: UIViewController {
                     }
                 }
             } else {
-                showWarningAlert(warningText: "Can't save Changes!")
+                showWarningAlert(warningText: Constants.saveChangesErrorText)
             }
         } else {
-            showWarningAlert(warningText: "Nothing to Change!")
+            showWarningAlert(warningText: Constants.noChangesdWarningText)
         }
     }
     
@@ -112,10 +112,6 @@ class PersonalInfoPopupVC: UIViewController {
             )
         )
         present(alert, animated: true, completion: nil)
-    }
-    
-    func handleError(error: String?) {
-        showWarningAlert(warningText: error ?? "Unspecified Error!")
     }
     
     @IBAction func saveMadeChanges() {

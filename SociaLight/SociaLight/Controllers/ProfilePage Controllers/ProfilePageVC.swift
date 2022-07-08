@@ -7,6 +7,7 @@
 
 import UIKit
 import KeychainSwift
+import SDWebImage
 
 class ProfilePageVC: UIViewController, DismissProtocol {
     
@@ -22,6 +23,7 @@ class ProfilePageVC: UIViewController, DismissProtocol {
     @IBOutlet var loader: UIActivityIndicatorView!
     
     private let service = Service()
+    private let keychain = KeychainSwift()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,8 +53,7 @@ class ProfilePageVC: UIViewController, DismissProtocol {
     }
     
     func loadUserInfo() {
-        let keychain = KeychainSwift()
-        if let userId = keychain.get("userId") {
+        if let userId = keychain.get(Constants.userIdKey) {
             loader.startAnimating()
             service.getUserInfo(userId: userId) { [weak self] result in
                 guard let self = self else { return }
@@ -60,26 +61,54 @@ class ProfilePageVC: UIViewController, DismissProtocol {
                     self.loader.stopAnimating()
                     switch result {
                     case .success(let response):
-                        self.handleSuccess(response: response)
+                        self.handleSuccess(response: response, userId: userId)
                     case .failure(let error):
                         self.handleError(error: error.localizedDescription.description)
                     }
                 }
             }
         } else {
-            showWarningAlert(warningText: "Could not get user Info!")
+            showWarningAlert(warningText: Constants.getUserInfoErrorText)
+        }
+    }
+
+    func uploadUserImage(userImage: UIImage) {
+        if let userId = keychain.get(Constants.userIdKey) {
+            loader.startAnimating()
+            service.uploadImage(imageKey: Constants.userImagePrefix + userId, image: userImage) { [weak self] result in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.loader.stopAnimating()
+                    switch result {
+                    case .success(let response):
+                        self.showWarningAlert(warningText: response)
+                    case .failure(let error):
+                        self.handleError(error: error.localizedDescription.description)
+                    }
+                }
+            }
+        } else {
+            showWarningAlert(warningText: Constants.uploadUserImageErrorText)
         }
     }
     
-    func handleSuccess(response: UserInfoResponse) {
-        reloadView(userInfo: response)
+    func handleSuccess(response: UserInfoResponse, userId: String) {
+        reloadView(userInfo: response, userId: userId)
     }
     
-    func handleError(error: String?) {
-        showWarningAlert(warningText: error ?? "Unspecified Error!")
-    }
-    
-    func reloadView(userInfo: UserInfoResponse){
+    func reloadView(userInfo: UserInfoResponse, userId: String){
+        SDImageCache.shared.clearMemory()
+        SDImageCache.shared.clearDisk()
+        
+        profileImage.sd_setImage(
+            with: URL(string: Constants.getImageURLPrefix + Constants.userImagePrefix + userId),
+            completed: { (image, error, cacheType, imageURL) in
+                if image == nil {
+                    self.profileImage.image = UIImage(named: "user")
+                }
+            }
+        )
+        
         usernameLabel.text = userInfo.username
         firstNameLabel.text = userInfo.firstName
         lastNameLabel.text = userInfo.lastName
@@ -98,14 +127,35 @@ class ProfilePageVC: UIViewController, DismissProtocol {
     
     
     @IBAction func signOut() {
-        let keychain = KeychainSwift()
-        keychain.delete("userId")
+        keychain.delete(Constants.userIdKey)
         self.parent?.navigationController?.popToRootViewController(animated: true)
     }
 
     
     @objc func imageViewTapped(_ sender:AnyObject){
-        print("wefwefew")
+        let vc = UIImagePickerController()
+        vc.sourceType = .photoLibrary
+        vc.delegate = self
+        vc.allowsEditing = true
+        present(vc, animated: true)
+    }
+    
+}
+
+extension ProfilePageVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            uploadUserImage(userImage: image)
+            profileImage.image = image
+        }
+        
+        picker.dismiss(animated: true)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
     }
     
 }

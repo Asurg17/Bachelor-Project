@@ -38,7 +38,7 @@ class ChangePasswordPopupVC: UIViewController {
                     if checkPasswordLength(password: oldPasswordTextField.text!) &&
                        checkPasswordLength(password: newPasswordTextField.text!) {
                         let keychain = KeychainSwift()
-                        if let userId = keychain.get("userId") {
+                        if let userId = keychain.get(Constants.userIdKey) {
                             loader.startAnimating()
                             service.changePassword(
                                 userId: userId,
@@ -57,15 +57,15 @@ class ChangePasswordPopupVC: UIViewController {
                                 }
                             }
                         } else {
-                            showWarningAlert(warningText: "Can't change password!")
+                            showWarningAlert(warningText: Constants.changePasswordErrorText)
                         }
                     }
                 } else {
-                    showWarningAlert(warningText: "Can't use same password!")
+                    showWarningAlert(warningText: Constants.samePasswordsWarningText)
                 }
             }
         } else {
-            showWarningAlert(warningText: "Please fill all the fields!")
+            showWarningAlert(warningText: Constants.fieldsAreNotFilledWarningText)
         }
     }
     
@@ -92,10 +92,6 @@ class ChangePasswordPopupVC: UIViewController {
             )
         )
         present(alert, animated: true, completion: nil)
-    }
-    
-    func handleError(error: String?) {
-        showWarningAlert(warningText: error ?? "Unspecified Error!")
     }
     
     @IBAction func changePassword() {

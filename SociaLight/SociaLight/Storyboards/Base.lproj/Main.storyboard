@@ -461,7 +461,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ChE-li-L8p">
                                 <rect key="frame" x="145" y="120" width="124" height="124"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user" translatesAutoresizingMaskIntoConstraints="NO" id="nmL-vF-l85" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="GroupIcon" translatesAutoresizingMaskIntoConstraints="NO" id="nmL-vF-l85" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
                                         <rect key="frame" x="6" y="6" width="112" height="112"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
@@ -572,6 +572,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="groupDescription" destination="gNm-fD-mE5" id="Dn8-nz-pUX"/>
+                        <outlet property="groupImage" destination="nmL-vF-l85" id="0LI-qj-ntF"/>
                         <outlet property="groupName" destination="w9g-Fh-sX7" id="Ge2-G2-3OA"/>
                         <outlet property="imageOuterView" destination="ChE-li-L8p" id="SuJ-wp-ndr"/>
                         <outlet property="membersCount" destination="ohr-2W-PJK" id="YVr-BR-lwe"/>
@@ -898,19 +899,19 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="empty_avatar_image" translatesAutoresizingMaskIntoConstraints="NO" id="PiK-JQ-r9Q" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
-                                <rect key="frame" x="124" y="88" width="166" height="165.5"/>
+                                <rect key="frame" x="134.5" y="88" width="145" height="145"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="PiK-JQ-r9Q" secondAttribute="height" multiplier="1:1" id="snt-Gl-Snl"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="username" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V6Q-ny-UMM">
-                                <rect key="frame" x="163.5" y="261.5" width="87.5" height="24"/>
+                                <rect key="frame" x="163.5" y="241" width="87.5" height="24"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="NLr-QI-fQ1">
-                                <rect key="frame" x="20.5" y="317.5" width="373" height="205"/>
+                                <rect key="frame" x="20.5" y="297" width="373" height="205"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1VA-Xc-DeP">
                                         <rect key="frame" x="0.0" y="0.0" width="373" height="30"/>
@@ -1139,10 +1140,10 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="dWE-hd-QUZ">
-                                <rect key="frame" x="83" y="554.5" width="248" height="89.5"/>
+                                <rect key="frame" x="83" y="534" width="248" height="89.5"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iMN-gP-Y7z" customClass="RoundCornerButton" customModule="SociaLight" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="248" height="40"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="248" height="39.5"/>
                                         <color key="backgroundColor" red="0.12774153839999999" green="0.29815587240000002" blue="0.61682558239999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -1154,7 +1155,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="z0C-3Y-uWm" customClass="RoundCornerButton" customModule="SociaLight" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="50" width="248" height="39.5"/>
+                                        <rect key="frame" x="0.0" y="49.5" width="248" height="40"/>
                                         <color key="backgroundColor" red="0.12774153839999999" green="0.29815587240000002" blue="0.61682558239999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -1184,7 +1185,7 @@
                             <constraint firstItem="NLr-QI-fQ1" firstAttribute="width" secondItem="chW-qQ-rdb" secondAttribute="width" multiplier="0.9" id="TPZ-8e-U8y"/>
                             <constraint firstItem="OP4-TR-9Ms" firstAttribute="centerY" secondItem="chW-qQ-rdb" secondAttribute="centerY" id="cWq-v4-tHk"/>
                             <constraint firstItem="dWE-hd-QUZ" firstAttribute="top" secondItem="NLr-QI-fQ1" secondAttribute="bottom" constant="32" id="d9K-A1-a27"/>
-                            <constraint firstItem="PiK-JQ-r9Q" firstAttribute="width" secondItem="chW-qQ-rdb" secondAttribute="width" multiplier="0.4" id="fAa-Gz-c2c"/>
+                            <constraint firstItem="PiK-JQ-r9Q" firstAttribute="width" secondItem="chW-qQ-rdb" secondAttribute="width" multiplier="0.35" id="fAa-Gz-c2c"/>
                             <constraint firstItem="V6Q-ny-UMM" firstAttribute="centerX" secondItem="chW-qQ-rdb" secondAttribute="centerX" id="gGx-TI-2sz"/>
                             <constraint firstItem="PiK-JQ-r9Q" firstAttribute="top" secondItem="gv0-i0-Hux" secondAttribute="top" id="ogy-OP-Fw6"/>
                             <constraint firstItem="NLr-QI-fQ1" firstAttribute="centerX" secondItem="chW-qQ-rdb" secondAttribute="centerX" id="tCC-pG-rOE"/>
@@ -1633,7 +1634,7 @@
             <size key="intrinsicContentSize" width="66" height="33"/>
         </designable>
         <designable name="nmL-vF-l85">
-            <size key="intrinsicContentSize" width="512" height="512"/>
+            <size key="intrinsicContentSize" width="100" height="100"/>
         </designable>
         <designable name="oHy-lM-yhv">
             <size key="intrinsicContentSize" width="110" height="19.5"/>
@@ -1658,6 +1659,7 @@
         </designable>
     </designables>
     <resources>
+        <image name="GroupIcon" width="100" height="100"/>
         <image name="arrow.backward" catalog="system" width="128" height="98"/>
         <image name="arrow.right" catalog="system" width="128" height="98"/>
         <image name="calendar" catalog="system" width="128" height="106"/>
@@ -1681,7 +1683,6 @@
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="rectangle.portrait.and.arrow.right" catalog="system" width="128" height="108"/>
         <image name="sign_in_page_image" width="2000" height="1333"/>
-        <image name="user" width="512" height="512"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

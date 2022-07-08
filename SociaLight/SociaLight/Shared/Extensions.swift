@@ -8,6 +8,10 @@
 import UIKit
 
 extension UIViewController {
+    
+    func handleError(error: String?) {
+        showWarningAlert(warningText: error ?? Constants.unspecifiedErrorText)
+    }
 
     func showWarningAlert(warningText: String) {
         let alert = UIAlertController(
@@ -49,6 +53,31 @@ extension UIViewController {
     }
     
     struct Constants {
+        // Keys
+        static let userIdKey: String = "userId"
+        
+        // Warning textst
+        static let fieldsAreNotFilledWarningText: String = "Please fill all the fields!"
+        static let samePasswordsWarningText: String = "Can't use same password!"
+        static let noChangesdWarningText: String = "Nothing to change!"
+        static let membersCountNotChosenWarningText: String = "Please choose members count!"
+        static let maximalGroupMembersNumberReachedWarningText: String = "Can't add new Member to the Group. Maximal number of members is reached!"
+        
+        // Error Texts
+        static let unspecifiedErrorText: String = "Unspecified Error"
+        static let getUserInfoErrorText: String = "Can't get user Info"
+        static let getUserGroupsErrorText: String = "Can't get user Groups"
+        static let getUserFriendsErrorText: String = "Can't get user Friends"
+        static let searchGroupsErrorText: String = "Can't serch new Groups"
+        static let uploadUserImageErrorText: String = "Can't upload user Image"
+        static let changePasswordErrorText: String = "Can't change Password"
+        static let saveChangesErrorText: String = "Can't save Changes"
+        static let createGroupErrorText: String = "Can't create Group"
+        
+        // Picker Data
+        static let pickerData: [Int] = [2, 3, 4, 5, 10, 20, 25, 50]
+        
+        // Table&Collection View Parameters
         static let itemCountInLine: CGFloat = 3
         static let spacing: CGFloat = 10.0
         static let lineSpacing: CGFloat = 20.0
@@ -57,6 +86,11 @@ extension UIViewController {
         static let tableRowHeight = 80.0
         static let tableViewOffset = 32.0
         static let itemCount: CGFloat = 4
+        
+        // Get image variables
+        static let getImageURLPrefix: String = "http://localhost:9000/getImage?imageKey="
+        static let userImagePrefix: String = "userImage"
+        static let groupImagePrefix: String = "groupImage"
     }
     
 }
@@ -168,5 +202,24 @@ extension UIColor {
             (a, r, g, b) = (255, 0, 0, 0)
         }
         self.init(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)
+    }
+}
+
+extension UIImage {
+    func toPngString() -> String? {
+        let data = self.pngData()
+        return data?.base64EncodedString(options: .endLineWithLineFeed)
+    }
+  
+    func toJpegString(compressionQuality cq: CGFloat) -> String? {
+        let data = self.jpegData(compressionQuality: cq)
+        return data?.base64EncodedString(options: .endLineWithLineFeed)
+    }
+}
+
+extension NSMutableData {
+    func appendString(string: String) {
+        let data = string.data(using: String.Encoding.utf8, allowLossyConversion: true)
+        append(data!)
     }
 }

@@ -11,13 +11,15 @@ import KeychainSwift
 class NewGroupFirstVC: UIViewController {
     
     @IBOutlet var imageOuterView: UIView!
+    @IBOutlet var groupImage: UIImageView!
     @IBOutlet var membersCount: UIButton!
     @IBOutlet var groupName: UITextField!
     @IBOutlet var groupDescription: UITextField!
     
     var pickerView: UIPickerView!
-    var pickerData = [2, 3, 4, 5, 10, 20, 25, 50]
     var pickerValue: Int?
+    
+    var isGroupImageChanged = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,13 +31,13 @@ class NewGroupFirstVC: UIViewController {
         super.viewDidLayoutSubviews()
         
         imageOuterView.layer.borderWidth = 2
-        imageOuterView.layer.borderColor = UIColor(hexString: "#2a2727").cgColor
+        imageOuterView.layer.borderColor = UIColor.white.cgColor//UIColor(hexString: "#2a2727").cgColor
         imageOuterView.layer.cornerRadius = imageOuterView.frame.size.width / 2
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let receiverVC = segue.destination as! NewGroupSecondVC
-        receiverVC.image = ""
+        if isGroupImageChanged { receiverVC.image = groupImage.image }
         receiverVC.membersCount = pickerValue
         receiverVC.groupName = groupName.text
         receiverVC.groupDescription = groupDescription.text
@@ -48,11 +50,19 @@ class NewGroupFirstVC: UIViewController {
     func setupViews() {
         groupName.delegate = self
         groupDescription.delegate = self
+        
+        groupImage.isUserInteractionEnabled = true
+        groupImage.addGestureRecognizer(
+            UITapGestureRecognizer(
+                target: self,
+                action: #selector(imageViewTapped(_:))
+            )
+        )
     }
     
     func areViewsValid() -> Bool {
         if let _ = pickerValue {} else {
-            showWarningAlert(warningText: "Please choose Members Count")
+            showWarningAlert(warningText: Constants.membersCountNotChosenWarningText)
             return false
         }
         return true
@@ -71,7 +81,7 @@ class NewGroupFirstVC: UIViewController {
                 title: "OK",
                 style: .default,
                 handler: { _ in
-                    self.pickerValue = self.pickerData[self.pickerView.selectedRow(inComponent: 0)]
+                    self.pickerValue = Constants.pickerData[self.pickerView.selectedRow(inComponent: 0)]
                     self.membersCount.setTitle(
                         "Members Count (" + String(self.pickerValue ?? 0) + ")",
                         for: .normal
@@ -87,12 +97,39 @@ class NewGroupFirstVC: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
+    @objc func imageViewTapped(_ sender:AnyObject){
+        let vc = UIImagePickerController()
+        vc.sourceType = .photoLibrary
+        vc.delegate = self
+        vc.allowsEditing = true
+        present(vc, animated: true)
+    }
+    
 }
+
+extension NewGroupFirstVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            isGroupImageChanged = true
+            groupImage.image = image
+        }
+        
+        picker.dismiss(animated: true)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+    }
+    
+}
+
 
 extension NewGroupFirstVC: UIPickerViewDelegate {
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return String(pickerData[row])
+        return String(Constants.pickerData[row])
     }
     
 }
@@ -104,7 +141,7 @@ extension NewGroupFirstVC: UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return pickerData.count
+        return Constants.pickerData.count
     }
     
 }

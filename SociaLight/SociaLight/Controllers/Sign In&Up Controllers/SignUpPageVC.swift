@@ -61,7 +61,7 @@ class SignUpPageVC: UIViewController {
                 }
             }
         } else {
-            showWarningAlert(warningText: "Please fill all the fields!")
+            showWarningAlert(warningText: Constants.fieldsAreNotFilledWarningText)
         }
     }
     
@@ -91,15 +91,11 @@ class SignUpPageVC: UIViewController {
         clearAllTextFields()
         
         let keychain = KeychainSwift()
-        keychain.set(response, forKey: "userId")
+        keychain.set(response, forKey: Constants.userIdKey)
         
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let signUpPageController = storyBoard.instantiateViewController(withIdentifier: "MainPage") as! UITabBarController
         self.navigationController?.pushViewController(signUpPageController, animated: true)
-    }
-    
-    func handleError(error: String?) {
-        showWarningAlert(warningText: error ?? "Unspecified Error!")
     }
     
     func clearAllTextFields() {

@@ -1,12 +1,17 @@
 package main
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"database/sql"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"image"
+	"image/png"
+	"io/ioutil"
 	"net/http"
+	"os"
 
 	_ "github.com/lib/pq"
 )
@@ -246,7 +251,7 @@ func getUserGroups(w http.ResponseWriter, req *http.Request) {
 	w.Write(jsonResp)
 }
 
-func searchUserGroups(w http.ResponseWriter, req *http.Request) {
+func searchNewGroups(w http.ResponseWriter, req *http.Request) {
 
 	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
 
@@ -473,6 +478,82 @@ func changePersonalInfo(w http.ResponseWriter, req *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func uploadImage(w http.ResponseWriter, req *http.Request) {
+
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
+
+	db, err := sql.Open("postgres", psqlconn)
+	if err != nil {
+		print(err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	defer db.Close()
+
+	imageFolderPath := "./images"
+	imageKey := req.URL.Query().Get("imageKey")
+
+	if _, err := os.Stat(imageFolderPath); os.IsNotExist(err) {
+		err := os.Mkdir(imageFolderPath, os.ModePerm)
+		if err != nil {
+			print(err)
+			w.Header().Set("Error", err.Error())
+			w.WriteHeader(500)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	imgBytes, _ := ioutil.ReadAll(req.Body)
+	img, _, _ := image.Decode(bytes.NewReader(imgBytes))
+	out, err := os.Create(imageFolderPath + "/" + imageKey + ".png")
+
+	if err != nil {
+		print(err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = png.Encode(out, img)
+
+	if err != nil {
+		print(err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func getImage(w http.ResponseWriter, req *http.Request) {
+
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
+
+	db, err := sql.Open("postgres", psqlconn)
+	if err != nil {
+		print(err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	defer db.Close()
+
+	imageFolderPath := "./images"
+	imageKey := req.URL.Query().Get("imageKey")
+	dat, _ := os.ReadFile(imageFolderPath + "/" + imageKey + ".png")
+
+	w.Write(dat)
+}
+
 func main() {
 	// // handle `/` route
 	// http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
@@ -481,13 +562,15 @@ func main() {
 	// log.Fatal(http.ListenAndServeTLS(":9000", "localhost.crt", "localhost.key", nil))
 	// http.HandleFunc("/registerClient", registerClient)
 
-	http.HandleFunc("/registerClient", registerClient)
+	http.HandleFunc("/getImage", getImage)
 	http.HandleFunc("/checkUser", checkUser)
 	http.HandleFunc("/getUserInfo", getUserInfo)
+	http.HandleFunc("/uploadImage", uploadImage)
 	http.HandleFunc("/getUserGroups", getUserGroups)
+	http.HandleFunc("/registerClient", registerClient)
 	http.HandleFunc("/getUserFriends", getUserFriends)
 	http.HandleFunc("/changePassword", changePassword)
-	http.HandleFunc("/searchUserGroups", searchUserGroups)
+	http.HandleFunc("/searchNewGroups", searchNewGroups)
 	http.HandleFunc("/changePersonalInfo", changePersonalInfo)
 
 	http.ListenAndServe(":9000", nil)

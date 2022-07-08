@@ -7,11 +7,26 @@
 
 import UIKit
 
+class SelectedFriendCellModel {
+    var friendId: String
+    var friendFristName: String
+    var friendImage: UIImage
+    
+    init(friendId: String, friendFristName: String, friendImage: UIImage) {
+        self.friendId = friendId
+        self.friendFristName = friendFristName
+        self.friendImage = friendImage
+    }
+}
+
+
 class SelectedFriendCell: UICollectionViewCell {
     
     @IBOutlet private var imageOuterView: UIView!
     @IBOutlet private var selectedFriendImage: UIImageView!
     @IBOutlet private var selectedFriendFirstName: UILabel!
+    
+    var model: SelectedFriendCellModel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -25,8 +40,11 @@ class SelectedFriendCell: UICollectionViewCell {
         imageOuterView.layer.cornerRadius = imageOuterView.frame.size.width / 2
     }
     
-    func configure(with selectedFriend: UserFriend){
-        selectedFriendFirstName.text = selectedFriend.friendFirstName
+    func configure(with model: SelectedFriendCellModel){
+        self.model = model
+        
+        selectedFriendImage.image = model.friendImage
+        selectedFriendFirstName.text = model.friendFristName
     }
 
 }

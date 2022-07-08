@@ -116,7 +116,7 @@
             <connections>
                 <outlet property="checkboxInnerView" destination="Fsb-f6-INH" id="R4v-ua-bga"/>
                 <outlet property="checkboxOuterView" destination="yjj-2m-N04" id="M2y-Qf-JeE"/>
-                <outlet property="friendImage" destination="POM-NU-0Cv" id="o3N-yv-Lcg"/>
+                <outlet property="friendImageView" destination="POM-NU-0Cv" id="ghc-uk-woF"/>
                 <outlet property="friendName" destination="Ur1-9H-3MO" id="Nok-Bl-2mC"/>
                 <outlet property="friendPhone" destination="1yI-jq-fHL" id="GIs-PU-mPm"/>
                 <outlet property="imageOuterView" destination="NrQ-rP-b5f" id="5Bp-YC-2wm"/>

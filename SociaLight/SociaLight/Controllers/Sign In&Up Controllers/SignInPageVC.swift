@@ -38,7 +38,7 @@ class SignInPageVC: UIViewController {
     
     func checkIfAlreadySignedIn() {
         let keychain = KeychainSwift()
-        if let _ = keychain.get("userId") {
+        if let _ = keychain.get(Constants.userIdKey) {
             navigateToMainPage()
         }
     }
@@ -64,7 +64,7 @@ class SignInPageVC: UIViewController {
                 }
             }
         } else {
-            showWarningAlert(warningText: "Please fill all the fields!")
+            showWarningAlert(warningText: Constants.fieldsAreNotFilledWarningText)
         }
     }
     
@@ -77,13 +77,9 @@ class SignInPageVC: UIViewController {
         clearAllTextFields()
         
         let keychain = KeychainSwift()
-        keychain.set(response, forKey: "userId")
+        keychain.set(response, forKey: Constants.userIdKey)
         
         navigateToMainPage()
-    }
-    
-    func handleError(error: String?) {
-        showWarningAlert(warningText: error ?? "Unspecified Error!")
     }
     
     func clearAllTextFields() {

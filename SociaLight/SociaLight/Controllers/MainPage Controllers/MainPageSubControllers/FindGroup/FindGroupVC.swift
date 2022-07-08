@@ -23,7 +23,7 @@ class FindGroupVC: UIViewController {
         return flowLayout
     }()
     
-    var collectionData: [UserGroup] = []
+    var collectionData: [GroupCellModel] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,11 +58,11 @@ class FindGroupVC: UIViewController {
         )
     }
     
-    func searchUserGroups(groupName: String) {
+    func searchNewGroups(groupName: String) {
         let keychain = KeychainSwift()
-        if let userId = keychain.get("userId") {
+        if let userId = keychain.get(Constants.userIdKey) {
             loader.startAnimating()
-            service.searchUserGroups(userId: userId, groupName: groupName) { [weak self] result in
+            service.searchNewGroups(userId: userId, groupName: groupName) { [weak self] result in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     self.loader.stopAnimating()
@@ -75,17 +75,24 @@ class FindGroupVC: UIViewController {
                 }
             }
         } else {
-            showWarningAlert(warningText: "Could not get user Info!")
+            showWarningAlert(warningText: Constants.searchGroupsErrorText)
         }
     }
     
     func handleSuccess(response: UserGroups) {
-        collectionData = response.groups
+        var userGroups = [GroupCellModel]()
+        for group in response.groups {
+            userGroups.append(
+                GroupCellModel(
+                    groupId: group.groupId,
+                    groupTitle: group.groupTitle,
+                    groupDescription: group.groupDescription,
+                    groupImageURL: Constants.getImageURLPrefix + Constants.groupImagePrefix + group.groupId
+                )
+            )
+        }
+        collectionData = userGroups
         collectionView.reloadData()
-    }
-    
-    func handleError(error: String?) {
-        showWarningAlert(warningText: error ?? "Unspecified Error!")
     }
     
     func navigateToGroupPage(grouId: String) {
@@ -118,7 +125,7 @@ extension FindGroupVC: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let groupName = groupNameTextField.text {
             if groupName != "" {
-                searchUserGroups(groupName: groupName)
+                searchNewGroups(groupName: groupName)
             }
         }
         textField.resignFirstResponder()
