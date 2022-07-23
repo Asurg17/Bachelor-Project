@@ -9,6 +9,8 @@ import UIKit
 
 extension UIViewController {
     
+    // ------------Shared Functions-----------
+    
     func handleError(error: String?) {
         showWarningAlert(warningText: error ?? Constants.unspecifiedErrorText)
     }
@@ -52,6 +54,53 @@ extension UIViewController {
         return formatter.string(from: date)
     }
     
+    // ---------------Navigation--------------
+    
+    func navigateToSignUpPage() {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "SignUp", bundle: nil)
+        let signUpPageController = storyBoard.instantiateViewController(withIdentifier: "SignUpPageVC") as! SignUpPageVC
+        self.navigationController?.pushViewController(signUpPageController, animated: true)
+    }
+    
+    func navigateToMainPage() {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let tabBarController = storyBoard.instantiateViewController(withIdentifier: "MainPage") as! UITabBarController
+        self.navigationController?.pushViewController(tabBarController, animated: true)
+    }
+    
+    func navigateToFindGroupPage() {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let findGroupController = storyBoard.instantiateViewController(withIdentifier: "FindGroupVC") as! FindGroupVC
+        self.navigationController?.pushViewController(findGroupController, animated: true)
+    }
+    
+    func navigateToNewGroupPage() {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let newGroupControlles = storyBoard.instantiateViewController(withIdentifier: "NewGroupFirstVC") as! NewGroupFirstVC
+        self.navigationController?.pushViewController(newGroupControlles, animated: true)
+    }
+    
+    func navigateToNewGroupSecondVC(paramsStruct: NewGroupSecondPageParamsStruct) {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let newGroupSecondPageController = storyBoard.instantiateViewController(withIdentifier: "NewGroupSecondVC") as! NewGroupSecondVC
+        newGroupSecondPageController.image = paramsStruct.groupImage
+        newGroupSecondPageController.membersCount = paramsStruct.membersCount
+        newGroupSecondPageController.groupName = paramsStruct.groupName
+        newGroupSecondPageController.groupDescription = paramsStruct.groupDescription
+        newGroupSecondPageController.isPrivate = paramsStruct.isPrivate
+        self.navigationController?.pushViewController(newGroupSecondPageController, animated: true)
+    }
+    
+    func navigateToGroupPage(groupId: String) {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let groupPagePageController = storyBoard.instantiateViewController(withIdentifier: "GroupPageVC") as! GroupPageVC
+        groupPagePageController.groupId = groupId
+        self.navigationController?.pushViewController(groupPagePageController, animated: true)
+    }
+    
+    
+    // ----------------Constants--------------
+    
     struct Constants {
         // Keys
         static let userIdKey: String = "userId"
@@ -61,6 +110,7 @@ extension UIViewController {
         static let samePasswordsWarningText: String = "Can't use same password!"
         static let noChangesdWarningText: String = "Nothing to change!"
         static let membersCountNotChosenWarningText: String = "Please choose members count!"
+        static let groupNameWarningText: String = "You Should Provide Group Name!"
         static let maximalGroupMembersNumberReachedWarningText: String = "Can't add new Member to the Group. Maximal number of members is reached!"
         
         // Error Texts
@@ -69,7 +119,7 @@ extension UIViewController {
         static let getUserGroupsErrorText: String = "Can't get user Groups"
         static let getUserFriendsErrorText: String = "Can't get user Friends"
         static let searchGroupsErrorText: String = "Can't serch new Groups"
-        static let uploadUserImageErrorText: String = "Can't upload user Image"
+        static let uploadImageErrorText: String = "Can't upload Image"
         static let changePasswordErrorText: String = "Can't change Password"
         static let saveChangesErrorText: String = "Can't save Changes"
         static let createGroupErrorText: String = "Can't create Group"

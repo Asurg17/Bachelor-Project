@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 // -------------UserInfo--------------
 
@@ -20,7 +21,7 @@ struct UserInfoResponse: Codable {
     let phone: String
 }
 
-// -------------UserGroups--------------
+// -------------UserGroups-------------
 
 struct UserGroups: Codable {
     let groups: [UserGroup]
@@ -41,4 +42,30 @@ struct UserFriend: Codable {
     let friendFirstName: String
     let friendLastName: String
     let friendPhone: String
+}
+
+// -------------Group------------------
+
+struct Group: Codable{
+    let groupId: String
+}
+
+// ------------Response Structs-------------
+
+struct CreateGroupResponse {
+    let groupName: String
+    let groupDescription: String
+    let membersCount: String
+    let isPrivate: String
+    let userId: String
+}
+
+// ------------NewGroupSecondPageParamsStruct-------------
+
+struct NewGroupSecondPageParamsStruct {
+    let groupImage: UIImage
+    let membersCount: Int
+    let groupName: String
+    let groupDescription: String
+    let isPrivate: Bool
 }

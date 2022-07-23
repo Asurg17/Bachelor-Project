@@ -497,4 +497,134 @@ class Service {
         }
     }
     
+    func createGroup(responseParams: CreateGroupResponse,
+                     completion: @escaping (Result<Group, Error>) -> ()) {
+        
+        components.path = "/createGroup"
+        
+        let parameters = [
+            "groupName": responseParams.groupName,
+            "groupDescription": responseParams.groupDescription,
+            "membersCount": responseParams.membersCount,
+            "isPrivate": responseParams.isPrivate,
+            "userId": responseParams.userId
+        ]
+        
+        components.queryItems = parameters.map { key, value in
+           return URLQueryItem(name: key, value: value)
+        }
+        
+        if let url = components.url {
+            let request = URLRequest(url: url)
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            if let data = data {
+                                let decoder = JSONDecoder()
+                                do {
+                                    let response = try decoder.decode(Group.self, from: data)
+                                    completion(.success(response))
+                                } catch {
+                                    completion(.failure(error))
+                                }
+                            } else {
+                                completion(.failure(ServiceError.noData))
+                            }
+                        } else {
+                            if (httpUrlResponse.value(forHTTPHeaderField: "Error") ?? "").contains("duplicate key") {
+                                completion(.failure(NSError(domain: "",
+                                                            code: 400,
+                                                            userInfo: [NSLocalizedDescriptionKey: "You have already created group with such name. Please choose another name and try again!"]
+                                                           )))
+                            } else {
+                                completion(.failure(NSError(domain: "",
+                                                            code: 400,
+                                                            userInfo: [NSLocalizedDescriptionKey: "Can't create new Group!"]
+                                                           )))
+                            }
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    }
+    
+    func addGroupMembers(userId: String,
+                         groupId: String,
+                         members: Array<String>,
+                         completion: @escaping (Result<String, Error>) -> ()) {
+        
+        components.path = "/addGroupMembers"
+        
+        let parameters = [
+            "userId": userId,
+            "groupId": groupId
+        ]
+        
+        components.queryItems = parameters.map { key, value in
+           return URLQueryItem(name: key, value: value)
+        }
+        
+        if let url = components.url {
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let jsonObject: NSMutableDictionary = NSMutableDictionary()
+            var jsonData: Data  = Data()
+            jsonObject.setValue(members, forKey: "members")
+            
+            do {
+                jsonData = try JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted)
+            } catch {
+                completion(.failure(NSError(domain: "",
+                                            code: 400,
+                                            userInfo: [NSLocalizedDescriptionKey: "Can't get Json Data"]
+                                           )))
+            }
+            
+            request.httpMethod = "POST"
+            request.httpBody = jsonData
+            
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            completion(.success("OK!"))
+                        } else {
+                            completion(.failure(NSError(domain: "",
+                                                        code: 400,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                       )))
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    }
+    
 }

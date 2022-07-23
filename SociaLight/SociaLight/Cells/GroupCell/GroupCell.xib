@@ -63,14 +63,26 @@
                             <constraint firstItem="C3w-Ga-9oc" firstAttribute="top" secondItem="cXk-mz-n3k" secondAttribute="bottom" constant="6" id="jy6-ZF-xOe"/>
                         </constraints>
                     </view>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uSW-vK-gKn">
+                        <rect key="frame" x="0.0" y="0.0" width="138" height="208"/>
+                        <state key="normal" title="Button"/>
+                        <buttonConfiguration key="configuration" style="plain"/>
+                        <connections>
+                            <action selector="navigateToMainPage" destination="gTV-IL-0wX" eventType="touchUpInside" id="vZw-HZ-gr4"/>
+                        </connections>
+                    </button>
                 </subviews>
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
+                <constraint firstItem="uSW-vK-gKn" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="2Te-98-ndu"/>
                 <constraint firstAttribute="bottom" secondItem="ZZ0-4V-gph" secondAttribute="bottom" id="3k8-aH-brX"/>
                 <constraint firstAttribute="trailing" secondItem="ZZ0-4V-gph" secondAttribute="trailing" id="8sO-R8-HeH"/>
+                <constraint firstAttribute="trailing" secondItem="uSW-vK-gKn" secondAttribute="trailing" id="EAO-l2-Fex"/>
                 <constraint firstItem="ZZ0-4V-gph" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="PLB-T9-y2H"/>
                 <constraint firstItem="ZZ0-4V-gph" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="bw3-xX-eIc"/>
+                <constraint firstItem="uSW-vK-gKn" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="bzM-V7-G5Q"/>
+                <constraint firstAttribute="bottom" secondItem="uSW-vK-gKn" secondAttribute="bottom" id="raM-Tp-NcA"/>
             </constraints>
             <size key="customSize" width="138" height="208"/>
             <connections>

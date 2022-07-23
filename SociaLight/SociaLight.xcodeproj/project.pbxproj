@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		EA06AE7C282D56B200D84D7A /* RoundUIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA06AE7B282D56B200D84D7A /* RoundUIImageView.swift */; };
 		EA071DD1285648AA008CC78C /* FindGroupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA071DD0285648AA008CC78C /* FindGroupVC.swift */; };
+		EA086E282886DE3600055825 /* GroupPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA086E272886DE3600055825 /* GroupPageVC.swift */; };
 		EA2D13AC2857C15B0052E9BC /* NewGroupFirstVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2D13AB2857C15B0052E9BC /* NewGroupFirstVC.swift */; };
 		EA481B2F283676AE00719282 /* PopUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA481B2E283676AE00719282 /* PopUpView.swift */; };
 		EA481B312836778300719282 /* RoundCornerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA481B302836778300719282 /* RoundCornerButton.swift */; };
@@ -21,6 +22,8 @@
 		EA6C5A80281D724F00721D7F /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6C5A7F281D724F00721D7F /* Service.swift */; };
 		EA6C5A82281FD13500721D7F /* MainPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6C5A81281FD13400721D7F /* MainPageVC.swift */; };
 		EA6C5A85281FD19000721D7F /* ProfilePageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6C5A84281FD19000721D7F /* ProfilePageVC.swift */; };
+		EA730E4F288C227300831880 /* SignIn.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EA730E4E288C227300831880 /* SignIn.storyboard */; };
+		EA730E51288C22AF00831880 /* SignUp.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EA730E50288C22AF00831880 /* SignUp.storyboard */; };
 		EA9A47A628159280006F8409 /* SignUpPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47A528159280006F8409 /* SignUpPageVC.swift */; };
 		EA9A47B22815A391006F8409 /* DesignableUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47B12815A391006F8409 /* DesignableUITextField.swift */; };
 		EA9A47C42817295C006F8409 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47C32817295B006F8409 /* Extensions.swift */; };
@@ -46,6 +49,7 @@
 		02F2774E4532FB5D866A1FE7 /* Pods-SociaLight.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SociaLight.release.xcconfig"; path = "Target Support Files/Pods-SociaLight/Pods-SociaLight.release.xcconfig"; sourceTree = "<group>"; };
 		EA06AE7B282D56B200D84D7A /* RoundUIImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundUIImageView.swift; sourceTree = "<group>"; };
 		EA071DD0285648AA008CC78C /* FindGroupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindGroupVC.swift; sourceTree = "<group>"; };
+		EA086E272886DE3600055825 /* GroupPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupPageVC.swift; sourceTree = "<group>"; };
 		EA2D13AB2857C15B0052E9BC /* NewGroupFirstVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGroupFirstVC.swift; sourceTree = "<group>"; };
 		EA481B2E283676AE00719282 /* PopUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpView.swift; sourceTree = "<group>"; };
 		EA481B302836778300719282 /* RoundCornerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundCornerButton.swift; sourceTree = "<group>"; };
@@ -58,6 +62,8 @@
 		EA6C5A7F281D724F00721D7F /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		EA6C5A81281FD13400721D7F /* MainPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPageVC.swift; sourceTree = "<group>"; };
 		EA6C5A84281FD19000721D7F /* ProfilePageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePageVC.swift; sourceTree = "<group>"; };
+		EA730E4E288C227300831880 /* SignIn.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SignIn.storyboard; sourceTree = "<group>"; };
+		EA730E50288C22AF00831880 /* SignUp.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SignUp.storyboard; sourceTree = "<group>"; };
 		EA9A47A528159280006F8409 /* SignUpPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPageVC.swift; sourceTree = "<group>"; };
 		EA9A47B12815A391006F8409 /* DesignableUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignableUITextField.swift; sourceTree = "<group>"; };
 		EA9A47C32817295B006F8409 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -111,6 +117,14 @@
 			path = MainPageSubControllers;
 			sourceTree = "<group>";
 		};
+		EA086E262886DDED00055825 /* Group Page Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				EA086E272886DE3600055825 /* GroupPageVC.swift */,
+			);
+			path = "Group Page Controllers";
+			sourceTree = "<group>";
+		};
 		EA3DB8BC59679CE3D7B93FCC /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -120,13 +134,13 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		EA481B322836A08500719282 /* Sign In&Up Controllers */ = {
+		EA481B322836A08500719282 /* Sign In&Up Page Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				EA9E6BC927FCB93E00101170 /* SignInPageVC.swift */,
 				EA9A47A528159280006F8409 /* SignUpPageVC.swift */,
 			);
-			path = "Sign In&Up Controllers";
+			path = "Sign In&Up Page Controllers";
 			sourceTree = "<group>";
 		};
 		EA481B332836A32C00719282 /* Additional Controllers */ = {
@@ -196,30 +210,31 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
-		EA7D0E312871C8F500579619 /* MainPage Controllers */ = {
+		EA7D0E312871C8F500579619 /* Main Page Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				EA6C5A81281FD13400721D7F /* MainPageVC.swift */,
 				EA071DCF28564846008CC78C /* MainPageSubControllers */,
 			);
-			path = "MainPage Controllers";
+			path = "Main Page Controllers";
 			sourceTree = "<group>";
 		};
-		EA7D0E322871C93B00579619 /* ProfilePage Controllers */ = {
+		EA7D0E322871C93B00579619 /* Profile Page Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				EA6C5A84281FD19000721D7F /* ProfilePageVC.swift */,
 				EA6B195C283178450042B65B /* PopupControllers */,
 			);
-			path = "ProfilePage Controllers";
+			path = "Profile Page Controllers";
 			sourceTree = "<group>";
 		};
 		EA9A47A42815922A006F8409 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				EA481B322836A08500719282 /* Sign In&Up Controllers */,
-				EA7D0E312871C8F500579619 /* MainPage Controllers */,
-				EA7D0E322871C93B00579619 /* ProfilePage Controllers */,
+				EA481B322836A08500719282 /* Sign In&Up Page Controllers */,
+				EA7D0E312871C8F500579619 /* Main Page Controllers */,
+				EA7D0E322871C93B00579619 /* Profile Page Controllers */,
+				EA086E262886DDED00055825 /* Group Page Controllers */,
 				EA481B332836A32C00719282 /* Additional Controllers */,
 			);
 			path = Controllers;
@@ -281,6 +296,8 @@
 			isa = PBXGroup;
 			children = (
 				EA9E6BCB27FCB93E00101170 /* Main.storyboard */,
+				EA730E4E288C227300831880 /* SignIn.storyboard */,
+				EA730E50288C22AF00831880 /* SignUp.storyboard */,
 				EA9E6BD327FCB94100101170 /* LaunchScreen.storyboard */,
 			);
 			path = Storyboards;
@@ -378,6 +395,8 @@
 				EA9E6BD527FCB94100101170 /* LaunchScreen.storyboard in Resources */,
 				EA9E6BD227FCB94100101170 /* Assets.xcassets in Resources */,
 				EA9E6BCD27FCB93E00101170 /* Main.storyboard in Resources */,
+				EA730E4F288C227300831880 /* SignIn.storyboard in Resources */,
+				EA730E51288C22AF00831880 /* SignUp.storyboard in Resources */,
 				EA485DDD284CC7FA00077373 /* GroupCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -450,6 +469,7 @@
 				EA6C5A85281FD19000721D7F /* ProfilePageVC.swift in Sources */,
 				EA6C5A80281D724F00721D7F /* Service.swift in Sources */,
 				EA9A47B22815A391006F8409 /* DesignableUITextField.swift in Sources */,
+				EA086E282886DE3600055825 /* GroupPageVC.swift in Sources */,
 				EA485DDC284CC7F900077373 /* GroupCell.swift in Sources */,
 				EACA50EC285F31D200149482 /* RoundButton.swift in Sources */,
 				EABCC6622826A4410098EDCA /* TabBarVC.swift in Sources */,
@@ -604,6 +624,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5AVUQBRUWT;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SociaLight/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -633,6 +654,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5AVUQBRUWT;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SociaLight/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

@@ -14,12 +14,19 @@ class GroupCellModel {
     var groupDescription: String
     var groupImageURL: String
     
-    init(groupId: String, groupTitle: String, groupDescription: String, groupImageURL: String) {
+    weak var delegate: GroupCellDelegate?
+    
+    init(groupId: String, groupTitle: String, groupDescription: String, groupImageURL: String, delegate: GroupCellDelegate?) {
         self.groupId = groupId
         self.groupTitle = groupTitle
         self.groupDescription = groupDescription
         self.groupImageURL = groupImageURL
+        self.delegate = delegate
     }
+}
+
+protocol GroupCellDelegate: AnyObject {
+    func cellDidClick(_ friend: GroupCell)
 }
 
 class GroupCell: UICollectionViewCell {
@@ -58,6 +65,10 @@ class GroupCell: UICollectionViewCell {
         
         groupLabel.text = model.groupTitle
         groupDescriptionLabel.text = model.groupDescription
+    }
+    
+    @IBAction func navigateToMainPage() {
+        model.delegate?.cellDidClick(self)
     }
 
 }

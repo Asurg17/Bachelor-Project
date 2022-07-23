@@ -554,6 +554,108 @@ func getImage(w http.ResponseWriter, req *http.Request) {
 	w.Write(dat)
 }
 
+func createGroup(w http.ResponseWriter, req *http.Request) {
+
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
+
+	db, err := sql.Open("postgres", psqlconn)
+	if err != nil {
+		print(err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	defer db.Close()
+
+	userId := req.URL.Query().Get("userId")
+	groupName := req.URL.Query().Get("groupName")
+	groupDescription := req.URL.Query().Get("groupDescription")
+	membersCount := req.URL.Query().Get("membersCount")
+	isPrivate := req.URL.Query().Get("isPrivate")
+
+	groupId := groupName + userId
+
+	insertQuery := `insert into "groups" ("group_id", "group_title", "group_description", "group_capacity", "creator_id", "is_private") 
+					values ($1, $2, $3, $4, $5, $6)`
+	_, e := db.Exec(insertQuery, groupId, groupName, groupDescription, membersCount, userId, isPrivate)
+	if e != nil {
+		w.Header().Set("Error", e.Error())
+		w.WriteHeader(400)
+		http.Error(w, e.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	resp := make(map[string]string)
+	resp["groupId"] = groupId
+	jsonResp, err := json.Marshal(resp)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(400)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	w.Write(jsonResp)
+}
+
+type GroupMembers struct {
+	Members []string
+}
+
+func addGroupMembers(w http.ResponseWriter, req *http.Request) {
+
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
+
+	db, err := sql.Open("postgres", psqlconn)
+	if err != nil {
+		print(err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	defer db.Close()
+
+	userId := req.URL.Query().Get("userId")
+	groupId := req.URL.Query().Get("groupId")
+
+	var groupMembers GroupMembers
+	dataBytes, _ := ioutil.ReadAll(req.Body)
+	e := json.Unmarshal(dataBytes, &groupMembers)
+	if e != nil {
+		w.Header().Set("Error", e.Error())
+		w.WriteHeader(500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	adminInsertQuery := `insert into "group_members" ("group_id", "user_id", "user_role") 
+						values ($1, $2, $3)`
+	_, e = db.Exec(adminInsertQuery, groupId, userId, "A")
+	if e != nil {
+		w.Header().Set("Error", e.Error())
+		w.WriteHeader(400)
+		http.Error(w, e.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	for _, groupMemberId := range groupMembers.Members {
+		memberInsertQuery := `insert into "group_members" ("group_id", "user_id", "user_role") 
+						values ($1, $2, $3)`
+		_, e = db.Exec(memberInsertQuery, groupId, groupMemberId, "M")
+		if e != nil {
+			w.Header().Set("Error", e.Error())
+			w.WriteHeader(400)
+			http.Error(w, e.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
+}
+
 func main() {
 	// // handle `/` route
 	// http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
@@ -566,10 +668,12 @@ func main() {
 	http.HandleFunc("/checkUser", checkUser)
 	http.HandleFunc("/getUserInfo", getUserInfo)
 	http.HandleFunc("/uploadImage", uploadImage)
+	http.HandleFunc("/createGroup", createGroup)
 	http.HandleFunc("/getUserGroups", getUserGroups)
 	http.HandleFunc("/registerClient", registerClient)
 	http.HandleFunc("/getUserFriends", getUserFriends)
 	http.HandleFunc("/changePassword", changePassword)
+	http.HandleFunc("/addGroupMembers", addGroupMembers)
 	http.HandleFunc("/searchNewGroups", searchNewGroups)
 	http.HandleFunc("/changePersonalInfo", changePersonalInfo)
 
