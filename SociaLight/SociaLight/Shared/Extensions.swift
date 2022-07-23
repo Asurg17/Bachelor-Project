@@ -70,19 +70,19 @@ extension UIViewController {
     
     func navigateToFindGroupPage() {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let findGroupController = storyBoard.instantiateViewController(withIdentifier: "FindGroupVC") as! FindGroupVC
+        let findGroupController = storyBoard.instantiateViewController(withIdentifier: "FindGroupPageVC") as! FindGroupPageVC
         self.navigationController?.pushViewController(findGroupController, animated: true)
     }
     
     func navigateToNewGroupPage() {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let newGroupControlles = storyBoard.instantiateViewController(withIdentifier: "NewGroupFirstVC") as! NewGroupFirstVC
+        let newGroupControlles = storyBoard.instantiateViewController(withIdentifier: "NewGroupFirstPageVC") as! NewGroupFirstPageVC
         self.navigationController?.pushViewController(newGroupControlles, animated: true)
     }
     
     func navigateToNewGroupSecondVC(paramsStruct: NewGroupSecondPageParamsStruct) {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let newGroupSecondPageController = storyBoard.instantiateViewController(withIdentifier: "NewGroupSecondVC") as! NewGroupSecondVC
+        let newGroupSecondPageController = storyBoard.instantiateViewController(withIdentifier: "NewGroupSecondPageVC") as! NewGroupSecondPageVC
         newGroupSecondPageController.image = paramsStruct.groupImage
         newGroupSecondPageController.membersCount = paramsStruct.membersCount
         newGroupSecondPageController.groupName = paramsStruct.groupName

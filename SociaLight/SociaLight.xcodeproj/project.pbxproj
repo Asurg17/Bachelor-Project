@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		EA06AE7C282D56B200D84D7A /* RoundUIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA06AE7B282D56B200D84D7A /* RoundUIImageView.swift */; };
-		EA071DD1285648AA008CC78C /* FindGroupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA071DD0285648AA008CC78C /* FindGroupVC.swift */; };
+		EA071DD1285648AA008CC78C /* FindGroupPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA071DD0285648AA008CC78C /* FindGroupPageVC.swift */; };
 		EA086E282886DE3600055825 /* GroupPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA086E272886DE3600055825 /* GroupPageVC.swift */; };
-		EA2D13AC2857C15B0052E9BC /* NewGroupFirstVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2D13AB2857C15B0052E9BC /* NewGroupFirstVC.swift */; };
+		EA2D13AC2857C15B0052E9BC /* NewGroupFirstPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2D13AB2857C15B0052E9BC /* NewGroupFirstPageVC.swift */; };
 		EA481B2F283676AE00719282 /* PopUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA481B2E283676AE00719282 /* PopUpView.swift */; };
 		EA481B312836778300719282 /* RoundCornerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA481B302836778300719282 /* RoundCornerButton.swift */; };
 		EA481B352836BA2F00719282 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA481B342836BA2E00719282 /* Protocols.swift */; };
@@ -36,7 +36,7 @@
 		EA9E6BD527FCB94100101170 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EA9E6BD327FCB94100101170 /* LaunchScreen.storyboard */; };
 		EABCC6622826A4410098EDCA /* TabBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABCC6612826A4410098EDCA /* TabBarVC.swift */; };
 		EACA50EC285F31D200149482 /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACA50EB285F31D200149482 /* RoundButton.swift */; };
-		EACA50EE285F3EC000149482 /* NewGroupSecondVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACA50ED285F3EC000149482 /* NewGroupSecondVC.swift */; };
+		EACA50EE285F3EC000149482 /* NewGroupSecondPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACA50ED285F3EC000149482 /* NewGroupSecondPageVC.swift */; };
 		EACA50F62864C89500149482 /* FriendCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACA50F42864C89400149482 /* FriendCell.swift */; };
 		EACA50F72864C89500149482 /* FriendCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EACA50F52864C89400149482 /* FriendCell.xib */; };
 		EACA50FB2864EAB600149482 /* SelectedFriendCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACA50F92864EAB500149482 /* SelectedFriendCell.swift */; };
@@ -48,9 +48,9 @@
 /* Begin PBXFileReference section */
 		02F2774E4532FB5D866A1FE7 /* Pods-SociaLight.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SociaLight.release.xcconfig"; path = "Target Support Files/Pods-SociaLight/Pods-SociaLight.release.xcconfig"; sourceTree = "<group>"; };
 		EA06AE7B282D56B200D84D7A /* RoundUIImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundUIImageView.swift; sourceTree = "<group>"; };
-		EA071DD0285648AA008CC78C /* FindGroupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindGroupVC.swift; sourceTree = "<group>"; };
+		EA071DD0285648AA008CC78C /* FindGroupPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindGroupPageVC.swift; sourceTree = "<group>"; };
 		EA086E272886DE3600055825 /* GroupPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupPageVC.swift; sourceTree = "<group>"; };
-		EA2D13AB2857C15B0052E9BC /* NewGroupFirstVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGroupFirstVC.swift; sourceTree = "<group>"; };
+		EA2D13AB2857C15B0052E9BC /* NewGroupFirstPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGroupFirstPageVC.swift; sourceTree = "<group>"; };
 		EA481B2E283676AE00719282 /* PopUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpView.swift; sourceTree = "<group>"; };
 		EA481B302836778300719282 /* RoundCornerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundCornerButton.swift; sourceTree = "<group>"; };
 		EA481B342836BA2E00719282 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
@@ -78,7 +78,7 @@
 		EA9E6BD627FCB94100101170 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EABCC6612826A4410098EDCA /* TabBarVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarVC.swift; sourceTree = "<group>"; };
 		EACA50EB285F31D200149482 /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
-		EACA50ED285F3EC000149482 /* NewGroupSecondVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGroupSecondVC.swift; sourceTree = "<group>"; };
+		EACA50ED285F3EC000149482 /* NewGroupSecondPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGroupSecondPageVC.swift; sourceTree = "<group>"; };
 		EACA50F42864C89400149482 /* FriendCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendCell.swift; sourceTree = "<group>"; };
 		EACA50F52864C89400149482 /* FriendCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FriendCell.xib; sourceTree = "<group>"; };
 		EACA50F92864EAB500149482 /* SelectedFriendCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedFriendCell.swift; sourceTree = "<group>"; };
@@ -278,7 +278,7 @@
 		EACA50EF2862494200149482 /* FindGroup */ = {
 			isa = PBXGroup;
 			children = (
-				EA071DD0285648AA008CC78C /* FindGroupVC.swift */,
+				EA071DD0285648AA008CC78C /* FindGroupPageVC.swift */,
 			);
 			path = FindGroup;
 			sourceTree = "<group>";
@@ -286,8 +286,8 @@
 		EACA50F02862494C00149482 /* NewGroup */ = {
 			isa = PBXGroup;
 			children = (
-				EA2D13AB2857C15B0052E9BC /* NewGroupFirstVC.swift */,
-				EACA50ED285F3EC000149482 /* NewGroupSecondVC.swift */,
+				EA2D13AB2857C15B0052E9BC /* NewGroupFirstPageVC.swift */,
+				EACA50ED285F3EC000149482 /* NewGroupSecondPageVC.swift */,
 			);
 			path = NewGroup;
 			sourceTree = "<group>";
@@ -450,7 +450,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EA071DD1285648AA008CC78C /* FindGroupVC.swift in Sources */,
+				EA071DD1285648AA008CC78C /* FindGroupPageVC.swift in Sources */,
 				EA481B312836778300719282 /* RoundCornerButton.swift in Sources */,
 				EA9E6BCA27FCB93E00101170 /* SignInPageVC.swift in Sources */,
 				EA481B2F283676AE00719282 /* PopUpView.swift in Sources */,
@@ -465,7 +465,7 @@
 				EA6B195B283163670042B65B /* ChangePasswordPopupVC.swift in Sources */,
 				EA9E6BC627FCB93E00101170 /* AppDelegate.swift in Sources */,
 				EA6C5A82281FD13500721D7F /* MainPageVC.swift in Sources */,
-				EACA50EE285F3EC000149482 /* NewGroupSecondVC.swift in Sources */,
+				EACA50EE285F3EC000149482 /* NewGroupSecondPageVC.swift in Sources */,
 				EA6C5A85281FD19000721D7F /* ProfilePageVC.swift in Sources */,
 				EA6C5A80281D724F00721D7F /* Service.swift in Sources */,
 				EA9A47B22815A391006F8409 /* DesignableUITextField.swift in Sources */,
@@ -476,7 +476,7 @@
 				EA06AE7C282D56B200D84D7A /* RoundUIImageView.swift in Sources */,
 				EA9E6BD027FCB93E00101170 /* SociaLight.xcdatamodeld in Sources */,
 				EA9E6BC827FCB93E00101170 /* SceneDelegate.swift in Sources */,
-				EA2D13AC2857C15B0052E9BC /* NewGroupFirstVC.swift in Sources */,
+				EA2D13AC2857C15B0052E9BC /* NewGroupFirstPageVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,7 +8,7 @@
 import UIKit
 import KeychainSwift
 
-class NewGroupFirstVC: UIViewController {
+class NewGroupFirstPageVC: UIViewController {
     
     @IBOutlet var imageOuterView: UIView!
     @IBOutlet var groupImage: UIImageView!
@@ -123,7 +123,7 @@ class NewGroupFirstVC: UIViewController {
     
 }
 
-extension NewGroupFirstVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension NewGroupFirstPageVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
@@ -141,7 +141,7 @@ extension NewGroupFirstVC: UIImagePickerControllerDelegate, UINavigationControll
 }
 
 
-extension NewGroupFirstVC: UIPickerViewDelegate {
+extension NewGroupFirstPageVC: UIPickerViewDelegate {
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return String(Constants.pickerData[row])
@@ -149,7 +149,7 @@ extension NewGroupFirstVC: UIPickerViewDelegate {
     
 }
 
-extension NewGroupFirstVC: UIPickerViewDataSource {
+extension NewGroupFirstPageVC: UIPickerViewDataSource {
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -161,7 +161,7 @@ extension NewGroupFirstVC: UIPickerViewDataSource {
     
 }
 
-extension NewGroupFirstVC: UITextFieldDelegate {
+extension NewGroupFirstPageVC: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         switch textField {
         case groupName:

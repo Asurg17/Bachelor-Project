@@ -156,7 +156,6 @@
         <!--Sign Up PageVC-->
         <scene sceneID="gX1-oh-92j">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="sSc-Uw-9Mg" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="SignUpPageVC" id="0EJ-WM-S2b" customClass="SignUpPageVC" customModule="SociaLight" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8m9-43-gmv">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
@@ -349,6 +348,7 @@
                         <outlet property="usernameTextField" destination="j5I-vs-chp" id="bYX-ws-oix"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="sSc-Uw-9Mg" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="354" y="864"/>
         </scene>
@@ -450,7 +450,7 @@
         <!--New Group-->
         <scene sceneID="84p-Va-ANr">
             <objects>
-                <viewController storyboardIdentifier="NewGroupFirstVC" hidesBottomBarWhenPushed="YES" id="bvc-Ig-fRW" customClass="NewGroupFirstVC" customModule="SociaLight" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NewGroupFirstPageVC" hidesBottomBarWhenPushed="YES" id="bvc-Ig-fRW" customClass="NewGroupFirstPageVC" customModule="SociaLight" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="15Z-GD-Lhe">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -588,7 +588,7 @@
         <!--New Group-->
         <scene sceneID="OaG-dL-i5I">
             <objects>
-                <viewController storyboardIdentifier="NewGroupSecondVC" id="ped-qf-cPT" customClass="NewGroupSecondVC" customModule="SociaLight" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NewGroupSecondPageVC" id="ped-qf-cPT" customClass="NewGroupSecondPageVC" customModule="SociaLight" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="MKy-4q-FdM">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -764,7 +764,7 @@
         <!--Find Group-->
         <scene sceneID="Mlm-BL-QQS">
             <objects>
-                <viewController storyboardIdentifier="FindGroupVC" hidesBottomBarWhenPushed="YES" id="mks-Df-4Px" customClass="FindGroupVC" customModule="SociaLight" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="FindGroupPageVC" hidesBottomBarWhenPushed="YES" id="mks-Df-4Px" customClass="FindGroupPageVC" customModule="SociaLight" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="KH3-My-vWl">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1371,7 +1371,6 @@
         <!--Navigation Controller-->
         <scene sceneID="aNv-ye-vX0">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="2ST-KS-3NP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="JLw-ez-cxd" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="" image="person.circle" catalog="system" id="B2n-Zz-aaK"/>
                     <toolbarItems/>
@@ -1384,6 +1383,7 @@
                         <segue destination="gSM-Ws-pOo" kind="relationship" relationship="rootViewController" id="FJ8-dC-o40"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2ST-KS-3NP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2745" y="787"/>
         </scene>
@@ -1532,13 +1532,13 @@
     </scenes>
     <designables>
         <designable name="1nf-3O-zvb">
-            <size key="intrinsicContentSize" width="163" height="18"/>
+            <size key="intrinsicContentSize" width="145" height="18"/>
         </designable>
         <designable name="3ka-Kq-Gbb">
-            <size key="intrinsicContentSize" width="139.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="122.5" height="19.5"/>
         </designable>
         <designable name="5O9-Jr-cfW">
-            <size key="intrinsicContentSize" width="107.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="88.5" height="19.5"/>
         </designable>
         <designable name="6ae-VL-KCI">
             <size key="intrinsicContentSize" width="115" height="33"/>
@@ -1553,10 +1553,10 @@
             <size key="intrinsicContentSize" width="612" height="489"/>
         </designable>
         <designable name="SmB-Gq-b8B">
-            <size key="intrinsicContentSize" width="165" height="18"/>
+            <size key="intrinsicContentSize" width="145" height="18"/>
         </designable>
         <designable name="Xyd-x5-ey8">
-            <size key="intrinsicContentSize" width="138.5" height="18"/>
+            <size key="intrinsicContentSize" width="120.5" height="18"/>
         </designable>
         <designable name="ZIq-23-Uxr">
             <size key="intrinsicContentSize" width="146" height="33"/>
@@ -1565,7 +1565,7 @@
             <size key="intrinsicContentSize" width="63" height="33"/>
         </designable>
         <designable name="cLO-ue-g6S">
-            <size key="intrinsicContentSize" width="109.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="90.5" height="19.5"/>
         </designable>
         <designable name="h7D-Q5-Gbx">
             <size key="intrinsicContentSize" width="156.5" height="23"/>
@@ -1577,13 +1577,13 @@
             <size key="intrinsicContentSize" width="107" height="33"/>
         </designable>
         <designable name="j5I-vs-chp">
-            <size key="intrinsicContentSize" width="110.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="90.5" height="19.5"/>
         </designable>
         <designable name="lx3-sJ-7TZ">
-            <size key="intrinsicContentSize" width="102" height="18"/>
+            <size key="intrinsicContentSize" width="86" height="18"/>
         </designable>
         <designable name="mBI-QS-r4u">
-            <size key="intrinsicContentSize" width="139.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="122.5" height="19.5"/>
         </designable>
         <designable name="ndg-ji-YrA">
             <size key="intrinsicContentSize" width="66" height="33"/>
@@ -1592,19 +1592,19 @@
             <size key="intrinsicContentSize" width="100" height="100"/>
         </designable>
         <designable name="oHy-lM-yhv">
-            <size key="intrinsicContentSize" width="110" height="19.5"/>
+            <size key="intrinsicContentSize" width="89" height="19.5"/>
         </designable>
         <designable name="ohr-2W-PJK">
             <size key="intrinsicContentSize" width="106" height="29"/>
         </designable>
         <designable name="q8O-sX-dcy">
-            <size key="intrinsicContentSize" width="132" height="18"/>
+            <size key="intrinsicContentSize" width="114" height="18"/>
         </designable>
         <designable name="qfq-v4-cGy">
-            <size key="intrinsicContentSize" width="69" height="19.5"/>
+            <size key="intrinsicContentSize" width="47" height="19.5"/>
         </designable>
         <designable name="sUG-qE-wi9">
-            <size key="intrinsicContentSize" width="106" height="18"/>
+            <size key="intrinsicContentSize" width="86" height="18"/>
         </designable>
         <designable name="xWD-9U-x3k">
             <size key="intrinsicContentSize" width="45.5" height="31"/>

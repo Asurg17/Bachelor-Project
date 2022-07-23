@@ -8,7 +8,7 @@
 import UIKit
 import KeychainSwift
 
-class NewGroupSecondVC: UIViewController, FriendCellDelegate {
+class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
     
     @IBOutlet var tableViewOuterView: UIView!
     @IBOutlet var tableView: UITableView!
@@ -50,7 +50,7 @@ class NewGroupSecondVC: UIViewController, FriendCellDelegate {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        friendNameTextField.addTarget(self, action: #selector(NewGroupSecondVC.textFieldDidChange(_:)), for: .editingChanged)
+        friendNameTextField.addTarget(self, action: #selector(NewGroupSecondPageVC.textFieldDidChange(_:)), for: .editingChanged)
         
         tableViewOuterView.clipsToBounds = true
         tableViewOuterView.layer.cornerRadius = tableViewOuterView.frame.size.width / 10
@@ -309,7 +309,7 @@ class NewGroupSecondVC: UIViewController, FriendCellDelegate {
     
 }
 
-extension NewGroupSecondVC: UITableViewDelegate, UITableViewDataSource {
+extension NewGroupSecondPageVC: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -348,7 +348,7 @@ extension NewGroupSecondVC: UITableViewDelegate, UITableViewDataSource {
     
 }
 
-extension NewGroupSecondVC: UICollectionViewDelegate, UICollectionViewDataSource {
+extension NewGroupSecondPageVC: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if (collectionData.count == 0) { showTableWarningMessage() } else { hideTableWarningMessage() }
@@ -366,7 +366,7 @@ extension NewGroupSecondVC: UICollectionViewDelegate, UICollectionViewDataSource
     
 }
 
-extension NewGroupSecondVC: UICollectionViewDelegateFlowLayout {
+extension NewGroupSecondPageVC: UICollectionViewDelegateFlowLayout {
     
     func collectionView(
         _ collectionView: UICollectionView,

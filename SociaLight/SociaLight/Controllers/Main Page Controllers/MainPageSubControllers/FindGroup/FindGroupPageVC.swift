@@ -8,7 +8,7 @@
 import UIKit
 import KeychainSwift
 
-class FindGroupVC: UIViewController, GroupCellDelegate {
+class FindGroupPageVC: UIViewController, GroupCellDelegate {
     
     @IBOutlet var loader: UIActivityIndicatorView!
     @IBOutlet var collectionView: UICollectionView!
@@ -115,7 +115,7 @@ class FindGroupVC: UIViewController, GroupCellDelegate {
     
 }
 
-extension FindGroupVC: UITextFieldDelegate {
+extension FindGroupPageVC: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         searchNewGroups()
         textField.resignFirstResponder()
@@ -123,7 +123,7 @@ extension FindGroupVC: UITextFieldDelegate {
     }
 }
 
-extension FindGroupVC: UICollectionViewDataSource, UICollectionViewDelegate {
+extension FindGroupPageVC: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return collectionData.count
@@ -140,7 +140,7 @@ extension FindGroupVC: UICollectionViewDataSource, UICollectionViewDelegate {
     
 }
 
-extension FindGroupVC: UICollectionViewDelegateFlowLayout {
+extension FindGroupPageVC: UICollectionViewDelegateFlowLayout {
     
     func collectionView(
         _ collectionView: UICollectionView,
