@@ -47,7 +47,7 @@ class SignInPageVC: UIViewController {
         if checkIfAllViewsAreFilled() {
             if checkPasswordLength(password: passwordTextField.text!) {
                 loader.startAnimating()
-                service.checkUser(
+                service.validateUser(
                     username: usernameTextField.text!,
                     password: passwordTextField.text!
                 ) { [weak self] result in

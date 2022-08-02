@@ -12,8 +12,9 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
     
     @IBOutlet var loader: UIActivityIndicatorView!
     @IBOutlet var collectionView: UICollectionView!
+    @IBOutlet var warningLabel: UILabel!
     
-    @IBOutlet var groupNameTextField: RoundCornerTextField!
+    @IBOutlet var groupIdentifierTextField: RoundCornerTextField!
     
     private let service = Service()
     
@@ -35,7 +36,7 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
     }
     
     func setupViews() {
-        groupNameTextField.delegate = self
+        groupIdentifierTextField.delegate = self
     }
     
     func configureCollectionView() {
@@ -58,12 +59,12 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
     }
     
     func searchNewGroups() {
-        if let groupName = groupNameTextField.text {
-            if groupName != "" {
+        if let groupIdentifier = groupIdentifierTextField.text {
+            if groupIdentifier != "" {
                 let keychain = KeychainSwift()
                 if let userId = keychain.get(Constants.userIdKey) {
                     loader.startAnimating()
-                    service.searchNewGroups(userId: userId, groupName: groupName) { [weak self] result in
+                    service.searchNewGroups(userId: userId, groupIdentifier: groupIdentifier) { [weak self] result in
                         guard let self = self else { return }
                         DispatchQueue.main.async {
                             self.loader.stopAnimating()
@@ -100,7 +101,24 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
     }
     
     func cellDidClick(_ group: GroupCell) {
-        navigateToGroupPage(groupId: group.model.groupId)
+        navigateToGroupPage(
+            group: Group(
+                groupId: group.model.groupId,
+                groupImage: (group.groupImage.image ?? UIImage(named: "Groupicon"))!,
+                membersCount: 0,
+                groupName: group.model.groupTitle,
+                groupDescription: group.model.groupDescription,
+                isPrivate: false
+            )
+        )
+    }
+    
+    func showWarningMessage() {
+        warningLabel.isHidden = false
+    }
+    
+    func hideWarningMessage() {
+        warningLabel.isHidden = true
     }
     
     
@@ -126,6 +144,7 @@ extension FindGroupPageVC: UITextFieldDelegate {
 extension FindGroupPageVC: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if (collectionData.count == 0) { showWarningMessage() } else { hideWarningMessage() }
         return collectionData.count
     }
     

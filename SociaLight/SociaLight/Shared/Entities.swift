@@ -8,6 +8,12 @@
 import Foundation
 import UIKit
 
+// -------------UserId---------------
+
+struct UserIdResponse: Codable {
+    let userId: String
+}
+
 // -------------UserInfo--------------
 
 struct UserInfoResponse: Codable {
@@ -46,13 +52,23 @@ struct UserFriend: Codable {
 
 // -------------Group------------------
 
-struct Group: Codable{
+
+struct Group {
+    var groupId: String
+    var groupImage: UIImage
+    var membersCount: Int
+    var groupName: String
+    var groupDescription: String
+    var isPrivate: Bool
+}
+
+// -----------Create Group Request & Response-------------
+
+struct CreateGroupResponse: Codable {
     let groupId: String
 }
 
-// ------------Response Structs-------------
-
-struct CreateGroupResponse {
+struct CreateGroupRequest {
     let groupName: String
     let groupDescription: String
     let membersCount: String
@@ -60,12 +76,3 @@ struct CreateGroupResponse {
     let userId: String
 }
 
-// ------------NewGroupSecondPageParamsStruct-------------
-
-struct NewGroupSecondPageParamsStruct {
-    let groupImage: UIImage
-    let membersCount: Int
-    let groupName: String
-    let groupDescription: String
-    let isPrivate: Bool
-}

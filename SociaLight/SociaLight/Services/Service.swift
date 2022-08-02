@@ -52,8 +52,14 @@ class Service {
                     }
                     if let httpUrlResponse = response as? HTTPURLResponse {
                         if httpUrlResponse.statusCode == 200 {
-                            if let bytes = data {
-                                completion(.success(String(bytes: bytes, encoding: .utf8)!))
+                            if let data = data {
+                                let decoder = JSONDecoder()
+                                do {
+                                    let resp = try decoder.decode(UserIdResponse.self, from: data)
+                                    completion(.success(resp.userId))
+                                } catch {
+                                    completion(.failure(error))
+                                }
                             } else {
                                 completion(.failure(NSError(domain: "",
                                                             code: 400,
@@ -87,9 +93,9 @@ class Service {
         
     }
     
-    func checkUser(username: String, password: String, completion: @escaping (Result<String, Error>) -> ()) {
+    func validateUser(username: String, password: String, completion: @escaping (Result<String, Error>) -> ()) {
         
-        components.path = "/checkUser"
+        components.path = "/validateUser"
         
         let parameters = [
             "username": username,
@@ -111,8 +117,14 @@ class Service {
                     }
                     if let httpUrlResponse = response as? HTTPURLResponse {
                         if httpUrlResponse.statusCode == 200 {
-                            if let bytes = data {
-                                completion(.success(String(bytes: bytes, encoding: .utf8)!))
+                            if let data = data {
+                                let decoder = JSONDecoder()
+                                do {
+                                    let resp = try decoder.decode(UserIdResponse.self, from: data)
+                                    completion(.success(resp.userId))
+                                } catch {
+                                    completion(.failure(error))
+                                }
                             } else {
                                 completion(.failure(NSError(domain: "",
                                                             code: 400,
@@ -165,9 +177,8 @@ class Service {
                             if let data = data {
                                 let decoder = JSONDecoder()
                                 do {
-                                    let response = try decoder.decode(UserInfoResponse.self, from: data)
-                                    completion(.success(response))
-                                    
+                                    let resp = try decoder.decode(UserInfoResponse.self, from: data)
+                                    completion(.success(resp))
                                 } catch {
                                     completion(.failure(error))
                                 }
@@ -219,8 +230,8 @@ class Service {
                             if let data = data {
                                 let decoder = JSONDecoder()
                                 do {
-                                    let response = try decoder.decode(UserGroups.self, from: data)
-                                    completion(.success(response))
+                                    let resp = try decoder.decode(UserGroups.self, from: data)
+                                    completion(.success(resp))
                                 } catch {
                                     completion(.failure(error))
                                 }
@@ -272,8 +283,8 @@ class Service {
                             if let data = data {
                                 let decoder = JSONDecoder()
                                 do {
-                                    let response = try decoder.decode(UserFriends.self, from: data)
-                                    completion(.success(response))
+                                    let resp = try decoder.decode(UserFriends.self, from: data)
+                                    completion(.success(resp))
                                 } catch {
                                     completion(.failure(error))
                                 }
@@ -299,13 +310,13 @@ class Service {
         }
     }
     
-    func searchNewGroups(userId: String, groupName: String, completion: @escaping (Result<UserGroups, Error>) -> ()) {
+    func searchNewGroups(userId: String, groupIdentifier: String, completion: @escaping (Result<UserGroups, Error>) -> ()) {
         
         components.path = "/searchNewGroups"
         
         let parameters = [
             "userId": userId,
-            "groupName": groupName
+            "groupIdentifier": groupIdentifier
         ]
         
         components.queryItems = parameters.map { key, value in
@@ -326,8 +337,8 @@ class Service {
                             if let data = data {
                                 let decoder = JSONDecoder()
                                 do {
-                                    let response = try decoder.decode(UserGroups.self, from: data)
-                                    completion(.success(response))
+                                    let resp = try decoder.decode(UserGroups.self, from: data)
+                                    completion(.success(resp))
                                 } catch {
                                     completion(.failure(error))
                                 }
@@ -497,17 +508,17 @@ class Service {
         }
     }
     
-    func createGroup(responseParams: CreateGroupResponse,
-                     completion: @escaping (Result<Group, Error>) -> ()) {
+    func createGroup(requestParams: CreateGroupRequest,
+                     completion: @escaping (Result<CreateGroupResponse, Error>) -> ()) {
         
         components.path = "/createGroup"
         
         let parameters = [
-            "groupName": responseParams.groupName,
-            "groupDescription": responseParams.groupDescription,
-            "membersCount": responseParams.membersCount,
-            "isPrivate": responseParams.isPrivate,
-            "userId": responseParams.userId
+            "groupName": requestParams.groupName,
+            "groupDescription": requestParams.groupDescription,
+            "membersCount": requestParams.membersCount,
+            "isPrivate": requestParams.isPrivate,
+            "userId": requestParams.userId
         ]
         
         components.queryItems = parameters.map { key, value in
@@ -528,8 +539,8 @@ class Service {
                             if let data = data {
                                 let decoder = JSONDecoder()
                                 do {
-                                    let response = try decoder.decode(Group.self, from: data)
-                                    completion(.success(response))
+                                    let resp = try decoder.decode(CreateGroupResponse.self, from: data)
+                                    completion(.success(resp))
                                 } catch {
                                     completion(.failure(error))
                                 }
@@ -613,6 +624,109 @@ class Service {
                                                         code: 400,
                                                         userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
                                                        )))
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    }
+    
+    func saveGroupUpdates(userId: String,
+                          groupId: String,
+                          groupName: String,
+                          groupDescription: String,
+                          completion: @escaping (Result<String, Error>) -> ()) {
+        
+        components.path = "/saveGroupUpdates"
+        
+        let parameters = [
+            "userId": userId,
+            "groupId": groupId,
+            "groupName": groupName,
+            "groupDescription": groupDescription
+        ]
+        
+        components.queryItems = parameters.map { key, value in
+           return URLQueryItem(name: key, value: value)
+        }
+        
+        if let url = components.url {
+            let request = URLRequest(url: url)
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            completion(.success("Changes saved successfully!"))
+                        } else {
+                            if (httpUrlResponse.value(forHTTPHeaderField: "Error") ?? "").contains("duplicate key") {
+                                completion(.failure(NSError(domain: "",
+                                                            code: 400,
+                                                            userInfo: [NSLocalizedDescriptionKey: "You already have group with such name. Please choose another name and try again!"]
+                                                           )))
+                            } else {
+                                completion(.failure(NSError(domain: "",
+                                                            code: 400,
+                                                            userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                           )))
+                            }
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    }
+    
+    func leaveGroup(userId: String,
+                    groupId: String,
+                    completion: @escaping (Result<String, Error>) -> ()) {
+        
+        components.path = "/leaveGroup"
+        
+        let parameters = [
+            "userId": userId,
+            "groupId": groupId
+        ]
+        
+        components.queryItems = parameters.map { key, value in
+           return URLQueryItem(name: key, value: value)
+        }
+        
+        if let url = components.url {
+            let request = URLRequest(url: url)
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            completion(.success("Group leaved :("))
+                        } else {
+                            completion(.failure(NSError(domain: "",
+                                                         code: 400,
+                                                         userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        )))
                         }
                     } else {
                        completion(.failure(NSError(domain: "",

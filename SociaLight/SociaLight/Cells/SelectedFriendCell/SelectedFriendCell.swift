@@ -19,7 +19,6 @@ class SelectedFriendCellModel {
     }
 }
 
-
 class SelectedFriendCell: UICollectionViewCell {
     
     @IBOutlet private var imageOuterView: UIView!

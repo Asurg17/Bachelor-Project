@@ -35,6 +35,11 @@ class MainPageVC: UIViewController, GroupCellDelegate {
         
         setupViews()
         configureCollectionView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         getUserGroups()
     }
     
@@ -136,7 +141,16 @@ class MainPageVC: UIViewController, GroupCellDelegate {
     }
     
     func cellDidClick(_ group: GroupCell) {
-        navigateToGroupPage(groupId: group.model.groupId)
+        navigateToGroupPage(
+            group: Group(
+                groupId: group.model.groupId,
+                groupImage: (group.groupImage.image ?? UIImage(named: "Groupicon"))!,
+                membersCount: 0,
+                groupName: group.model.groupTitle,
+                groupDescription: group.model.groupDescription,
+                isPrivate: false
+            )
+        )
     }
     
     

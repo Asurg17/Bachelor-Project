@@ -25,10 +25,6 @@ class GroupCellModel {
     }
 }
 
-protocol GroupCellDelegate: AnyObject {
-    func cellDidClick(_ friend: GroupCell)
-}
-
 class GroupCell: UICollectionViewCell {
     
     @IBOutlet var outerView: UIView!

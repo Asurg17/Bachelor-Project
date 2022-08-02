@@ -23,11 +23,7 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
     private var tableData = [FriendCellModel]()
     private var collectionData = [SelectedFriendCellModel]()
     
-    var image: UIImage?
-    var membersCount: Int?
-    var groupName: String?
-    var groupDescription: String?
-    var isPrivate: Bool?
+    var group: Group?
     
     private let service = Service()
     private let keychain = KeychainSwift()
@@ -169,7 +165,7 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
     
     func cellDidClick(_ friend: FriendCell) {
         if(friend.model.isSelected) {
-            if collectionData.count < (membersCount ?? 0) - 1 {
+            if collectionData.count < (group?.membersCount ?? 0) - 1 {
                 collectionData.append(
                     SelectedFriendCellModel(
                         friendId: friend.model.friendId,
@@ -213,12 +209,12 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
         if let userId = keychain.get(Constants.userIdKey) {
             loader.startAnimating()
             service.createGroup(
-                responseParams:
-                    CreateGroupResponse(groupName: groupName ?? "",
-                                        groupDescription: groupDescription ?? "",
-                                        membersCount: String(membersCount ?? 0),
-                                        isPrivate: isPrivate?.description ?? "none",
-                                        userId: userId)
+                requestParams:
+                    CreateGroupRequest(groupName: group?.groupName ?? "",
+                                       groupDescription: group?.groupDescription ?? "",
+                                       membersCount: String(group?.membersCount ?? 0),
+                                       isPrivate: group?.isPrivate.description ?? "none",
+                                       userId: userId)
             ) { [weak self] result in
                         guard let self = self else { return }
                 DispatchQueue.main.async {
@@ -238,7 +234,7 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
     
     func uploadGroupImage(groupId: String) {
         if let _ = keychain.get(Constants.userIdKey) {
-            service.uploadImage(imageKey: groupId, image: image!) { [weak self] result in
+            service.uploadImage(imageKey: Constants.groupImagePrefix + groupId, image: (group?.groupImage ?? UIImage(named: "Groupicon"))!) { [weak self] result in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     switch result {
@@ -264,7 +260,7 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
                     self.loader.stopAnimating()
                     switch result {
                     case .success(_):
-                        self.navigateToGroupPage(groupId: groupId)
+                        self.navigateToGroupPage(group: self.group!)
                     case .failure(let error):
                         self.handleError(error: error.localizedDescription.description)
                     }
@@ -386,8 +382,9 @@ extension NewGroupSecondPageVC: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        let spareWidth = collectionView.frame.width - ((Double(Constants.itemCount) + 1.0) * Constants.spacing)
-        let cellWidth = spareWidth / Double(Constants.itemCount)
+        var spareWidth = collectionView.frame.width - ((Double(Constants.itemCount) + 1.0) * Constants.spacing)
+        spareWidth = spareWidth * 0.9
+        let cellWidth  = spareWidth / Double(Constants.itemCount)
         let cellHeight = collectionView.frame.height
         
         return CGSize(width: cellWidth, height: cellHeight)

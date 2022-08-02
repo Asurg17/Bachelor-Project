@@ -18,6 +18,7 @@ class NewGroupFirstPageVC: UIViewController {
     
     var isGroupPrivate = false
     
+    let imagePicker = UIImagePickerController()
     var pickerView: UIPickerView!
     var pickerValue: Int?
     
@@ -98,7 +99,8 @@ class NewGroupFirstPageVC: UIViewController {
     @IBAction func navigateToNextVC() {
         if areViewsValid() {
             navigateToNewGroupSecondVC(
-                paramsStruct: NewGroupSecondPageParamsStruct(
+                group: Group(
+                    groupId: "",
                     groupImage: groupImage.image!,
                     membersCount: pickerValue!,
                     groupName: groupName.text!,
@@ -114,11 +116,10 @@ class NewGroupFirstPageVC: UIViewController {
     }
     
     @objc func imageViewTapped(_ sender:AnyObject){
-        let vc = UIImagePickerController()
-        vc.sourceType = .photoLibrary
-        vc.delegate = self
-        vc.allowsEditing = true
-        present(vc, animated: true)
+        imagePicker.sourceType = .photoLibrary
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true
+        present(imagePicker, animated: true)
     }
     
 }

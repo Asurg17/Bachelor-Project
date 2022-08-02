@@ -14,11 +14,11 @@ class GroupPageVC: UIViewController {
     private let service = Service()
     private let keychain = KeychainSwift()
     
-    var groupId = ""
+    var group: Group?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.title = "Group"
         setupViews()
     }
     
@@ -26,8 +26,28 @@ class GroupPageVC: UIViewController {
         
     }
     
+    func navigateToGrouInfopPage(group: Group) {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let groupInfoPagePageController = storyBoard.instantiateViewController(withIdentifier: "GroupInfoPageVC") as! GroupInfoPageVC
+        groupInfoPagePageController.delegate = self
+        groupInfoPagePageController.group = group
+        self.navigationController?.pushViewController(groupInfoPagePageController, animated: true)
+    }
+    
+    @IBAction func showGroupInfo() {
+        navigateToGrouInfopPage(group: group!)
+    }
+    
     @IBAction func back() {
         navigationController?.popToRootViewController(animated: true)
+    }
+    
+}
+
+extension GroupPageVC: UpdateGroup {
+    
+    func update(updatedGroup: Group) {
+        self.group = updatedGroup
     }
     
 }

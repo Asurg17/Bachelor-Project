@@ -25,6 +25,8 @@ class ProfilePageVC: UIViewController, DismissProtocol {
     private let service = Service()
     private let keychain = KeychainSwift()
     
+    private let imagePicker = UIImagePickerController()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -133,11 +135,10 @@ class ProfilePageVC: UIViewController, DismissProtocol {
 
     
     @objc func imageViewTapped(_ sender:AnyObject){
-        let vc = UIImagePickerController()
-        vc.sourceType = .photoLibrary
-        vc.delegate = self
-        vc.allowsEditing = true
-        present(vc, animated: true)
+        imagePicker.sourceType = .photoLibrary
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true
+        present(imagePicker, animated: true)
     }
     
 }

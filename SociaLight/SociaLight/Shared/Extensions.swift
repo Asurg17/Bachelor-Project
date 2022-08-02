@@ -57,7 +57,7 @@ extension UIViewController {
     // ---------------Navigation--------------
     
     func navigateToSignUpPage() {
-        let storyBoard: UIStoryboard = UIStoryboard(name: "SignUp", bundle: nil)
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let signUpPageController = storyBoard.instantiateViewController(withIdentifier: "SignUpPageVC") as! SignUpPageVC
         self.navigationController?.pushViewController(signUpPageController, animated: true)
     }
@@ -80,24 +80,33 @@ extension UIViewController {
         self.navigationController?.pushViewController(newGroupControlles, animated: true)
     }
     
-    func navigateToNewGroupSecondVC(paramsStruct: NewGroupSecondPageParamsStruct) {
+    func navigateToNewGroupSecondVC(group: Group) {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let newGroupSecondPageController = storyBoard.instantiateViewController(withIdentifier: "NewGroupSecondPageVC") as! NewGroupSecondPageVC
-        newGroupSecondPageController.image = paramsStruct.groupImage
-        newGroupSecondPageController.membersCount = paramsStruct.membersCount
-        newGroupSecondPageController.groupName = paramsStruct.groupName
-        newGroupSecondPageController.groupDescription = paramsStruct.groupDescription
-        newGroupSecondPageController.isPrivate = paramsStruct.isPrivate
+        newGroupSecondPageController.group = group
         self.navigationController?.pushViewController(newGroupSecondPageController, animated: true)
     }
     
-    func navigateToGroupPage(groupId: String) {
+    func navigateToGroupPage(group: Group) {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let groupPagePageController = storyBoard.instantiateViewController(withIdentifier: "GroupPageVC") as! GroupPageVC
-        groupPagePageController.groupId = groupId
-        self.navigationController?.pushViewController(groupPagePageController, animated: true)
+        let groupPageController = storyBoard.instantiateViewController(withIdentifier: "GroupPageVC") as! GroupPageVC
+        groupPageController.group = group
+        self.navigationController?.pushViewController(groupPageController, animated: true)
     }
     
+    func navigateToGroupMembersPage(group: Group) {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let groupMembersPageController = storyBoard.instantiateViewController(withIdentifier: "GroupMembersPageVC") as! GroupMembersPageVC
+        groupMembersPageController.group = group
+        self.navigationController?.pushViewController(groupMembersPageController, animated: true)
+    }
+    
+    func navigateToGroupMediaFilesPage(group: Group) {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let groupMediaFilesPageController = storyBoard.instantiateViewController(withIdentifier: "GroupMembersPageVC") as! GroupMembersPageVC
+        groupMediaFilesPageController.group = group
+        self.navigationController?.pushViewController(groupMediaFilesPageController, animated: true)
+    }
     
     // ----------------Constants--------------
     
@@ -146,6 +155,15 @@ extension UIViewController {
 }
 
 extension UIColor {
+    
+    static func random() -> UIColor {
+        return UIColor(
+           red:   .random(),
+           green: .random(),
+           blue:  .random(),
+           alpha: 1.0
+        )
+    }
     
     convenience init(red: Int, green: Int, blue: Int) {
         assert(red >= 0 && red <= 255, "Invalid red component")
@@ -205,37 +223,7 @@ extension UIColor {
             static let IronGray = UIColor(netHex: 0x75706B)
         }
     }
-}
-
-enum ServiceError: Error {
-    case noData
-    case invalidParameters
-}
-
-extension Collection where Indices.Iterator.Element == Index {
-   public subscript(safe index: Index) -> Iterator.Element? {
-     return (startIndex <= index && index < endIndex) ? self[index] : nil
-   }
-}
-
-extension CGFloat {
-    static func random() -> CGFloat {
-        return CGFloat(arc4random()) / CGFloat(UInt32.max)
-    }
-}
-
-extension UIColor {
-    static func random() -> UIColor {
-        return UIColor(
-           red:   .random(),
-           green: .random(),
-           blue:  .random(),
-           alpha: 1.0
-        )
-    }
-}
-
-extension UIColor {
+    
     convenience init(hexString: String) {
         let hex = hexString.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int = UInt64()
@@ -252,6 +240,23 @@ extension UIColor {
             (a, r, g, b) = (255, 0, 0, 0)
         }
         self.init(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)
+    }
+}
+
+enum ServiceError: Error {
+    case noData
+    case invalidParameters
+}
+
+extension Collection where Indices.Iterator.Element == Index {
+   public subscript(safe index: Index) -> Iterator.Element? {
+     return (startIndex <= index && index < endIndex) ? self[index] : nil
+   }
+}
+
+extension CGFloat {
+    static func random() -> CGFloat {
+        return CGFloat(arc4random()) / CGFloat(UInt32.max)
     }
 }
 

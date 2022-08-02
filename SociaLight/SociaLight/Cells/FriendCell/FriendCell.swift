@@ -31,10 +31,6 @@ class FriendCellModel {
     }
 }
 
-protocol FriendCellDelegate: AnyObject {
-    func cellDidClick(_ friend: FriendCell)
-}
-
 class FriendCell: UITableViewCell {
     
     @IBOutlet private var imageOuterView: UIView!

@@ -22,8 +22,6 @@
 		EA6C5A80281D724F00721D7F /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6C5A7F281D724F00721D7F /* Service.swift */; };
 		EA6C5A82281FD13500721D7F /* MainPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6C5A81281FD13400721D7F /* MainPageVC.swift */; };
 		EA6C5A85281FD19000721D7F /* ProfilePageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6C5A84281FD19000721D7F /* ProfilePageVC.swift */; };
-		EA730E4F288C227300831880 /* SignIn.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EA730E4E288C227300831880 /* SignIn.storyboard */; };
-		EA730E51288C22AF00831880 /* SignUp.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EA730E50288C22AF00831880 /* SignUp.storyboard */; };
 		EA9A47A628159280006F8409 /* SignUpPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47A528159280006F8409 /* SignUpPageVC.swift */; };
 		EA9A47B22815A391006F8409 /* DesignableUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47B12815A391006F8409 /* DesignableUITextField.swift */; };
 		EA9A47C42817295C006F8409 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47C32817295B006F8409 /* Extensions.swift */; };
@@ -41,7 +39,12 @@
 		EACA50F72864C89500149482 /* FriendCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EACA50F52864C89400149482 /* FriendCell.xib */; };
 		EACA50FB2864EAB600149482 /* SelectedFriendCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACA50F92864EAB500149482 /* SelectedFriendCell.swift */; };
 		EACA50FC2864EAB600149482 /* SelectedFriendCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EACA50FA2864EAB500149482 /* SelectedFriendCell.xib */; };
+		EADF48CA28983649001C4692 /* GroupMembersPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF48C928983648001C4692 /* GroupMembersPageVC.swift */; };
+		EADF48CC28983BAE001C4692 /* GroupMediaFilesPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF48CB28983BAE001C4692 /* GroupMediaFilesPageVC.swift */; };
 		EADFCF6F283115D50025EEA6 /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADFCF6E283115D50025EEA6 /* Entities.swift */; };
+		EAF6CF17288F2C96005E0AEE /* GroupInfoPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF6CF16288F2C96005E0AEE /* GroupInfoPageVC.swift */; };
+		EAF6CF1C288FE1FD005E0AEE /* GroupInfoActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF6CF1B288FE1FD005E0AEE /* GroupInfoActionView.swift */; };
+		EAF6CF1E288FE210005E0AEE /* GroupInfoActionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = EAF6CF1D288FE210005E0AEE /* GroupInfoActionView.xib */; };
 		F21DA156E41A52151EC9B022 /* Pods_SociaLight.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1BC7C4C89B91A205EEBBDFE /* Pods_SociaLight.framework */; };
 /* End PBXBuildFile section */
 
@@ -62,8 +65,6 @@
 		EA6C5A7F281D724F00721D7F /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		EA6C5A81281FD13400721D7F /* MainPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPageVC.swift; sourceTree = "<group>"; };
 		EA6C5A84281FD19000721D7F /* ProfilePageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePageVC.swift; sourceTree = "<group>"; };
-		EA730E4E288C227300831880 /* SignIn.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SignIn.storyboard; sourceTree = "<group>"; };
-		EA730E50288C22AF00831880 /* SignUp.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SignUp.storyboard; sourceTree = "<group>"; };
 		EA9A47A528159280006F8409 /* SignUpPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPageVC.swift; sourceTree = "<group>"; };
 		EA9A47B12815A391006F8409 /* DesignableUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignableUITextField.swift; sourceTree = "<group>"; };
 		EA9A47C32817295B006F8409 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -83,7 +84,12 @@
 		EACA50F52864C89400149482 /* FriendCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FriendCell.xib; sourceTree = "<group>"; };
 		EACA50F92864EAB500149482 /* SelectedFriendCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedFriendCell.swift; sourceTree = "<group>"; };
 		EACA50FA2864EAB500149482 /* SelectedFriendCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectedFriendCell.xib; sourceTree = "<group>"; };
+		EADF48C928983648001C4692 /* GroupMembersPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupMembersPageVC.swift; sourceTree = "<group>"; };
+		EADF48CB28983BAE001C4692 /* GroupMediaFilesPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupMediaFilesPageVC.swift; sourceTree = "<group>"; };
 		EADFCF6E283115D50025EEA6 /* Entities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entities.swift; sourceTree = "<group>"; };
+		EAF6CF16288F2C96005E0AEE /* GroupInfoPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInfoPageVC.swift; sourceTree = "<group>"; };
+		EAF6CF1B288FE1FD005E0AEE /* GroupInfoActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInfoActionView.swift; sourceTree = "<group>"; };
+		EAF6CF1D288FE210005E0AEE /* GroupInfoActionView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupInfoActionView.xib; sourceTree = "<group>"; };
 		F1BC7C4C89B91A205EEBBDFE /* Pods_SociaLight.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SociaLight.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5C82A3A81D808E813941DB8 /* Pods-SociaLight.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SociaLight.debug.xcconfig"; path = "Target Support Files/Pods-SociaLight/Pods-SociaLight.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -121,6 +127,9 @@
 			isa = PBXGroup;
 			children = (
 				EA086E272886DE3600055825 /* GroupPageVC.swift */,
+				EAF6CF16288F2C96005E0AEE /* GroupInfoPageVC.swift */,
+				EADF48C928983648001C4692 /* GroupMembersPageVC.swift */,
+				EADF48CB28983BAE001C4692 /* GroupMediaFilesPageVC.swift */,
 			);
 			path = "Group Page Controllers";
 			sourceTree = "<group>";
@@ -192,6 +201,7 @@
 		EA6C5A7D281D6CC100721D7F /* ReusableViews */ = {
 			isa = PBXGroup;
 			children = (
+				EAF6CF18288FE154005E0AEE /* Group Info Action View */,
 				EA9A47B12815A391006F8409 /* DesignableUITextField.swift */,
 				EA06AE7B282D56B200D84D7A /* RoundUIImageView.swift */,
 				EA481B2E283676AE00719282 /* PopUpView.swift */,
@@ -296,8 +306,6 @@
 			isa = PBXGroup;
 			children = (
 				EA9E6BCB27FCB93E00101170 /* Main.storyboard */,
-				EA730E4E288C227300831880 /* SignIn.storyboard */,
-				EA730E50288C22AF00831880 /* SignUp.storyboard */,
 				EA9E6BD327FCB94100101170 /* LaunchScreen.storyboard */,
 			);
 			path = Storyboards;
@@ -328,6 +336,15 @@
 				EACA50FA2864EAB500149482 /* SelectedFriendCell.xib */,
 			);
 			path = SelectedFriendCell;
+			sourceTree = "<group>";
+		};
+		EAF6CF18288FE154005E0AEE /* Group Info Action View */ = {
+			isa = PBXGroup;
+			children = (
+				EAF6CF1B288FE1FD005E0AEE /* GroupInfoActionView.swift */,
+				EAF6CF1D288FE210005E0AEE /* GroupInfoActionView.xib */,
+			);
+			path = "Group Info Action View";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -393,10 +410,9 @@
 				EACA50FC2864EAB600149482 /* SelectedFriendCell.xib in Resources */,
 				EACA50F72864C89500149482 /* FriendCell.xib in Resources */,
 				EA9E6BD527FCB94100101170 /* LaunchScreen.storyboard in Resources */,
+				EAF6CF1E288FE210005E0AEE /* GroupInfoActionView.xib in Resources */,
 				EA9E6BD227FCB94100101170 /* Assets.xcassets in Resources */,
 				EA9E6BCD27FCB93E00101170 /* Main.storyboard in Resources */,
-				EA730E4F288C227300831880 /* SignIn.storyboard in Resources */,
-				EA730E51288C22AF00831880 /* SignUp.storyboard in Resources */,
 				EA485DDD284CC7FA00077373 /* GroupCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -453,20 +469,24 @@
 				EA071DD1285648AA008CC78C /* FindGroupPageVC.swift in Sources */,
 				EA481B312836778300719282 /* RoundCornerButton.swift in Sources */,
 				EA9E6BCA27FCB93E00101170 /* SignInPageVC.swift in Sources */,
+				EADF48CC28983BAE001C4692 /* GroupMediaFilesPageVC.swift in Sources */,
 				EA481B2F283676AE00719282 /* PopUpView.swift in Sources */,
 				EACA50F62864C89500149482 /* FriendCell.swift in Sources */,
 				EA481B352836BA2F00719282 /* Protocols.swift in Sources */,
 				EACA50FB2864EAB600149482 /* SelectedFriendCell.swift in Sources */,
 				EA9A47A628159280006F8409 /* SignUpPageVC.swift in Sources */,
 				EA6B195E2831789A0042B65B /* PersonalInfoPopupVC.swift in Sources */,
+				EADF48CA28983649001C4692 /* GroupMembersPageVC.swift in Sources */,
 				EA9A47C42817295C006F8409 /* Extensions.swift in Sources */,
 				EADFCF6F283115D50025EEA6 /* Entities.swift in Sources */,
 				EA485DD7284BC1FF00077373 /* RoundCornerTextField.swift in Sources */,
 				EA6B195B283163670042B65B /* ChangePasswordPopupVC.swift in Sources */,
 				EA9E6BC627FCB93E00101170 /* AppDelegate.swift in Sources */,
 				EA6C5A82281FD13500721D7F /* MainPageVC.swift in Sources */,
+				EAF6CF17288F2C96005E0AEE /* GroupInfoPageVC.swift in Sources */,
 				EACA50EE285F3EC000149482 /* NewGroupSecondPageVC.swift in Sources */,
 				EA6C5A85281FD19000721D7F /* ProfilePageVC.swift in Sources */,
+				EAF6CF1C288FE1FD005E0AEE /* GroupInfoActionView.swift in Sources */,
 				EA6C5A80281D724F00721D7F /* Service.swift in Sources */,
 				EA9A47B22815A391006F8409 /* DesignableUITextField.swift in Sources */,
 				EA086E282886DE3600055825 /* GroupPageVC.swift in Sources */,

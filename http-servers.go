@@ -62,11 +62,17 @@ func registerClient(w http.ResponseWriter, req *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/text")
-	w.Write([]byte(userId))
+	w.Header().Set("Content-Type", "application/json")
+	resp := make(map[string]string)
+	resp["userId"] = userId
+	jsonResp, err := json.Marshal(resp)
+	if err != nil {
+		print("Error happened in JSON marshal. Err: %s", err)
+	}
+	w.Write(jsonResp)
 }
 
-func checkUser(w http.ResponseWriter, req *http.Request) {
+func validateUser(w http.ResponseWriter, req *http.Request) {
 
 	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
 
@@ -113,8 +119,14 @@ func checkUser(w http.ResponseWriter, req *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/text")
-	w.Write([]byte(userId))
+	w.Header().Set("Content-Type", "application/json")
+	resp := make(map[string]string)
+	resp["userId"] = userId
+	jsonResp, err := json.Marshal(resp)
+	if err != nil {
+		print("Error happened in JSON marshal. Err: %s", err)
+	}
+	w.Write(jsonResp)
 }
 
 func getUserInfo(w http.ResponseWriter, req *http.Request) {
@@ -266,9 +278,16 @@ func searchNewGroups(w http.ResponseWriter, req *http.Request) {
 	defer db.Close()
 
 	userId := req.URL.Query().Get("userId")
-	groupName := req.URL.Query().Get("groupName")
+	groupIdentifier := req.URL.Query().Get("groupIdentifier")
 
-	getQuery := "select g.group_id, g.group_title, g.group_description from groups g where lower(g.group_title) like lower('%" + groupName + "%') and exists (select * from users s where s.user_id = $1);"
+	getQuery := "select g.group_id, g.group_title, g.group_description " +
+		"from groups g " +
+		"where (lower(g.group_title) like lower('%" + groupIdentifier + "%') " +
+		"or lower(g.group_description) like lower('%" + groupIdentifier + "%')) " +
+		"and (select count(*) from group_members m where m.group_id = g.group_id) < g.group_capacity " +
+		"and not exists(select * from group_members m where m.group_id = g.group_id and m.user_id = $1) " +
+		"and exists (select * from users s where s.user_id = $1) " +
+		"order by lower(g.group_title);"
 
 	rows, err := db.Query(getQuery, userId)
 	if err != nil && err != sql.ErrNoRows {
@@ -656,6 +675,70 @@ func addGroupMembers(w http.ResponseWriter, req *http.Request) {
 
 }
 
+func saveGroupUpdates(w http.ResponseWriter, req *http.Request) {
+
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
+
+	db, err := sql.Open("postgres", psqlconn)
+	if err != nil {
+		print(err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	defer db.Close()
+
+	userId := req.URL.Query().Get("userId")
+	groupId := req.URL.Query().Get("groupId")
+	groupName := req.URL.Query().Get("groupName")
+	groupDescription := req.URL.Query().Get("groupDescription")
+
+	updateQuery := `update groups set group_title = $1, group_description = $2  where group_id = $3 and exists(select * from users s where s.user_id = $4)`
+
+	_, e := db.Exec(updateQuery, groupName, groupDescription, groupId, userId)
+	if e != nil {
+		w.Header().Set("Error", "Can't save Changes!")
+		w.WriteHeader(400)
+		http.Error(w, e.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func leaveGroup(w http.ResponseWriter, req *http.Request) {
+
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
+
+	db, err := sql.Open("postgres", psqlconn)
+	if err != nil {
+		print(err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	defer db.Close()
+
+	userId := req.URL.Query().Get("userId")
+	groupId := req.URL.Query().Get("groupId")
+
+	updateQuery := `delete from group_members where group_id = $1 and user_id = $2`
+
+	_, e := db.Exec(updateQuery, groupId, userId)
+	if e != nil {
+		w.Header().Set("Error", "Can't save Changes!")
+		w.WriteHeader(400)
+		http.Error(w, e.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
 func main() {
 	// // handle `/` route
 	// http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
@@ -665,16 +748,18 @@ func main() {
 	// http.HandleFunc("/registerClient", registerClient)
 
 	http.HandleFunc("/getImage", getImage)
-	http.HandleFunc("/checkUser", checkUser)
+	http.HandleFunc("/leaveGroup", leaveGroup)
 	http.HandleFunc("/getUserInfo", getUserInfo)
 	http.HandleFunc("/uploadImage", uploadImage)
 	http.HandleFunc("/createGroup", createGroup)
+	http.HandleFunc("/validateUser", validateUser)
 	http.HandleFunc("/getUserGroups", getUserGroups)
 	http.HandleFunc("/registerClient", registerClient)
 	http.HandleFunc("/getUserFriends", getUserFriends)
 	http.HandleFunc("/changePassword", changePassword)
 	http.HandleFunc("/addGroupMembers", addGroupMembers)
 	http.HandleFunc("/searchNewGroups", searchNewGroups)
+	http.HandleFunc("/saveGroupUpdates", saveGroupUpdates)
 	http.HandleFunc("/changePersonalInfo", changePersonalInfo)
 
 	http.ListenAndServe(":9000", nil)

@@ -10,3 +10,21 @@ import Foundation
 protocol DismissProtocol {
     func refresh()
 }
+
+protocol UpdateGroup {
+    func update(updatedGroup: Group)
+}
+
+// --------------Cells & Reusable Views Protocols------------------
+
+protocol FriendCellDelegate: AnyObject {
+    func cellDidClick(_ friend: FriendCell)
+}
+
+protocol GroupCellDelegate: AnyObject {
+    func cellDidClick(_ friend: GroupCell)
+}
+
+protocol GroupInfoActionViewDelegate: AnyObject {
+    func actionDidInitiated(_ sender: GroupInfoActionView)
+}
