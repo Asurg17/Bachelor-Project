@@ -39,6 +39,8 @@ struct UserGroup: Codable {
     let groupDescription: String
 }
 
+// -----------Friends-------------------
+
 struct UserFriends: Codable {
     let friends: [UserFriend]
 }
@@ -62,6 +64,19 @@ struct Group {
     var isPrivate: Bool
 }
 
+struct GroupMembers: Codable {
+    let members: [GroupMember]
+}
+
+struct GroupMember: Codable {
+    let memberId: String
+    let memberFirstName: String
+    let memberLastName: String
+    let memberPhone: String
+    let isFriendRequestAlreadySent: String
+    let areAlreadyFriends: String
+}
+
 // -----------Create Group Request & Response-------------
 
 struct CreateGroupResponse: Codable {
@@ -75,4 +90,19 @@ struct CreateGroupRequest {
     let isPrivate: String
     let userId: String
 }
+
+
+// -----------------Notifications-----------------
+
+struct Notifications: Codable {
+    let notifications: [Notification]
+}
+
+struct Notification: Codable {
+    let requestUniqueKey: String
+    let userId: String
+    let userWholeName: String
+    let isFriendshipRequestNotification: String
+}
+
 

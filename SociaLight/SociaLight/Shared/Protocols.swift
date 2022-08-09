@@ -17,12 +17,21 @@ protocol UpdateGroup {
 
 // --------------Cells & Reusable Views Protocols------------------
 
+protocol NotificationCellDelegate: AnyObject {
+    func friendshipAccepted(_ notification: NotificationCell)
+    func friendshipRejected(_ notification: NotificationCell)
+}
+
 protocol FriendCellDelegate: AnyObject {
     func cellDidClick(_ friend: FriendCell)
 }
 
 protocol GroupCellDelegate: AnyObject {
-    func cellDidClick(_ friend: GroupCell)
+    func cellDidClick(_ group: GroupCell)
+}
+
+protocol GroupMemberCellDelegate: AnyObject {
+    func cellDidClick(_ member: GroupMemberCell)
 }
 
 protocol GroupInfoActionViewDelegate: AnyObject {

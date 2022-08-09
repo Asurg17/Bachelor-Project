@@ -103,7 +103,7 @@ class ProfilePageVC: UIViewController, DismissProtocol {
         SDImageCache.shared.clearDisk()
         
         profileImage.sd_setImage(
-            with: URL(string: Constants.getImageURLPrefix + Constants.userImagePrefix + userId),
+            with: URL(string: (Constants.getImageURLPrefix + Constants.userImagePrefix + userId).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!),
             completed: { (image, error, cacheType, imageURL) in
                 if image == nil {
                     self.profileImage.image = UIImage(named: "user")

@@ -400,6 +400,97 @@ func getUserFriends(w http.ResponseWriter, req *http.Request) {
 	w.Write(jsonResp)
 }
 
+func getGroupMembers(w http.ResponseWriter, req *http.Request) {
+
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
+
+	db, err := sql.Open("postgres", psqlconn)
+	if err != nil {
+		print(err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	userId := req.URL.Query().Get("userId")
+	groupId := req.URL.Query().Get("groupId")
+
+	getQuery := `select s.user_id
+				,s.first_name
+				,coalesce(s.last_name, '-') last_name
+				,coalesce(s.phone, '-') phone
+				,(select coalesce(max('Y'), 'N')
+						from friendship_requests r
+						where ((r.from_user_id = $1
+									and r.to_user_id = s.user_id)
+								or 
+								(r.to_user_id = $1
+									and r.from_user_id = s.user_id))
+							and r.status = 'N') is_already_sent
+				,(select coalesce(max('Y'), case when s.user_id = $1 then 'Y' else 'N' end)
+						from friends f
+						where f.user_id = $1
+						and f.friend_id = s.user_id) are_already_friends
+				from users s
+				,group_members m
+				where m.group_id = $2
+				and s.user_id = m.user_id
+				and exists(select *
+							from users
+							where user_id = $1)
+				order by case when m.user_id = $1 then 1
+						 else 2 end, lower(s.first_name)`
+
+	rows, err := db.Query(getQuery, userId, groupId)
+	if err != nil && err != sql.ErrNoRows {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(400)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	members := make([]map[string]string, 0)
+
+	for rows.Next() {
+		var memberId string
+		var memberFirstName string
+		var memberLastName string
+		var memberPhone string
+		var isFriendRequestAlreadySent string
+		var areAlreadyFriends string
+		err = rows.Scan(&memberId, &memberFirstName, &memberLastName, &memberPhone, &isFriendRequestAlreadySent, &areAlreadyFriends)
+		if err != nil {
+			w.Header().Set("Error", err.Error())
+			w.WriteHeader(400)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		member := make(map[string]string)
+		member["memberId"] = memberId
+		member["memberFirstName"] = memberFirstName
+		member["memberLastName"] = memberLastName
+		member["memberPhone"] = memberPhone
+		member["isFriendRequestAlreadySent"] = isFriendRequestAlreadySent
+		member["areAlreadyFriends"] = areAlreadyFriends
+
+		members = append(members, member)
+	}
+
+	response := make(map[string][]map[string]string)
+	response["members"] = members
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	jsonResp, err := json.Marshal(response)
+	if err != nil {
+		print("Error happened in JSON marshal. Err: %s", err)
+	}
+	w.Write(jsonResp)
+}
+
 func changePassword(w http.ResponseWriter, req *http.Request) {
 
 	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
@@ -726,9 +817,200 @@ func leaveGroup(w http.ResponseWriter, req *http.Request) {
 	userId := req.URL.Query().Get("userId")
 	groupId := req.URL.Query().Get("groupId")
 
-	updateQuery := `delete from group_members where group_id = $1 and user_id = $2`
+	deleteQuery := `delete from group_members where group_id = $1 and user_id = $2`
 
-	_, e := db.Exec(updateQuery, groupId, userId)
+	_, e := db.Exec(deleteQuery, groupId, userId)
+	if e != nil {
+		w.Header().Set("Error", "Can't save Changes!")
+		w.WriteHeader(400)
+		http.Error(w, e.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func sendFriendshipRequest(w http.ResponseWriter, req *http.Request) {
+
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
+
+	db, err := sql.Open("postgres", psqlconn)
+	if err != nil {
+		print(err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	defer db.Close()
+
+	fromUserId := req.URL.Query().Get("fromUserId")
+	toUserId := req.URL.Query().Get("toUserId")
+
+	insertQuery := `insert into friendship_requests(from_user_id, to_user_id) 
+					values ($1, $2);`
+
+	_, e := db.Exec(insertQuery, fromUserId, toUserId)
+	if e != nil {
+		w.Header().Set("Error", "Can't save Changes!")
+		w.WriteHeader(400)
+		http.Error(w, e.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func getUserNotifications(w http.ResponseWriter, req *http.Request) {
+
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
+
+	db, err := sql.Open("postgres", psqlconn)
+	if err != nil {
+		print(err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	userId := req.URL.Query().Get("userId")
+
+	getQuery := `select r.id,
+						s.user_id,
+						s.first_name || ' ' || s.last_name whole_name,
+						true is_friendship_request
+				from friendship_requests r,
+					users s
+				where s.user_id = from_user_id
+				and r.to_user_id = $1
+				and r.status = 'N'
+				order by request_date desc;`
+
+	rows, err := db.Query(getQuery, userId)
+	if err != nil && err != sql.ErrNoRows {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(400)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	notifications := make([]map[string]string, 0)
+
+	for rows.Next() {
+		var requestUniqueKey string
+		var userId string
+		var userWholeName string
+		var isFriendshipRequestNotification string
+		err = rows.Scan(&requestUniqueKey, &userId, &userWholeName, &isFriendshipRequestNotification)
+		if err != nil {
+			w.Header().Set("Error", err.Error())
+			w.WriteHeader(400)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		notification := make(map[string]string)
+		notification["requestUniqueKey"] = requestUniqueKey
+		notification["userId"] = userId
+		notification["userWholeName"] = userWholeName
+		notification["isFriendshipRequestNotification"] = isFriendshipRequestNotification
+
+		notifications = append(notifications, notification)
+	}
+
+	response := make(map[string][]map[string]string)
+	response["notifications"] = notifications
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	jsonResp, err := json.Marshal(response)
+	if err != nil {
+		print("Error happened in JSON marshal. Err: %s", err)
+	}
+	w.Write(jsonResp)
+}
+
+func acceptFriendshipRequest(w http.ResponseWriter, req *http.Request) {
+
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
+
+	db, err := sql.Open("postgres", psqlconn)
+	if err != nil {
+		print(err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	defer db.Close()
+
+	userId := req.URL.Query().Get("userId")
+	fromUserId := req.URL.Query().Get("fromUserId")
+	requestUniqueKey := req.URL.Query().Get("requestUniqueKey")
+
+	updateQuery := `update friendship_requests
+					set status = 'A'
+					where id = $1
+					and to_user_id = $2;`
+
+	_, e := db.Exec(updateQuery, requestUniqueKey, userId)
+	if e != nil {
+		w.Header().Set("Error", "Can't save Changes!")
+		w.WriteHeader(400)
+		http.Error(w, e.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	insertQuery := `insert into friends (user_id, friend_id)
+					values($1, $2);`
+
+	_, e = db.Exec(insertQuery, userId, fromUserId)
+	if e != nil {
+		w.Header().Set("Error", "Can't save Changes!")
+		w.WriteHeader(400)
+		http.Error(w, e.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	_, e = db.Exec(insertQuery, fromUserId, userId)
+	if e != nil {
+		w.Header().Set("Error", "Can't save Changes!")
+		w.WriteHeader(400)
+		http.Error(w, e.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func rejectFriendshipRequest(w http.ResponseWriter, req *http.Request) {
+
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
+
+	db, err := sql.Open("postgres", psqlconn)
+	if err != nil {
+		print(err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	defer db.Close()
+
+	userId := req.URL.Query().Get("userId")
+	requestUniqueKey := req.URL.Query().Get("requestUniqueKey")
+
+	updateQuery := `update friendship_requests
+					set status = 'R'
+					where id = $1
+					and to_user_id = $2;`
+
+	_, e := db.Exec(updateQuery, requestUniqueKey, userId)
 	if e != nil {
 		w.Header().Set("Error", "Can't save Changes!")
 		w.WriteHeader(400)
@@ -756,11 +1038,16 @@ func main() {
 	http.HandleFunc("/getUserGroups", getUserGroups)
 	http.HandleFunc("/registerClient", registerClient)
 	http.HandleFunc("/getUserFriends", getUserFriends)
+	http.HandleFunc("/getGroupMembers", getGroupMembers)
 	http.HandleFunc("/changePassword", changePassword)
 	http.HandleFunc("/addGroupMembers", addGroupMembers)
 	http.HandleFunc("/searchNewGroups", searchNewGroups)
 	http.HandleFunc("/saveGroupUpdates", saveGroupUpdates)
 	http.HandleFunc("/changePersonalInfo", changePersonalInfo)
+	http.HandleFunc("/getUserNotifications", getUserNotifications)
+	http.HandleFunc("/sendFriendshipRequest", sendFriendshipRequest)
+	http.HandleFunc("/acceptFriendshipRequest", acceptFriendshipRequest)
+	http.HandleFunc("/rejectFriendshipRequest", rejectFriendshipRequest)
 
 	http.ListenAndServe(":9000", nil)
 }

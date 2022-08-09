@@ -49,7 +49,7 @@ class FriendCell: UITableViewCell {
         SDImageCache.shared.clearDisk()
         
         friendImageView.sd_setImage(
-            with: URL(string: model.friendImageURL),
+            with: URL(string: model.friendImageURL.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!),
             completed: { (image, error, cacheType, imageURL) in
                 if image == nil {
                     self.friendImageView.image = UIImage(named: "user")

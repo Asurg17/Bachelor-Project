@@ -49,9 +49,9 @@ class GroupCell: UICollectionViewCell {
         
         SDImageCache.shared.clearMemory()
         SDImageCache.shared.clearDisk()
-        
+
         groupImage.sd_setImage(
-            with: URL(string: model.groupImageURL),
+            with: URL(string: model.groupImageURL.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!),
             completed: { (image, error, cacheType, imageURL) in
                 if image == nil {
                     self.groupImage.image = UIImage(named: "GroupIcon")

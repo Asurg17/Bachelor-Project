@@ -41,7 +41,15 @@
 		EACA50FC2864EAB600149482 /* SelectedFriendCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EACA50FA2864EAB500149482 /* SelectedFriendCell.xib */; };
 		EADF48CA28983649001C4692 /* GroupMembersPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF48C928983648001C4692 /* GroupMembersPageVC.swift */; };
 		EADF48CC28983BAE001C4692 /* GroupMediaFilesPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF48CB28983BAE001C4692 /* GroupMediaFilesPageVC.swift */; };
+		EADF48D028998B9E001C4692 /* GroupMemberCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF48CE28998B9E001C4692 /* GroupMemberCell.swift */; };
+		EADF48D128998B9E001C4692 /* GroupMemberCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EADF48CF28998B9E001C4692 /* GroupMemberCell.xib */; };
+		EADF48D32899A205001C4692 /* AddGroupMembersPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF48D22899A205001C4692 /* AddGroupMembersPageVC.swift */; };
+		EADF48D728A00C75001C4692 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF48D528A00C75001C4692 /* NotificationCell.swift */; };
+		EADF48D828A00C75001C4692 /* NotificationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EADF48D628A00C75001C4692 /* NotificationCell.xib */; };
+		EADF48DB28A17B9E001C4692 /* NotificationPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF48DA28A17B9E001C4692 /* NotificationPageVC.swift */; };
 		EADFCF6F283115D50025EEA6 /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADFCF6E283115D50025EEA6 /* Entities.swift */; };
+		EAE7D22228A2BB4D0034552F /* NotificationHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE7D22128A2BB4D0034552F /* NotificationHeader.swift */; };
+		EAE7D22428A2BB5A0034552F /* NotificationHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = EAE7D22328A2BB5A0034552F /* NotificationHeader.xib */; };
 		EAF6CF17288F2C96005E0AEE /* GroupInfoPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF6CF16288F2C96005E0AEE /* GroupInfoPageVC.swift */; };
 		EAF6CF1C288FE1FD005E0AEE /* GroupInfoActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF6CF1B288FE1FD005E0AEE /* GroupInfoActionView.swift */; };
 		EAF6CF1E288FE210005E0AEE /* GroupInfoActionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = EAF6CF1D288FE210005E0AEE /* GroupInfoActionView.xib */; };
@@ -86,7 +94,15 @@
 		EACA50FA2864EAB500149482 /* SelectedFriendCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectedFriendCell.xib; sourceTree = "<group>"; };
 		EADF48C928983648001C4692 /* GroupMembersPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupMembersPageVC.swift; sourceTree = "<group>"; };
 		EADF48CB28983BAE001C4692 /* GroupMediaFilesPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupMediaFilesPageVC.swift; sourceTree = "<group>"; };
+		EADF48CE28998B9E001C4692 /* GroupMemberCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupMemberCell.swift; sourceTree = "<group>"; };
+		EADF48CF28998B9E001C4692 /* GroupMemberCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupMemberCell.xib; sourceTree = "<group>"; };
+		EADF48D22899A205001C4692 /* AddGroupMembersPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGroupMembersPageVC.swift; sourceTree = "<group>"; };
+		EADF48D528A00C75001C4692 /* NotificationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
+		EADF48D628A00C75001C4692 /* NotificationCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotificationCell.xib; sourceTree = "<group>"; };
+		EADF48DA28A17B9E001C4692 /* NotificationPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPageVC.swift; sourceTree = "<group>"; };
 		EADFCF6E283115D50025EEA6 /* Entities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entities.swift; sourceTree = "<group>"; };
+		EAE7D22128A2BB4D0034552F /* NotificationHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHeader.swift; sourceTree = "<group>"; };
+		EAE7D22328A2BB5A0034552F /* NotificationHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotificationHeader.xib; sourceTree = "<group>"; };
 		EAF6CF16288F2C96005E0AEE /* GroupInfoPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInfoPageVC.swift; sourceTree = "<group>"; };
 		EAF6CF1B288FE1FD005E0AEE /* GroupInfoActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInfoActionView.swift; sourceTree = "<group>"; };
 		EAF6CF1D288FE210005E0AEE /* GroupInfoActionView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupInfoActionView.xib; sourceTree = "<group>"; };
@@ -130,6 +146,7 @@
 				EAF6CF16288F2C96005E0AEE /* GroupInfoPageVC.swift */,
 				EADF48C928983648001C4692 /* GroupMembersPageVC.swift */,
 				EADF48CB28983BAE001C4692 /* GroupMediaFilesPageVC.swift */,
+				EADF48D22899A205001C4692 /* AddGroupMembersPageVC.swift */,
 			);
 			path = "Group Page Controllers";
 			sourceTree = "<group>";
@@ -176,6 +193,8 @@
 				EACA50F32864C86200149482 /* FriendCell */,
 				EACA50F82864EA6500149482 /* SelectedFriendCell */,
 				EA485DD9284CC5F800077373 /* GroupCell */,
+				EADF48CD28998B66001C4692 /* GroupMemberCell */,
+				EADF48D428A00C41001C4692 /* NotificationCell */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -243,6 +262,7 @@
 			children = (
 				EA481B322836A08500719282 /* Sign In&Up Page Controllers */,
 				EA7D0E312871C8F500579619 /* Main Page Controllers */,
+				EADF48D928A17B6F001C4692 /* Notifications Page Controller */,
 				EA7D0E322871C93B00579619 /* Profile Page Controllers */,
 				EA086E262886DDED00055825 /* Group Page Controllers */,
 				EA481B332836A32C00719282 /* Additional Controllers */,
@@ -271,6 +291,7 @@
 		EA9E6BC427FCB93E00101170 /* SociaLight */ = {
 			isa = PBXGroup;
 			children = (
+				EAE7D21F28A2BAD00034552F /* Headers */,
 				EA485DD8284CC5F100077373 /* Cells */,
 				EA481B362836BA3E00719282 /* Shared */,
 				EA6C5A7E281D723A00721D7F /* Services */,
@@ -336,6 +357,49 @@
 				EACA50FA2864EAB500149482 /* SelectedFriendCell.xib */,
 			);
 			path = SelectedFriendCell;
+			sourceTree = "<group>";
+		};
+		EADF48CD28998B66001C4692 /* GroupMemberCell */ = {
+			isa = PBXGroup;
+			children = (
+				EADF48CE28998B9E001C4692 /* GroupMemberCell.swift */,
+				EADF48CF28998B9E001C4692 /* GroupMemberCell.xib */,
+			);
+			path = GroupMemberCell;
+			sourceTree = "<group>";
+		};
+		EADF48D428A00C41001C4692 /* NotificationCell */ = {
+			isa = PBXGroup;
+			children = (
+				EADF48D528A00C75001C4692 /* NotificationCell.swift */,
+				EADF48D628A00C75001C4692 /* NotificationCell.xib */,
+			);
+			path = NotificationCell;
+			sourceTree = "<group>";
+		};
+		EADF48D928A17B6F001C4692 /* Notifications Page Controller */ = {
+			isa = PBXGroup;
+			children = (
+				EADF48DA28A17B9E001C4692 /* NotificationPageVC.swift */,
+			);
+			path = "Notifications Page Controller";
+			sourceTree = "<group>";
+		};
+		EAE7D21F28A2BAD00034552F /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				EAE7D22028A2BAE00034552F /* NitificationHeader */,
+			);
+			path = Headers;
+			sourceTree = "<group>";
+		};
+		EAE7D22028A2BAE00034552F /* NitificationHeader */ = {
+			isa = PBXGroup;
+			children = (
+				EAE7D22128A2BB4D0034552F /* NotificationHeader.swift */,
+				EAE7D22328A2BB5A0034552F /* NotificationHeader.xib */,
+			);
+			path = NitificationHeader;
 			sourceTree = "<group>";
 		};
 		EAF6CF18288FE154005E0AEE /* Group Info Action View */ = {
@@ -408,6 +472,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				EACA50FC2864EAB600149482 /* SelectedFriendCell.xib in Resources */,
+				EAE7D22428A2BB5A0034552F /* NotificationHeader.xib in Resources */,
+				EADF48D128998B9E001C4692 /* GroupMemberCell.xib in Resources */,
+				EADF48D828A00C75001C4692 /* NotificationCell.xib in Resources */,
 				EACA50F72864C89500149482 /* FriendCell.xib in Resources */,
 				EA9E6BD527FCB94100101170 /* LaunchScreen.storyboard in Resources */,
 				EAF6CF1E288FE210005E0AEE /* GroupInfoActionView.xib in Resources */,
@@ -467,6 +534,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA071DD1285648AA008CC78C /* FindGroupPageVC.swift in Sources */,
+				EADF48DB28A17B9E001C4692 /* NotificationPageVC.swift in Sources */,
 				EA481B312836778300719282 /* RoundCornerButton.swift in Sources */,
 				EA9E6BCA27FCB93E00101170 /* SignInPageVC.swift in Sources */,
 				EADF48CC28983BAE001C4692 /* GroupMediaFilesPageVC.swift in Sources */,
@@ -482,11 +550,14 @@
 				EA485DD7284BC1FF00077373 /* RoundCornerTextField.swift in Sources */,
 				EA6B195B283163670042B65B /* ChangePasswordPopupVC.swift in Sources */,
 				EA9E6BC627FCB93E00101170 /* AppDelegate.swift in Sources */,
+				EADF48D728A00C75001C4692 /* NotificationCell.swift in Sources */,
 				EA6C5A82281FD13500721D7F /* MainPageVC.swift in Sources */,
 				EAF6CF17288F2C96005E0AEE /* GroupInfoPageVC.swift in Sources */,
 				EACA50EE285F3EC000149482 /* NewGroupSecondPageVC.swift in Sources */,
 				EA6C5A85281FD19000721D7F /* ProfilePageVC.swift in Sources */,
 				EAF6CF1C288FE1FD005E0AEE /* GroupInfoActionView.swift in Sources */,
+				EAE7D22228A2BB4D0034552F /* NotificationHeader.swift in Sources */,
+				EADF48D028998B9E001C4692 /* GroupMemberCell.swift in Sources */,
 				EA6C5A80281D724F00721D7F /* Service.swift in Sources */,
 				EA9A47B22815A391006F8409 /* DesignableUITextField.swift in Sources */,
 				EA086E282886DE3600055825 /* GroupPageVC.swift in Sources */,
@@ -495,6 +566,7 @@
 				EABCC6622826A4410098EDCA /* TabBarVC.swift in Sources */,
 				EA06AE7C282D56B200D84D7A /* RoundUIImageView.swift in Sources */,
 				EA9E6BD027FCB93E00101170 /* SociaLight.xcdatamodeld in Sources */,
+				EADF48D32899A205001C4692 /* AddGroupMembersPageVC.swift in Sources */,
 				EA9E6BC827FCB93E00101170 /* SceneDelegate.swift in Sources */,
 				EA2D13AC2857C15B0052E9BC /* NewGroupFirstPageVC.swift in Sources */,
 			);

@@ -11,6 +11,18 @@ import SDWebImage
 
 class GroupMembersPageVC: UIViewController {
     
+    @IBOutlet var loader: UIActivityIndicatorView!
+    @IBOutlet var tableView: UITableView!
+    @IBOutlet var memberNameTextField: UITextField!
+    
+    private let service = Service()
+    private let keychain = KeychainSwift()
+    
+    private var members = [GroupMemberCellModel]()
+    private var tableData = [GroupMemberCellModel]()
+    
+    private let refreshControl = UIRefreshControl()
+    
     var group: Group?
     
     override func viewDidLoad() {
@@ -18,6 +30,21 @@ class GroupMembersPageVC: UIViewController {
         self.title = "Group Members"
         
         checkGroup()
+        setupViews()
+        getGroupMembers()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        memberNameTextField.addTarget(self, action: #selector(GroupMembersPageVC.textFieldDidChange(_:)), for: .editingChanged)
+        
+        memberNameTextField.clearButtonMode = .whileEditing
+        
+        if let button = memberNameTextField.value(forKey: "clearButton") as? UIButton {
+            button.tintColor = .black
+            button.setImage(UIImage(systemName: "xmark.circle"), for: .normal)
+        }
     }
     
     func checkGroup() {
@@ -27,13 +54,178 @@ class GroupMembersPageVC: UIViewController {
         }
     }
     
+    func setupViews() {
+        configureTableView()
+    }
+    
+    func configureTableView() {
+        tableView.clipsToBounds = true
+        tableView.layer.cornerRadius = tableView.frame.size.width / 10
+        tableView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+        
+        tableView.keyboardDismissMode = .interactive
+        tableView.allowsSelection = true
+        
+        refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
+        tableView.refreshControl = refreshControl
+        
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: Constants.tableRowHeight + Constants.tableViewOffset, bottom: 0, right: Constants.tableViewOffset)
+        
+        tableView.register(
+            UINib(
+                nibName: "GroupMemberCell",
+                bundle: nil
+            ),
+            forCellReuseIdentifier: "GroupMemberCell"
+        )
+    }
+    
+    func getGroupMembers() {
+        if let userId = keychain.get(Constants.userIdKey) {
+            loader.startAnimating()
+            service.getGroupMembers(userId: userId, groupId: group!.groupId) { [weak self] result in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.loader.stopAnimating()
+                    switch result {
+                    case .success(let response):
+                        self.handleSuccess(response: response)
+                    case .failure(let error):
+                        self.handleError(error: error.localizedDescription.description)
+                    }
+                }
+            }
+        } else {
+            showWarningAlert(warningText: Constants.getUserFriendsErrorText)
+        }
+    }
+    
+    func handleSuccess(response: GroupMembers) {
+        var groupMembers = [GroupMemberCellModel]()
+        for member in response.members {
+            groupMembers.append(
+                GroupMemberCellModel(
+                    memberId: member.memberId,
+                    memberFristName: member.memberFirstName,
+                    memberLastName: member.memberLastName,
+                    memberImageURL: Constants.getImageURLPrefix + Constants.userImagePrefix + member.memberId,
+                    memberPhone: member.memberPhone,
+                    isFriendRequestAlreadySent: member.isFriendRequestAlreadySent,
+                    areAlreadyFriends: member.areAlreadyFriends,
+                    delegate: self)
+            )
+        }
+        members = groupMembers
+        tableData = groupMembers
+        tableView.reloadData()
+    }
+    
+    func filter(filterString: String) {
+        loader.startAnimating()
+        var filteredMembers: [GroupMemberCellModel] = []
+        if filterString != "" {
+            for member in members {
+                if(member.memberFristName.lowercased().contains(filterString.lowercased()) ||
+                   member.memberLastName.lowercased().contains(filterString.lowercased())) {
+                    filteredMembers.append(member)
+                }
+            }
+        } else {
+            filteredMembers = members
+        }
+        tableData = filteredMembers
+        tableView.reloadData()
+        loader.stopAnimating()
+    }
+    
+    func clearNameTextField() {
+        memberNameTextField.text = ""
+        memberNameTextField.resignFirstResponder()
+    }
+    
     
     @IBAction func back() {
         navigationController?.popViewController(animated: true)
     }
     
-    @IBAction func addNewMembers() {
-        print("Add")
+//    @IBAction func addNewMembers() {
+//        navigateToAddGroupMembersPage(group: group!)
+//    }
+    
+    
+    @objc private func didPullToRefresh(_ sender: Any) {
+        clearNameTextField()
+        getGroupMembers()
+        self.refreshControl.endRefreshing()
+    }
+    
+    @objc func textFieldDidChange(_ textField: UITextField) {
+        filter(filterString: textField.text ?? "")
+    }
+    
+}
+
+extension GroupMembersPageVC: GroupMemberCellDelegate {
+    
+    func cellDidClick(_ member: GroupMemberCell) {
+        if let userId = keychain.get(Constants.userIdKey) {
+            service.sendFriendshipRequest(fromUserId: userId, toUserId: member.model.memberId) { [weak self] result in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.loader.stopAnimating()
+                    switch result {
+                    case .success(_):
+                        ()
+                    case .failure(let error):
+                        self.handleError(error: error.localizedDescription.description)
+                    }
+                }
+            }
+        } else {
+            showWarningAlert(warningText: Constants.sendFriendshipRequestErrorText)
+        }
+    }
+    
+}
+
+
+extension GroupMembersPageVC: UITableViewDelegate, UITableViewDataSource {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return tableData.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: "GroupMemberCell",
+            for: indexPath
+        )
+        
+        if let groupMemberCell = cell as? GroupMemberCell {
+            groupMemberCell.configure(with: tableData[indexPath.row])
+        }
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return Constants.tableRowHeight
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
+    }
+
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return UIView()
     }
     
 }

@@ -15,6 +15,7 @@ class GroupMediaFilesPageVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "Group Media Files"
         
         checkGroup()
     }
@@ -24,5 +25,9 @@ class GroupMediaFilesPageVC: UIViewController {
             showWarningAlert(warningText: "Something Went Wrong!")
             return //maybe only back button has to be active (need to add global error views)
         }
+    }
+    
+    @IBAction func back() {
+        navigationController?.popViewController(animated: true)
     }
 }

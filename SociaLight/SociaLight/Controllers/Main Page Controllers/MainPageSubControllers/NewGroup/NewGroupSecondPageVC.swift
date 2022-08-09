@@ -10,7 +10,6 @@ import KeychainSwift
 
 class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
     
-    @IBOutlet var tableViewOuterView: UIView!
     @IBOutlet var tableView: UITableView!
     @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var friendNameTextField: UITextField!
@@ -19,16 +18,16 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
     
     @IBOutlet var loader: UIActivityIndicatorView!
     
+    private let service = Service()
+    private let keychain = KeychainSwift()
+    
+    private let refreshControl = UIRefreshControl()
+    
     private var friends = [FriendCellModel]()
     private var tableData = [FriendCellModel]()
     private var collectionData = [SelectedFriendCellModel]()
     
     var group: Group?
-    
-    private let service = Service()
-    private let keychain = KeychainSwift()
-    
-    private let refreshControl = UIRefreshControl()
     
     lazy var flowLayout: UICollectionViewFlowLayout = {
         let flowLayout = UICollectionViewFlowLayout()
@@ -48,13 +47,9 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
         
         friendNameTextField.addTarget(self, action: #selector(NewGroupSecondPageVC.textFieldDidChange(_:)), for: .editingChanged)
         
-        tableViewOuterView.clipsToBounds = true
-        tableViewOuterView.layer.cornerRadius = tableViewOuterView.frame.size.width / 10
-        tableViewOuterView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
-        
-        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
-        UINavigationBar.appearance().shadowImage = UIImage()
-        UINavigationBar.appearance().isTranslucent = true
+        tableView.clipsToBounds = true
+        tableView.layer.cornerRadius = tableView.frame.size.width / 10
+        tableView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         
         friendNameTextField.clearButtonMode = .whileEditing
         
@@ -220,6 +215,7 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let response):
+                        self.group?.groupId = response.groupId
                         self.uploadGroupImage(groupId: response.groupId)
                     case .failure(let error):
                         self.loader.stopAnimating()
@@ -234,7 +230,10 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
     
     func uploadGroupImage(groupId: String) {
         if let _ = keychain.get(Constants.userIdKey) {
-            service.uploadImage(imageKey: Constants.groupImagePrefix + groupId, image: (group?.groupImage ?? UIImage(named: "Groupicon"))!) { [weak self] result in
+            service.uploadImage(
+                imageKey: Constants.groupImagePrefix + groupId,
+                image: (group?.groupImage ?? UIImage(named: "Groupicon"))!
+            ) { [weak self] result in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     switch result {
@@ -279,9 +278,12 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
         return members
     }
     
-    func clearfriendNameTextField() {
+    func clear() {
         friendNameTextField.text = ""
         friendNameTextField.resignFirstResponder()
+        
+        collectionData = [SelectedFriendCellModel]()
+        collectionView.reloadData()
     }
     
     @IBAction func createGroup() {
@@ -294,7 +296,7 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
     
     
     @objc private func didPullToRefresh(_ sender: Any) {
-        clearfriendNameTextField()
+        clear()
         getFiends()
         self.refreshControl.endRefreshing()
     }
@@ -304,6 +306,7 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
     }
     
 }
+
 
 extension NewGroupSecondPageVC: UITableViewDelegate, UITableViewDataSource {
     

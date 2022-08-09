@@ -103,9 +103,16 @@ extension UIViewController {
     
     func navigateToGroupMediaFilesPage(group: Group) {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let groupMediaFilesPageController = storyBoard.instantiateViewController(withIdentifier: "GroupMembersPageVC") as! GroupMembersPageVC
+        let groupMediaFilesPageController = storyBoard.instantiateViewController(withIdentifier: "GroupMediaFilesPageVC") as! GroupMediaFilesPageVC
         groupMediaFilesPageController.group = group
         self.navigationController?.pushViewController(groupMediaFilesPageController, animated: true)
+    }
+    
+    func navigateToAddGroupMembersPage(group: Group) {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let addGroupMembersPageController = storyBoard.instantiateViewController(withIdentifier: "AddGroupMembersPageVC") as! AddGroupMembersPageVC
+        addGroupMembersPageController.group = group
+        self.navigationController?.pushViewController(addGroupMembersPageController, animated: true)
     }
     
     // ----------------Constants--------------
@@ -132,6 +139,7 @@ extension UIViewController {
         static let changePasswordErrorText: String = "Can't change Password"
         static let saveChangesErrorText: String = "Can't save Changes"
         static let createGroupErrorText: String = "Can't create Group"
+        static let sendFriendshipRequestErrorText: String = "Can't send friendship request"
         
         // Picker Data
         static let pickerData: [Int] = [2, 3, 4, 5, 10, 20, 25, 50]
@@ -143,6 +151,7 @@ extension UIViewController {
         static let topBottomSpacing: CGFloat = 20.0
         static let additionalSpacing: CGFloat = 20.0
         static let tableRowHeight = 80.0
+        static let tableHeaderHeight = 44.0
         static let tableViewOffset = 32.0
         static let itemCount: CGFloat = 4
         
@@ -240,6 +249,12 @@ extension UIColor {
             (a, r, g, b) = (255, 0, 0, 0)
         }
         self.init(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)
+    }
+}
+
+extension String {
+    var boolValue: Bool {
+        return (self as NSString).boolValue
     }
 }
 
