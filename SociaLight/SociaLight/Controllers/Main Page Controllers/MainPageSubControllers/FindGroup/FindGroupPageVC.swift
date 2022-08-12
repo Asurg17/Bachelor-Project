@@ -72,12 +72,12 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
                             case .success(let response):
                                 self.handleSuccess(response: response)
                             case .failure(let error):
-                                self.handleError(error: error.localizedDescription.description)
+                                self.showWarningAlert(warningText: error.localizedDescription.description)
                             }
                         }
                     }
                 } else {
-                    showWarningAlert(warningText: Constants.searchGroupsErrorText)
+                    showWarningAlert(warningText: Constants.fatalError)
                 }
             }
         }

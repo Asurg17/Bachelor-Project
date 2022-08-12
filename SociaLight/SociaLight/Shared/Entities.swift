@@ -8,6 +8,12 @@
 import Foundation
 import UIKit
 
+struct ServiceResponse {
+    let response: String
+    let warning: String
+    let isWarning: Bool
+}
+
 // -------------UserId---------------
 
 struct UserIdResponse: Codable {

@@ -16,7 +16,6 @@ class ProfilePageVC: UIViewController, DismissProtocol {
     @IBOutlet var firstNameLabel: UILabel!
     @IBOutlet var lastNameLabel: UILabel!
     @IBOutlet var ageLabel: UILabel!
-    @IBOutlet var locationLabel: UILabel!
     @IBOutlet var birthDateLabel: UILabel!
     @IBOutlet var phoneLabel: UILabel!
     
@@ -65,12 +64,12 @@ class ProfilePageVC: UIViewController, DismissProtocol {
                     case .success(let response):
                         self.handleSuccess(response: response, userId: userId)
                     case .failure(let error):
-                        self.handleError(error: error.localizedDescription.description)
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
                 }
             }
         } else {
-            showWarningAlert(warningText: Constants.getUserInfoErrorText)
+            showWarningAlert(warningText: Constants.fatalError)
         }
     }
 
@@ -82,15 +81,15 @@ class ProfilePageVC: UIViewController, DismissProtocol {
                 DispatchQueue.main.async {
                     self.loader.stopAnimating()
                     switch result {
-                    case .success(let response):
-                        self.showWarningAlert(warningText: response)
+                    case .success(_):
+                        ()
                     case .failure(let error):
-                        self.handleError(error: error.localizedDescription.description)
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
                 }
             }
         } else {
-            showWarningAlert(warningText: Constants.uploadImageErrorText)
+            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     
@@ -115,7 +114,6 @@ class ProfilePageVC: UIViewController, DismissProtocol {
         firstNameLabel.text = userInfo.firstName
         lastNameLabel.text = userInfo.lastName
         ageLabel.text = userInfo.age
-        locationLabel.text = userInfo.location
         birthDateLabel.text = userInfo.birthDate
         phoneLabel.text = userInfo.phone
         saveInfo(userInfo: userInfo)

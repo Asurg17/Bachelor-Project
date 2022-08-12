@@ -54,7 +54,7 @@ class SignUpPageVC: UIViewController {
                             case .success(let response):
                                 self.handleSuccess(response: response)
                             case .failure(let error):
-                                self.handleError(error: error.localizedDescription.description)
+                                self.showWarningAlert(warningText: error.localizedDescription.description)
                             }
                         }
                     }

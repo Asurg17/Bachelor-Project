@@ -39,23 +39,16 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = ""
+        
         setupViews()
+        checkGroup(group: group)
     }
     
     func setupViews() {
-        checkGroup()
-        
         setupActionViews()
         setupImageView()
         setupStackView()
         setupLabels()
-    }
-    
-    func checkGroup() {
-        guard let _ = group else {
-            showWarningAlert(warningText: "Something Went Wrong!")
-            return //maybe only back button has to be active (need to add global error views)
-        }
     }
     
     func setupActionViews() {
@@ -123,12 +116,12 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
                     case .success(_):
                         self.navigationController?.popToRootViewController(animated: true)
                     case .failure(let error):
-                        self.handleError(error: error.localizedDescription.description)
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
                 }
             }
         } else {
-            showWarningAlert(warningText: Constants.uploadImageErrorText)
+            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     
@@ -140,16 +133,15 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
                 DispatchQueue.main.async {
                     self.loader.stopAnimating()
                     switch result {
-                    case .success(let response):
+                    case .success(_):
                         self.groupHasUpdated = true
-                        self.showWarningAlert(warningText: response)
                     case .failure(let error):
-                        self.handleError(error: error.localizedDescription.description)
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
                 }
             }
         } else {
-            showWarningAlert(warningText: Constants.uploadImageErrorText)
+            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     
@@ -174,12 +166,12 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
                             self.group!.groupDescription = self.groupDescription!
                             self.groupDescriptionLabel.text = self.groupDescription
                         case .failure(let error):
-                            self.handleError(error: error.localizedDescription.description)
+                            self.showWarningAlert(warningText: error.localizedDescription.description)
                         }
                     }
                 }
             } else {
-                showWarningAlert(warningText: Constants.uploadImageErrorText)
+                showWarningAlert(warningText: Constants.fatalError)
             }
         }
     }

@@ -52,12 +52,12 @@ class ChangePasswordPopupVC: UIViewController {
                                     case .success(let response):
                                         self.handleSuccess(response: response)
                                     case .failure(let error):
-                                        self.handleError(error: error.localizedDescription.description)
+                                        self.showWarningAlert(warningText: error.localizedDescription.description)
                                     }
                                 }
                             }
                         } else {
-                            showWarningAlert(warningText: Constants.changePasswordErrorText)
+                            showWarningAlert(warningText: Constants.fatalError)
                         }
                     }
                 } else {

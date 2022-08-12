@@ -37,3 +37,7 @@ protocol GroupMemberCellDelegate: AnyObject {
 protocol GroupInfoActionViewDelegate: AnyObject {
     func actionDidInitiated(_ sender: GroupInfoActionView)
 }
+
+protocol ErrorViewDelegate:AnyObject {
+    func reload(_ sender: ErrorView)
+}

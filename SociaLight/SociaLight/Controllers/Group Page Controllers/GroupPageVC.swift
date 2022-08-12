@@ -19,7 +19,9 @@ class GroupPageVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Group"
+        
         setupViews()
+        checkGroup(group: group)
     }
     
     func setupViews() {

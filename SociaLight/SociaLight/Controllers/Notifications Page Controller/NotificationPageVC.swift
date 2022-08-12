@@ -30,6 +30,7 @@ class NotificationPageVC: UIViewController {
     
     @IBOutlet var loader: UIActivityIndicatorView!
     @IBOutlet var tableView: UITableView!
+    @IBOutlet var warningText: UILabel!
     
     private let service = Service()
     private let keychain = KeychainSwift()
@@ -48,9 +49,9 @@ class NotificationPageVC: UIViewController {
     }
     
     func configureTableView() {
-//        tableView.clipsToBounds = true
-//        tableView.layer.cornerRadius = tableView.frame.size.width / 10
-//        tableView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+        tableView.clipsToBounds = true
+        tableView.layer.cornerRadius = 20
+        tableView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -91,12 +92,12 @@ class NotificationPageVC: UIViewController {
                     case .success(let response):
                         self.handleSuccess(response: response)
                     case .failure(let error):
-                        self.handleError(error: error.localizedDescription.description)
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
                 }
             }
         } else {
-            showWarningAlert(warningText: Constants.getUserFriendsErrorText)
+            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     
@@ -180,14 +181,12 @@ class NotificationPageVC: UIViewController {
     
     @objc private func didPullToRefresh(_ sender: Any) {
         getNotifications()
-        
         DispatchQueue.main.async {
             self.tableView.refreshControl?.endRefreshing()
         }
     }
 
 }
-
 
 extension NotificationPageVC: NotificationCellDelegate {
     
@@ -202,12 +201,12 @@ extension NotificationPageVC: NotificationCellDelegate {
                     case .success(_):
                         self.removeFromTable(elem: notification.model)
                     case .failure(let error):
-                        self.handleError(error: error.localizedDescription.description)
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
                 }
             }
         } else {
-            showWarningAlert(warningText: Constants.getUserFriendsErrorText)
+            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     
@@ -222,12 +221,12 @@ extension NotificationPageVC: NotificationCellDelegate {
                     case .success(_):
                         self.removeFromTable(elem: notification.model)
                     case .failure(let error):
-                        self.handleError(error: error.localizedDescription.description)
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
                 }
             }
         } else {
-            showWarningAlert(warningText: Constants.getUserFriendsErrorText)
+            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     
@@ -237,6 +236,7 @@ extension NotificationPageVC: NotificationCellDelegate {
 extension NotificationPageVC: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
+        if tableData.isEmpty { warningText.isHidden = false } else { warningText.isHidden = true }
         return tableData.count
     }
     

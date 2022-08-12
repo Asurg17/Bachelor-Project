@@ -39,6 +39,7 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
         super.viewDidLoad()
         
         setupViews()
+        checkGroup(group: group)
         getFiends()
     }
     
@@ -113,12 +114,12 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
                     case .success(let response):
                         self.handleSuccess(response: response)
                     case .failure(let error):
-                        self.handleError(error: error.localizedDescription.description)
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
                 }
             }
         } else {
-            showWarningAlert(warningText: Constants.getUserFriendsErrorText)
+            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     
@@ -219,12 +220,12 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
                         self.uploadGroupImage(groupId: response.groupId)
                     case .failure(let error):
                         self.loader.stopAnimating()
-                        self.handleError(error: error.localizedDescription.description)
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
                 }
             }
         } else {
-            showWarningAlert(warningText: Constants.createGroupErrorText)
+            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     
@@ -241,12 +242,12 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
                         self.addGroupMembers(groupId: groupId)
                     case .failure(let error):
                         self.loader.stopAnimating()
-                        self.handleError(error: error.localizedDescription.description)
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
                 }
             }
         } else {
-            showWarningAlert(warningText: Constants.uploadImageErrorText)
+            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     
@@ -261,12 +262,12 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
                     case .success(_):
                         self.navigateToGroupPage(group: self.group!)
                     case .failure(let error):
-                        self.handleError(error: error.localizedDescription.description)
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
                 }
             }
         } else {
-            showWarningAlert(warningText: Constants.createGroupErrorText)
+            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     

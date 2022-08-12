@@ -61,10 +61,7 @@ class Service {
                                     completion(.failure(error))
                                 }
                             } else {
-                                completion(.failure(NSError(domain: "",
-                                                            code: 400,
-                                                            userInfo: [NSLocalizedDescriptionKey: "Internal error!"]
-                                                           )))
+                                completion(.failure(ServiceError.noData))
                             }
                         } else {
                             if (httpUrlResponse.value(forHTTPHeaderField: "Error") ?? "").contains("duplicate key") {
@@ -126,10 +123,7 @@ class Service {
                                     completion(.failure(error))
                                 }
                             } else {
-                                completion(.failure(NSError(domain: "",
-                                                            code: 400,
-                                                            userInfo: [NSLocalizedDescriptionKey: "Internal error!"]
-                                                           )))
+                                completion(.failure(ServiceError.noData))
                             }
                         } else {
                             completion(.failure(NSError(domain: "",

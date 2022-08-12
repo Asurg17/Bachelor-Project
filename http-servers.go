@@ -952,37 +952,62 @@ func acceptFriendshipRequest(w http.ResponseWriter, req *http.Request) {
 	fromUserId := req.URL.Query().Get("fromUserId")
 	requestUniqueKey := req.URL.Query().Get("requestUniqueKey")
 
-	updateQuery := `update friendship_requests
+	updateQuery := `create or replace procedure acceptFriendship(requestUniqueKey integer
+																,fromUserId character varying
+																,toUserId   character varying)
+					language plpgsql
+					as $$
+					begin 
+					update friendship_requests
 					set status = 'A'
-					where id = $1
-					and to_user_id = $2;`
+					where id = requestUniqueKey
+					and to_user_id = toUserId;
+					
+					insert into friends (user_id, friend_id)
+					values(toUserId, fromUserId);
+	
+					insert into friends (user_id, friend_id)
+					values(fromUserId, toUserId);
+					end;$$`
 
-	_, e := db.Exec(updateQuery, requestUniqueKey, userId)
+	_, e := db.Exec(updateQuery)
 	if e != nil {
 		w.Header().Set("Error", "Can't save Changes!")
 		w.WriteHeader(400)
+		print(e.Error())
 		http.Error(w, e.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	insertQuery := `insert into friends (user_id, friend_id)
-					values($1, $2);`
+	insertQuery := `call acceptFriendship($1, $2, $3);`
 
-	_, e = db.Exec(insertQuery, userId, fromUserId)
+	_, e = db.Exec(insertQuery, requestUniqueKey, fromUserId, userId)
 	if e != nil {
 		w.Header().Set("Error", "Can't save Changes!")
 		w.WriteHeader(400)
+		print(e.Error())
 		http.Error(w, e.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	_, e = db.Exec(insertQuery, fromUserId, userId)
-	if e != nil {
-		w.Header().Set("Error", "Can't save Changes!")
-		w.WriteHeader(400)
-		http.Error(w, e.Error(), http.StatusInternalServerError)
-		return
-	}
+	// insertQuery := `insert into friends (user_id, friend_id)
+	// 				values($1, $2);`
+
+	// _, e = db.Exec(insertQuery, userId, fromUserId)
+	// if e != nil {
+	// 	w.Header().Set("Error", "Can't save Changes!")
+	// 	w.WriteHeader(400)
+	// 	http.Error(w, e.Error(), http.StatusInternalServerError)
+	// 	return
+	// }
+
+	// _, e = db.Exec(insertQuery, fromUserId, userId)
+	// if e != nil {
+	// 	w.Header().Set("Error", "Can't save Changes!")
+	// 	w.WriteHeader(400)
+	// 	http.Error(w, e.Error(), http.StatusInternalServerError)
+	// 	return
+	// }
 
 	w.WriteHeader(http.StatusOK)
 }

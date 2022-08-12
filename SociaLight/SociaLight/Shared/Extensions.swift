@@ -11,14 +11,10 @@ extension UIViewController {
     
     // ------------Shared Functions-----------
     
-    func handleError(error: String?) {
-        showWarningAlert(warningText: error ?? Constants.unspecifiedErrorText)
-    }
-
-    func showWarningAlert(warningText: String) {
+    func showWarningAlert(warningText: String?) {
         let alert = UIAlertController(
             title: "Warning",
-            message: warningText,
+            message: warningText ?? Constants.unspecifiedWarningText,
             preferredStyle: .alert
         )
         alert.addAction(
@@ -31,6 +27,22 @@ extension UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
+    func handleError(errorText: String?) -> ErrorView {
+        let screenSize: CGRect = UIScreen.main.bounds
+        let myView = ErrorView(
+            frame: CGRect(
+                x: 0,
+                y: 0,
+                width: screenSize.width,
+                height: screenSize.height
+            )
+        )
+        myView.errorLabel.text = errorText ?? Constants.unspecifiedErrorText
+        self.view.addSubview(myView)
+        
+        return myView
+    }
+
     func checkIfPasswordsMatches(pass1: String, pass2: String) -> Bool {
         if (pass1 == pass2) {
             return true
@@ -46,6 +58,20 @@ extension UIViewController {
             return false
         }
         return true
+    }
+    
+    func isGroupValid(group: Group?) -> Bool{
+        guard let _ = group else {
+            return false
+        }
+        return true
+    }
+    
+    func checkGroup(group: Group?) {
+        guard let _ = group else {
+            showWarningAlert(warningText: Constants.unspecifiedErrorText)
+            return //maybe only back button has to be active (need to add global error views)
+        }
     }
     
     func formatDate(date: Date) -> String {
@@ -122,6 +148,7 @@ extension UIViewController {
         static let userIdKey: String = "userId"
         
         // Warning textst
+        static let unspecifiedWarningText: String = "Something went wrong!"
         static let fieldsAreNotFilledWarningText: String = "Please fill all the fields!"
         static let samePasswordsWarningText: String = "Can't use same password!"
         static let noChangesdWarningText: String = "Nothing to change!"
@@ -130,7 +157,7 @@ extension UIViewController {
         static let maximalGroupMembersNumberReachedWarningText: String = "Can't add new Member to the Group. Maximal number of members is reached!"
         
         // Error Texts
-        static let unspecifiedErrorText: String = "Unspecified Error"
+        static let unspecifiedErrorText: String = "Something went wrong"
         static let getUserInfoErrorText: String = "Can't get user Info"
         static let getUserGroupsErrorText: String = "Can't get user Groups"
         static let getUserFriendsErrorText: String = "Can't get user Friends"
@@ -140,6 +167,7 @@ extension UIViewController {
         static let saveChangesErrorText: String = "Can't save Changes"
         static let createGroupErrorText: String = "Can't create Group"
         static let sendFriendshipRequestErrorText: String = "Can't send friendship request"
+        static let fatalError: String = "Internal error! Please close app and then reopen it!"
         
         // Picker Data
         static let pickerData: [Int] = [2, 3, 4, 5, 10, 20, 25, 50]

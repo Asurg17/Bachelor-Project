@@ -10,7 +10,6 @@ import KeychainSwift
 
 class PersonalInfoPopupVC: UIViewController {
     
-    @IBOutlet var ageTextField: DesignableUITextField!
     @IBOutlet var phoneTextField: DesignableUITextField!
     @IBOutlet var birthDateTextField: DesignableUITextField!
     
@@ -18,6 +17,7 @@ class PersonalInfoPopupVC: UIViewController {
     
     var delegate: DismissProtocol?
     
+    private let datePicker = UIDatePicker()
     private let service = Service()
     
     override func viewDidLoad() {
@@ -27,7 +27,6 @@ class PersonalInfoPopupVC: UIViewController {
     }
     
     func setupViews() {
-        ageTextField.delegate = self
         phoneTextField.delegate = self
         birthDateTextField.delegate = self
         
@@ -36,7 +35,6 @@ class PersonalInfoPopupVC: UIViewController {
     }
     
     func setupDatePicker() {
-        let datePicker = UIDatePicker()
         datePicker.datePickerMode = .date
         datePicker.addTarget(self, action: #selector(birthDateChange(datePicker:)), for: UIControl.Event.valueChanged)
         datePicker.preferredDatePickerStyle = .wheels
@@ -47,9 +45,6 @@ class PersonalInfoPopupVC: UIViewController {
     }
     
     func setCurrentUserInfo() {
-        if UserDefaults.standard.string(forKey: "user.age") != "-" {
-            ageTextField.text = UserDefaults.standard.string(forKey: "user.age")
-        }
         if UserDefaults.standard.string(forKey: "user.phone") != "-" {
             phoneTextField.text = UserDefaults.standard.string(forKey: "user.phone")
         }
@@ -65,7 +60,7 @@ class PersonalInfoPopupVC: UIViewController {
                 loader.startAnimating()
                 service.changePersonalInfo(
                     userId: userId,
-                    age: ageTextField.text ?? "",
+                    age: getUserAge(),
                     phoneNumber: phoneTextField.text ?? "",
                     birthDate: birthDateTextField.text ?? ""
                 ) { [weak self] result in
@@ -76,12 +71,12 @@ class PersonalInfoPopupVC: UIViewController {
                         case .success(let response):
                             self.handleSuccess(response: response)
                         case .failure(let error):
-                            self.handleError(error: error.localizedDescription.description)
+                            self.showWarningAlert(warningText: error.localizedDescription.description)
                         }
                     }
                 }
             } else {
-                showWarningAlert(warningText: Constants.saveChangesErrorText)
+                showWarningAlert(warningText: Constants.fatalError)
             }
         } else {
             showWarningAlert(warningText: Constants.noChangesdWarningText)
@@ -89,10 +84,19 @@ class PersonalInfoPopupVC: UIViewController {
     }
     
     func checkForChanges() -> Bool {
-        if ageTextField.text != UserDefaults.standard.string(forKey: "user.age") ||
-           phoneTextField.text != UserDefaults.standard.string(forKey: "user.phone") ||
+        if phoneTextField.text != UserDefaults.standard.string(forKey: "user.phone") ||
            birthDateTextField.text != UserDefaults.standard.string(forKey: "user.birthDate") { return true }
         return false
+    }
+    
+    func getUserAge() -> String {
+        let calendar = Calendar.current
+        let startComponents = datePicker.date
+        let endComponents = Date()
+
+        let dateComponents = calendar.dateComponents([.year], from: startComponents, to: endComponents)
+        
+        return dateComponents.year?.description ?? ""
     }
     
     func handleSuccess(response: String) {
@@ -150,8 +154,6 @@ extension PersonalInfoPopupVC: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         switch textField {
-        case ageTextField:
-            birthDateTextField.becomeFirstResponder()
         case birthDateTextField:
             phoneTextField.becomeFirstResponder()
         default:

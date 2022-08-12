@@ -29,8 +29,8 @@ class GroupMembersPageVC: UIViewController {
         super.viewDidLoad()
         self.title = "Group Members"
         
-        checkGroup()
         setupViews()
+        checkGroup(group: group)
         getGroupMembers()
     }
     
@@ -46,14 +46,7 @@ class GroupMembersPageVC: UIViewController {
             button.setImage(UIImage(systemName: "xmark.circle"), for: .normal)
         }
     }
-    
-    func checkGroup() {
-        guard let _ = group else {
-            showWarningAlert(warningText: "Something Went Wrong!")
-            return //maybe only back button has to be active (need to add global error views)
-        }
-    }
-    
+
     func setupViews() {
         configureTableView()
     }
@@ -94,12 +87,12 @@ class GroupMembersPageVC: UIViewController {
                     case .success(let response):
                         self.handleSuccess(response: response)
                     case .failure(let error):
-                        self.handleError(error: error.localizedDescription.description)
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
                 }
             }
         } else {
-            showWarningAlert(warningText: Constants.getUserFriendsErrorText)
+            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     
@@ -180,12 +173,12 @@ extension GroupMembersPageVC: GroupMemberCellDelegate {
                     case .success(_):
                         ()
                     case .failure(let error):
-                        self.handleError(error: error.localizedDescription.description)
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
                 }
             }
         } else {
-            showWarningAlert(warningText: Constants.sendFriendshipRequestErrorText)
+            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     

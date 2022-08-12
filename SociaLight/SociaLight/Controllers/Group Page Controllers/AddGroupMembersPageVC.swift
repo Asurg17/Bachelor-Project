@@ -17,16 +17,8 @@ class AddGroupMembersPageVC: UIViewController {
         super.viewDidLoad()
         self.title = "Add Group Members"
         
-        checkGroup()
+        checkGroup(group: group)
     }
-    
-    func checkGroup() {
-        guard let _ = group else {
-            showWarningAlert(warningText: "Something Went Wrong!")
-            return //maybe only back button has to be active (need to add global error views)
-        }
-    }
-    
     
     @IBAction func back() {
         navigationController?.popViewController(animated: true)

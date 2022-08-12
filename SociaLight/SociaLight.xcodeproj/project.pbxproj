@@ -50,6 +50,8 @@
 		EADFCF6F283115D50025EEA6 /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADFCF6E283115D50025EEA6 /* Entities.swift */; };
 		EAE7D22228A2BB4D0034552F /* NotificationHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE7D22128A2BB4D0034552F /* NotificationHeader.swift */; };
 		EAE7D22428A2BB5A0034552F /* NotificationHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = EAE7D22328A2BB5A0034552F /* NotificationHeader.xib */; };
+		EAE7D22728A55E810034552F /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE7D22628A55E810034552F /* ErrorView.swift */; };
+		EAE7D22928A55E8A0034552F /* ErrorView.xib in Resources */ = {isa = PBXBuildFile; fileRef = EAE7D22828A55E8A0034552F /* ErrorView.xib */; };
 		EAF6CF17288F2C96005E0AEE /* GroupInfoPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF6CF16288F2C96005E0AEE /* GroupInfoPageVC.swift */; };
 		EAF6CF1C288FE1FD005E0AEE /* GroupInfoActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF6CF1B288FE1FD005E0AEE /* GroupInfoActionView.swift */; };
 		EAF6CF1E288FE210005E0AEE /* GroupInfoActionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = EAF6CF1D288FE210005E0AEE /* GroupInfoActionView.xib */; };
@@ -103,6 +105,8 @@
 		EADFCF6E283115D50025EEA6 /* Entities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entities.swift; sourceTree = "<group>"; };
 		EAE7D22128A2BB4D0034552F /* NotificationHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHeader.swift; sourceTree = "<group>"; };
 		EAE7D22328A2BB5A0034552F /* NotificationHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotificationHeader.xib; sourceTree = "<group>"; };
+		EAE7D22628A55E810034552F /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
+		EAE7D22828A55E8A0034552F /* ErrorView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ErrorView.xib; sourceTree = "<group>"; };
 		EAF6CF16288F2C96005E0AEE /* GroupInfoPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInfoPageVC.swift; sourceTree = "<group>"; };
 		EAF6CF1B288FE1FD005E0AEE /* GroupInfoActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInfoActionView.swift; sourceTree = "<group>"; };
 		EAF6CF1D288FE210005E0AEE /* GroupInfoActionView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupInfoActionView.xib; sourceTree = "<group>"; };
@@ -220,7 +224,8 @@
 		EA6C5A7D281D6CC100721D7F /* ReusableViews */ = {
 			isa = PBXGroup;
 			children = (
-				EAF6CF18288FE154005E0AEE /* Group Info Action View */,
+				EAE7D22528A55E520034552F /* ErrorView */,
+				EAF6CF18288FE154005E0AEE /* GroupInfoActionView */,
 				EA9A47B12815A391006F8409 /* DesignableUITextField.swift */,
 				EA06AE7B282D56B200D84D7A /* RoundUIImageView.swift */,
 				EA481B2E283676AE00719282 /* PopUpView.swift */,
@@ -388,27 +393,36 @@
 		EAE7D21F28A2BAD00034552F /* Headers */ = {
 			isa = PBXGroup;
 			children = (
-				EAE7D22028A2BAE00034552F /* NitificationHeader */,
+				EAE7D22028A2BAE00034552F /* NotificationHeader */,
 			);
 			path = Headers;
 			sourceTree = "<group>";
 		};
-		EAE7D22028A2BAE00034552F /* NitificationHeader */ = {
+		EAE7D22028A2BAE00034552F /* NotificationHeader */ = {
 			isa = PBXGroup;
 			children = (
 				EAE7D22128A2BB4D0034552F /* NotificationHeader.swift */,
 				EAE7D22328A2BB5A0034552F /* NotificationHeader.xib */,
 			);
-			path = NitificationHeader;
+			path = NotificationHeader;
 			sourceTree = "<group>";
 		};
-		EAF6CF18288FE154005E0AEE /* Group Info Action View */ = {
+		EAE7D22528A55E520034552F /* ErrorView */ = {
+			isa = PBXGroup;
+			children = (
+				EAE7D22628A55E810034552F /* ErrorView.swift */,
+				EAE7D22828A55E8A0034552F /* ErrorView.xib */,
+			);
+			path = ErrorView;
+			sourceTree = "<group>";
+		};
+		EAF6CF18288FE154005E0AEE /* GroupInfoActionView */ = {
 			isa = PBXGroup;
 			children = (
 				EAF6CF1B288FE1FD005E0AEE /* GroupInfoActionView.swift */,
 				EAF6CF1D288FE210005E0AEE /* GroupInfoActionView.xib */,
 			);
-			path = "Group Info Action View";
+			path = GroupInfoActionView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -472,6 +486,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EACA50FC2864EAB600149482 /* SelectedFriendCell.xib in Resources */,
+				EAE7D22928A55E8A0034552F /* ErrorView.xib in Resources */,
 				EAE7D22428A2BB5A0034552F /* NotificationHeader.xib in Resources */,
 				EADF48D128998B9E001C4692 /* GroupMemberCell.xib in Resources */,
 				EADF48D828A00C75001C4692 /* NotificationCell.xib in Resources */,
@@ -535,6 +550,7 @@
 			files = (
 				EA071DD1285648AA008CC78C /* FindGroupPageVC.swift in Sources */,
 				EADF48DB28A17B9E001C4692 /* NotificationPageVC.swift in Sources */,
+				EAE7D22728A55E810034552F /* ErrorView.swift in Sources */,
 				EA481B312836778300719282 /* RoundCornerButton.swift in Sources */,
 				EA9E6BCA27FCB93E00101170 /* SignInPageVC.swift in Sources */,
 				EADF48CC28983BAE001C4692 /* GroupMediaFilesPageVC.swift in Sources */,
