@@ -14,6 +14,7 @@ class GroupMembersPageVC: UIViewController {
     @IBOutlet var loader: UIActivityIndicatorView!
     @IBOutlet var tableView: UITableView!
     @IBOutlet var memberNameTextField: UITextField!
+    @IBOutlet var addNewMemberBarButton: UIBarButtonItem!
     
     private let service = Service()
     private let keychain = KeychainSwift()
@@ -31,6 +32,11 @@ class GroupMembersPageVC: UIViewController {
         
         setupViews()
         checkGroup(group: group)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         getGroupMembers()
     }
     
@@ -49,6 +55,11 @@ class GroupMembersPageVC: UIViewController {
 
     func setupViews() {
         configureTableView()
+    }
+    
+    func checkGroupMembersNum () {
+        group!.membersCurrentNumber = tableData.count
+        addNewMemberBarButton.isEnabled = !(group!.membersMaxNumber == group!.membersCurrentNumber)
     }
     
     func configureTableView() {
@@ -113,6 +124,7 @@ class GroupMembersPageVC: UIViewController {
         }
         members = groupMembers
         tableData = groupMembers
+        checkGroupMembersNum()
         tableView.reloadData()
     }
     
@@ -144,9 +156,9 @@ class GroupMembersPageVC: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-//    @IBAction func addNewMembers() {
-//        navigateToAddGroupMembersPage(group: group!)
-//    }
+    @IBAction func addNewMembers() {
+        navigateToAddGroupMembersPage(group: group!)
+    }
     
     
     @objc private func didPullToRefresh(_ sender: Any) {

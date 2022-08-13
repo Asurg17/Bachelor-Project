@@ -43,6 +43,8 @@ struct UserGroup: Codable {
     let groupId: String
     let groupTitle: String
     let groupDescription: String
+    let groupCapacity: String
+    let groupMembersNum: String
 }
 
 // -----------Friends-------------------
@@ -64,7 +66,8 @@ struct UserFriend: Codable {
 struct Group {
     var groupId: String
     var groupImage: UIImage
-    var membersCount: Int
+    var membersCurrentNumber: Int
+    var membersMaxNumber: Int
     var groupName: String
     var groupDescription: String
     var isPrivate: Bool

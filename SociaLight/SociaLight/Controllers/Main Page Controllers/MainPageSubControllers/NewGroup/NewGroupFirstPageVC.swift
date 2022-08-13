@@ -102,7 +102,8 @@ class NewGroupFirstPageVC: UIViewController {
                 group: Group(
                     groupId: "",
                     groupImage: groupImage.image!,
-                    membersCount: pickerValue!,
+                    membersCurrentNumber: 1,
+                    membersMaxNumber: pickerValue!,
                     groupName: groupName.text!,
                     groupDescription: groupDescription.text ?? "",
                     isPrivate: isGroupPrivate

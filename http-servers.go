@@ -10,9 +10,11 @@ import (
 	"image"
 	"image/png"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 
+	"github.com/gorilla/websocket"
 	_ "github.com/lib/pq"
 )
 
@@ -23,6 +25,34 @@ const (
 	password = ""
 	dbname   = "sandrosurguladze"
 )
+
+func openConnection() (db *sql.DB, err error) {
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
+
+	db, err = sql.Open("postgres", psqlconn)
+	return
+}
+
+func isUserValid(userId string) bool {
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
+
+	db, err := sql.Open("postgres", psqlconn)
+	if err != nil {
+		return false
+	}
+	defer db.Close()
+
+	getQuery := `select s.user_id
+				from users s
+				where s.user_id = $1;`
+
+	_, err = db.Exec(getQuery, userId)
+	if err != nil {
+		return false
+	}
+
+	return userId == ""
+}
 
 func registerClient(w http.ResponseWriter, req *http.Request) {
 
@@ -216,6 +246,10 @@ func getUserGroups(w http.ResponseWriter, req *http.Request) {
 	getQuery := `select s.group_id
 					   ,s.group_title
 					   ,s.group_description
+					   ,s.group_capacity
+					   ,(select count(*)
+					    from group_members 
+						where group_id = m.group_id) members_count
 				from groups s
 					,group_members m
 				where s.group_id = m.group_id
@@ -236,7 +270,9 @@ func getUserGroups(w http.ResponseWriter, req *http.Request) {
 		var groupId string
 		var groupTitle string
 		var groupDescription string
-		err = rows.Scan(&groupId, &groupTitle, &groupDescription)
+		var groupCapacity string
+		var groupMembersNum string
+		err = rows.Scan(&groupId, &groupTitle, &groupDescription, &groupCapacity, &groupMembersNum)
 		if err != nil {
 			w.Header().Set("Error", err.Error())
 			w.WriteHeader(400)
@@ -247,6 +283,8 @@ func getUserGroups(w http.ResponseWriter, req *http.Request) {
 		group["groupId"] = groupId
 		group["groupTitle"] = groupTitle
 		group["groupDescription"] = groupDescription
+		group["groupCapacity"] = groupCapacity
+		group["groupMembersNum"] = groupMembersNum
 
 		groups = append(groups, group)
 	}
@@ -280,7 +318,8 @@ func searchNewGroups(w http.ResponseWriter, req *http.Request) {
 	userId := req.URL.Query().Get("userId")
 	groupIdentifier := req.URL.Query().Get("groupIdentifier")
 
-	getQuery := "select g.group_id, g.group_title, g.group_description " +
+	getQuery := "select g.group_id, g.group_title, g.group_description, " +
+		" g.group_capacity, (select count(*) from group_members where group_id = g.group_id) members_count " +
 		"from groups g " +
 		"where (lower(g.group_title) like lower('%" + groupIdentifier + "%') " +
 		"or lower(g.group_description) like lower('%" + groupIdentifier + "%')) " +
@@ -304,7 +343,9 @@ func searchNewGroups(w http.ResponseWriter, req *http.Request) {
 		var groupId string
 		var groupTitle string
 		var groupDescription string
-		err = rows.Scan(&groupId, &groupTitle, &groupDescription)
+		var groupCapacity string
+		var groupMembersNum string
+		err = rows.Scan(&groupId, &groupTitle, &groupDescription, &groupCapacity, &groupMembersNum)
 		if err != nil {
 			w.Header().Set("Error", err.Error())
 			w.WriteHeader(400)
@@ -315,6 +356,8 @@ func searchNewGroups(w http.ResponseWriter, req *http.Request) {
 		group["groupId"] = groupId
 		group["groupTitle"] = groupTitle
 		group["groupDescription"] = groupDescription
+		group["groupCapacity"] = groupCapacity
+		group["groupMembersNum"] = groupMembersNum
 
 		groups = append(groups, group)
 	}
@@ -329,6 +372,38 @@ func searchNewGroups(w http.ResponseWriter, req *http.Request) {
 		print("Error happened in JSON marshal. Err: %s", err)
 	}
 	w.Write(jsonResp)
+}
+
+func addUserToGroup(w http.ResponseWriter, req *http.Request) {
+
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
+
+	db, err := sql.Open("postgres", psqlconn)
+	if err != nil {
+		print(err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	defer db.Close()
+
+	userId := req.URL.Query().Get("userId")
+	groupId := req.URL.Query().Get("groupId")
+
+	updateQuery := `insert into group_members (group_id, user_id)
+					values ($1, $2)`
+
+	_, e := db.Exec(updateQuery, groupId, userId)
+	if e != nil {
+		w.Header().Set("Error", e.Error())
+		w.WriteHeader(400)
+		http.Error(w, e.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
 func getUserFriends(w http.ResponseWriter, req *http.Request) {
@@ -357,6 +432,80 @@ func getUserFriends(w http.ResponseWriter, req *http.Request) {
 				and s.user_id = f.friend_id;`
 
 	rows, err := db.Query(getQuery, userId)
+	if err != nil && err != sql.ErrNoRows {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(400)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	friends := make([]map[string]string, 0)
+
+	for rows.Next() {
+		var friendId string
+		var friendFirstName string
+		var friendLastName string
+		var friendPhone string
+		err = rows.Scan(&friendId, &friendFirstName, &friendLastName, &friendPhone)
+		if err != nil {
+			w.Header().Set("Error", err.Error())
+			w.WriteHeader(400)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		friend := make(map[string]string)
+		friend["friendId"] = friendId
+		friend["friendFirstName"] = friendFirstName
+		friend["friendLastName"] = friendLastName
+		friend["friendPhone"] = friendPhone
+
+		friends = append(friends, friend)
+	}
+
+	response := make(map[string][]map[string]string)
+	response["friends"] = friends
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	jsonResp, err := json.Marshal(response)
+	if err != nil {
+		print("Error happened in JSON marshal. Err: %s", err)
+	}
+	w.Write(jsonResp)
+}
+
+func getUserFriendsForGroup(w http.ResponseWriter, req *http.Request) {
+
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
+
+	db, err := sql.Open("postgres", psqlconn)
+	if err != nil {
+		print(err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	userId := req.URL.Query().Get("userId")
+	groupId := req.URL.Query().Get("groupId")
+
+	getQuery := `select s.user_id
+					,s.first_name
+					,coalesce(s.last_name, '-') last_name
+					,coalesce(s.phone, '-') phone
+				from users s
+				,friends f
+				where f.user_id = $1
+				and s.user_id = f.friend_id
+				and not exists (select *
+								from group_members m
+								where m.group_id = $2
+								and m.user_id = f.friend_id);`
+
+	rows, err := db.Query(getQuery, userId, groupId)
 	if err != nil && err != sql.ErrNoRows {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(400)
@@ -731,6 +880,7 @@ func addGroupMembers(w http.ResponseWriter, req *http.Request) {
 
 	userId := req.URL.Query().Get("userId")
 	groupId := req.URL.Query().Get("groupId")
+	addSelfToGroup := req.URL.Query().Get("addSelfToGroup")
 
 	var groupMembers GroupMembers
 	dataBytes, _ := ioutil.ReadAll(req.Body)
@@ -742,14 +892,16 @@ func addGroupMembers(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	adminInsertQuery := `insert into "group_members" ("group_id", "user_id", "user_role") 
+	if addSelfToGroup == "Y" {
+		adminInsertQuery := `insert into "group_members" ("group_id", "user_id", "user_role") 
 						values ($1, $2, $3)`
-	_, e = db.Exec(adminInsertQuery, groupId, userId, "A")
-	if e != nil {
-		w.Header().Set("Error", e.Error())
-		w.WriteHeader(400)
-		http.Error(w, e.Error(), http.StatusInternalServerError)
-		return
+		_, e = db.Exec(adminInsertQuery, groupId, userId, "A")
+		if e != nil {
+			w.Header().Set("Error", e.Error())
+			w.WriteHeader(400)
+			http.Error(w, e.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 
 	for _, groupMemberId := range groupMembers.Members {
@@ -1046,13 +1198,49 @@ func rejectFriendshipRequest(w http.ResponseWriter, req *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
+
+func reader(conn *websocket.Conn) {
+	for {
+		messageType, p, err := conn.ReadMessage()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		log.Println(string(p))
+
+		if err := conn.WriteMessage(messageType, p); err != nil {
+			log.Println(err)
+			return
+		}
+
+	}
+}
+
+func notificationsWsEndpoint(w http.ResponseWriter, req *http.Request) {
+	upgrader.CheckOrigin = func(req *http.Request) bool { return true }
+
+	ws, err := upgrader.Upgrade(w, req, nil)
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println("Client Successfully Connected!")
+
+	reader(ws)
+}
+
 func main() {
-	// // handle `/` route
-	// http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
-	// 	fmt.Fprint(res, "Hello World!")
-	// })
-	// log.Fatal(http.ListenAndServeTLS(":9000", "localhost.crt", "localhost.key", nil))
-	// http.HandleFunc("/registerClient", registerClient)
+	setupRoutes()
+}
+
+func setupRoutes() {
+
+	http.HandleFunc("/ws", notificationsWsEndpoint)
 
 	http.HandleFunc("/getImage", getImage)
 	http.HandleFunc("/leaveGroup", leaveGroup)
@@ -1063,6 +1251,8 @@ func main() {
 	http.HandleFunc("/getUserGroups", getUserGroups)
 	http.HandleFunc("/registerClient", registerClient)
 	http.HandleFunc("/getUserFriends", getUserFriends)
+	http.HandleFunc("/getUserFriendsForGroup", getUserFriendsForGroup)
+	http.HandleFunc("/addUserToGroup", addUserToGroup)
 	http.HandleFunc("/getGroupMembers", getGroupMembers)
 	http.HandleFunc("/changePassword", changePassword)
 	http.HandleFunc("/addGroupMembers", addGroupMembers)
@@ -1077,11 +1267,22 @@ func main() {
 	http.ListenAndServe(":9000", nil)
 }
 
-func CheckError(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
+// ########################################################################################################################
+// ########################################################################################################################
+// ########################################################################################################################
+
+// // handle `/` route
+// http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
+// 	fmt.Fprint(res, "Hello World!")
+// })
+// log.Fatal(http.ListenAndServeTLS(":9000", "localhost.crt", "localhost.key", nil))
+// http.HandleFunc("/registerClient", registerClient)
+
+// func CheckError(err error) {
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// }
 
 // func init() {
 

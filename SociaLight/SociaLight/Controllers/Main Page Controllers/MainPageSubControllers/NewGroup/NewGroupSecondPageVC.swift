@@ -8,13 +8,13 @@
 import UIKit
 import KeychainSwift
 
-class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
+class NewGroupSecondPageVC: UIViewController {
     
     @IBOutlet var tableView: UITableView!
     @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var friendNameTextField: UITextField!
     @IBOutlet var warningLabel: UILabel!
-    @IBOutlet var tableWarningLabel: UILabel!
+    @IBOutlet var collectionViewWarningLabel: UILabel!
     
     @IBOutlet var loader: UIActivityIndicatorView!
     
@@ -152,35 +152,11 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
     }
     
     func showTableWarningMessage() {
-        tableWarningLabel.isHidden = false
+        collectionViewWarningLabel.isHidden = false
     }
     
     func hideTableWarningMessage() {
-        tableWarningLabel.isHidden = true
-    }
-    
-    func cellDidClick(_ friend: FriendCell) {
-        if(friend.model.isSelected) {
-            if collectionData.count < (group?.membersCount ?? 0) - 1 {
-                collectionData.append(
-                    SelectedFriendCellModel(
-                        friendId: friend.model.friendId,
-                        friendFristName: friend.model.friendFristName,
-                        friendImage: friend.model.friendImage
-                    )
-                )
-            } else {
-                friend.toggleSelection()
-                showWarningAlert(
-                    warningText: Constants.maximalGroupMembersNumberReachedWarningText
-                )
-            }
-        } else {
-            if let offset = collectionData.firstIndex(where: {$0.friendId == friend.model.friendId}) {
-                collectionData.remove(at: offset)
-            }
-        }
-        collectionView.reloadData()
+        collectionViewWarningLabel.isHidden = true
     }
     
     func filterFriends(filterString: String) {
@@ -208,7 +184,7 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
                 requestParams:
                     CreateGroupRequest(groupName: group?.groupName ?? "",
                                        groupDescription: group?.groupDescription ?? "",
-                                       membersCount: String(group?.membersCount ?? 0),
+                                       membersCount: String(group?.membersMaxNumber ?? 0),
                                        isPrivate: group?.isPrivate.description ?? "none",
                                        userId: userId)
             ) { [weak self] result in
@@ -217,6 +193,7 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
                     switch result {
                     case .success(let response):
                         self.group?.groupId = response.groupId
+                        self.group?.membersCurrentNumber += self.collectionData.count
                         self.uploadGroupImage(groupId: response.groupId)
                     case .failure(let error):
                         self.loader.stopAnimating()
@@ -254,7 +231,7 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
     func addGroupMembers(groupId: String) {
         if let userId = keychain.get(Constants.userIdKey) {
             let members = getMembers()
-            service.addGroupMembers(userId: userId, groupId: groupId, members: members) { [weak self] result in
+            service.addGroupMembers(userId: userId, groupId: groupId, addSelfToGroup: "Y", members: members) { [weak self] result in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     self.loader.stopAnimating()
@@ -308,6 +285,33 @@ class NewGroupSecondPageVC: UIViewController, FriendCellDelegate {
     
 }
 
+extension NewGroupSecondPageVC: FriendCellDelegate {
+    
+    func cellDidClick(_ friend: FriendCell) {
+        if(friend.model.isSelected) {
+            if collectionData.count < (group?.membersMaxNumber ?? 0) - 1 {
+                collectionData.append(
+                    SelectedFriendCellModel(
+                        friendId: friend.model.friendId,
+                        friendFristName: friend.model.friendFristName,
+                        friendImage: friend.model.friendImage
+                    )
+                )
+            } else {
+                friend.toggleSelection()
+                showWarningAlert(
+                    warningText: Constants.maximalGroupMembersNumberReachedWarningText
+                )
+            }
+        } else {
+            if let offset = collectionData.firstIndex(where: {$0.friendId == friend.model.friendId}) {
+                collectionData.remove(at: offset)
+            }
+        }
+        collectionView.reloadData()
+    }
+    
+}
 
 extension NewGroupSecondPageVC: UITableViewDelegate, UITableViewDataSource {
     

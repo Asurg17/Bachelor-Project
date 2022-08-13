@@ -13,14 +13,18 @@ class GroupCellModel {
     var groupTitle: String
     var groupDescription: String
     var groupImageURL: String
+    var groupCapacity: String
+    var groupMembersNum: String
     
     weak var delegate: GroupCellDelegate?
     
-    init(groupId: String, groupTitle: String, groupDescription: String, groupImageURL: String, delegate: GroupCellDelegate?) {
+    init(groupId: String, groupTitle: String, groupDescription: String, groupImageURL: String, groupCapacity: String, groupMembersNum: String, delegate: GroupCellDelegate?) {
         self.groupId = groupId
         self.groupTitle = groupTitle
         self.groupDescription = groupDescription
         self.groupImageURL = groupImageURL
+        self.groupCapacity = groupCapacity
+        self.groupMembersNum = groupMembersNum
         self.delegate = delegate
     }
 }

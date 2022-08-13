@@ -515,10 +515,10 @@
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="Cmo-rG-eZ8" id="ZWY-vB-N0q"/>
+                        <outlet property="collectionViewWarningLabel" destination="rm9-I4-oGA" id="12b-dS-KPy"/>
                         <outlet property="friendNameTextField" destination="h7D-Q5-Gbx" id="RVJ-45-0uJ"/>
                         <outlet property="loader" destination="msr-GV-Ciz" id="MDX-Sy-mcA"/>
                         <outlet property="tableView" destination="Np2-DB-Zv8" id="jwc-AN-n1X"/>
-                        <outlet property="tableWarningLabel" destination="rm9-I4-oGA" id="12b-dS-KPy"/>
                         <outlet property="warningLabel" destination="j6R-sN-jN5" id="a4K-eo-HQa"/>
                     </connections>
                 </viewController>
@@ -746,8 +746,15 @@
                                 <action selector="back" destination="eRD-c7-47c" id="KVn-92-IIM"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" image="person.badge.plus" catalog="system" id="FT3-0k-W6P">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="addNewMembers" destination="eRD-c7-47c" id="ett-AO-qEh"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="addNewMemberBarButton" destination="FT3-0k-W6P" id="jVN-77-Chf"/>
                         <outlet property="loader" destination="6WO-By-QmY" id="Lct-O9-Pji"/>
                         <outlet property="memberNameTextField" destination="eLi-IN-E2p" id="LKK-0K-yTa"/>
                         <outlet property="tableView" destination="irb-wu-3Zw" id="Ysf-6Q-1lu"/>
@@ -1833,7 +1840,10 @@
                                 </constraints>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Add"/>
+                                <buttonConfiguration key="configuration" style="plain" image="plus" catalog="system"/>
+                                <connections>
+                                    <action selector="add" destination="Z6T-lB-Sjq" eventType="touchUpInside" id="0YD-Qr-96o"/>
+                                </connections>
                             </button>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="UyJ-8P-qJL">
                                 <rect key="frame" x="188.5" y="429.5" width="37" height="37"/>
@@ -1878,6 +1888,14 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="collectionView" destination="KJm-VT-HuN" id="j4o-va-3zq"/>
+                        <outlet property="collectionViewWarningLabel" destination="sO9-Pn-2HV" id="S09-Dc-Hbv"/>
+                        <outlet property="friendNameTextField" destination="cmk-O4-5Tc" id="cjz-tk-kcX"/>
+                        <outlet property="loader" destination="UyJ-8P-qJL" id="7yE-d1-IPc"/>
+                        <outlet property="tableView" destination="uwB-l0-fD6" id="QEu-qf-WCb"/>
+                        <outlet property="warningLabel" destination="Jto-IX-Kdm" id="e6j-8W-AlL"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="veB-30-umg" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1908,7 +1926,7 @@
             <size key="intrinsicContentSize" width="100" height="100"/>
         </designable>
         <designable name="1nf-3O-zvb">
-            <size key="intrinsicContentSize" width="145" height="18"/>
+            <size key="intrinsicContentSize" width="163" height="18"/>
         </designable>
         <designable name="6ae-VL-KCI">
             <size key="intrinsicContentSize" width="115" height="33"/>
@@ -1920,7 +1938,7 @@
             <size key="intrinsicContentSize" width="45.5" height="31"/>
         </designable>
         <designable name="Bla-5R-cOB">
-            <size key="intrinsicContentSize" width="145" height="18"/>
+            <size key="intrinsicContentSize" width="165" height="18"/>
         </designable>
         <designable name="Im3-TV-qu0">
             <size key="intrinsicContentSize" width="66" height="33"/>
@@ -1929,10 +1947,10 @@
             <size key="intrinsicContentSize" width="612" height="489"/>
         </designable>
         <designable name="UtA-Pp-i6r">
-            <size key="intrinsicContentSize" width="88.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="107.5" height="19.5"/>
         </designable>
         <designable name="Xyd-x5-ey8">
-            <size key="intrinsicContentSize" width="120.5" height="18"/>
+            <size key="intrinsicContentSize" width="138.5" height="18"/>
         </designable>
         <designable name="ZIq-23-Uxr">
             <size key="intrinsicContentSize" width="146" height="33"/>
@@ -1941,7 +1959,7 @@
             <size key="intrinsicContentSize" width="63" height="33"/>
         </designable>
         <designable name="cLO-ue-g6S">
-            <size key="intrinsicContentSize" width="90.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="109.5" height="19.5"/>
         </designable>
         <designable name="cmk-O4-5Tc">
             <size key="intrinsicContentSize" width="156.5" height="23"/>
@@ -1950,7 +1968,7 @@
             <size key="intrinsicContentSize" width="173" height="23"/>
         </designable>
         <designable name="fIj-Bk-OXc">
-            <size key="intrinsicContentSize" width="90.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="110.5" height="19.5"/>
         </designable>
         <designable name="h7D-Q5-Gbx">
             <size key="intrinsicContentSize" width="156.5" height="23"/>
@@ -1962,31 +1980,31 @@
             <size key="intrinsicContentSize" width="107" height="33"/>
         </designable>
         <designable name="lx3-sJ-7TZ">
-            <size key="intrinsicContentSize" width="86" height="18"/>
+            <size key="intrinsicContentSize" width="102" height="18"/>
         </designable>
         <designable name="mBI-QS-r4u">
-            <size key="intrinsicContentSize" width="122.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="139.5" height="19.5"/>
         </designable>
         <designable name="nmL-vF-l85">
             <size key="intrinsicContentSize" width="100" height="100"/>
         </designable>
         <designable name="oHy-lM-yhv">
-            <size key="intrinsicContentSize" width="89" height="19.5"/>
+            <size key="intrinsicContentSize" width="110" height="19.5"/>
         </designable>
         <designable name="ohr-2W-PJK">
             <size key="intrinsicContentSize" width="106" height="29"/>
         </designable>
         <designable name="pAR-c0-5gQ">
-            <size key="intrinsicContentSize" width="122.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="139.5" height="19.5"/>
         </designable>
         <designable name="q8O-sX-dcy">
-            <size key="intrinsicContentSize" width="114" height="18"/>
+            <size key="intrinsicContentSize" width="132" height="18"/>
         </designable>
         <designable name="sAv-1g-3C5">
-            <size key="intrinsicContentSize" width="86" height="18"/>
+            <size key="intrinsicContentSize" width="106" height="18"/>
         </designable>
         <designable name="wDT-Gh-g4k">
-            <size key="intrinsicContentSize" width="50" height="31"/>
+            <size key="intrinsicContentSize" width="43.5" height="31"/>
         </designable>
         <designable name="xWD-9U-x3k">
             <size key="intrinsicContentSize" width="45.5" height="31"/>
@@ -2019,6 +2037,7 @@
         <image name="magnifyingglass" catalog="system" width="128" height="115"/>
         <image name="person" catalog="system" width="128" height="117"/>
         <image name="person.3.fill" catalog="system" width="128" height="61"/>
+        <image name="person.badge.plus" catalog="system" width="128" height="124"/>
         <image name="person.circle" catalog="system" width="128" height="121"/>
         <image name="person.fill" catalog="system" width="128" height="120"/>
         <image name="photo" catalog="system" width="128" height="93"/>

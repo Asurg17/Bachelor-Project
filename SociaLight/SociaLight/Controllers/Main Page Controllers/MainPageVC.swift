@@ -101,6 +101,8 @@ class MainPageVC: UIViewController, GroupCellDelegate {
                     groupTitle: group.groupTitle,
                     groupDescription: group.groupDescription,
                     groupImageURL: Constants.getImageURLPrefix + Constants.groupImagePrefix + group.groupId,
+                    groupCapacity: group.groupCapacity,
+                    groupMembersNum: group.groupMembersNum,
                     delegate: self
                 )
             )
@@ -145,7 +147,8 @@ class MainPageVC: UIViewController, GroupCellDelegate {
             group: Group(
                 groupId: group.model.groupId,
                 groupImage: (group.groupImage.image ?? UIImage(named: "Groupicon"))!,
-                membersCount: 0,
+                membersCurrentNumber: Int(group.model.groupMembersNum) ?? 0,
+                membersMaxNumber: Int(group.model.groupCapacity) ?? 0,
                 groupName: group.model.groupTitle,
                 groupDescription: group.model.groupDescription,
                 isPrivate: false

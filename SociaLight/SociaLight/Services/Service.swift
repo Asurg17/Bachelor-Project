@@ -304,6 +304,60 @@ class Service {
         }
     }
     
+    func getUserFriends(userId: String, groupId: String, completion: @escaping (Result<UserFriends, Error>) -> ()) {
+        
+        components.path = "/getUserFriendsForGroup"
+        
+        let parameters = [
+            "userId": userId,
+            "groupId": groupId
+        ]
+        
+        components.queryItems = parameters.map { key, value in
+           return URLQueryItem(name: key, value: value)
+        }
+        
+        if let url = components.url {
+            let request = URLRequest(url: url)
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            if let data = data {
+                                let decoder = JSONDecoder()
+                                do {
+                                    let resp = try decoder.decode(UserFriends.self, from: data)
+                                    completion(.success(resp))
+                                } catch {
+                                    completion(.failure(error))
+                                }
+                            } else {
+                                completion(.failure(ServiceError.noData))
+                            }
+                        } else {
+                            completion(.failure(NSError(domain: "",
+                                                        code: 400,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                       )))
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    }
+    
     func searchNewGroups(userId: String, groupIdentifier: String, completion: @escaping (Result<UserGroups, Error>) -> ()) {
         
         components.path = "/searchNewGroups"
@@ -339,6 +393,50 @@ class Service {
                             } else {
                                 completion(.failure(ServiceError.noData))
                             }
+                        } else {
+                            completion(.failure(NSError(domain: "",
+                                                        code: 400,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                       )))
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    }
+    
+    func addUserToGroup(userId: String, groupId: String, completion: @escaping (Result<String, Error>) -> ()) {
+        
+        components.path = "/addUserToGroup"
+        
+        let parameters = [
+            "userId": userId,
+            "groupId": groupId
+        ]
+        
+        components.queryItems = parameters.map { key, value in
+           return URLQueryItem(name: key, value: value)
+        }
+        
+        if let url = components.url {
+            let request = URLRequest(url: url)
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            completion(.success(""))
                         } else {
                             completion(.failure(NSError(domain: "",
                                                         code: 400,
@@ -569,6 +667,7 @@ class Service {
     
     func addGroupMembers(userId: String,
                          groupId: String,
+                         addSelfToGroup: String,
                          members: Array<String>,
                          completion: @escaping (Result<String, Error>) -> ()) {
         
@@ -576,7 +675,8 @@ class Service {
         
         let parameters = [
             "userId": userId,
-            "groupId": groupId
+            "groupId": groupId,
+            "addSelfToGroup": addSelfToGroup
         ]
         
         components.queryItems = parameters.map { key, value in

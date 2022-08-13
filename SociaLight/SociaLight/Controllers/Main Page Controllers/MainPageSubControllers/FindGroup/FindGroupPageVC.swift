@@ -17,6 +17,7 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
     @IBOutlet var groupIdentifierTextField: RoundCornerTextField!
     
     private let service = Service()
+    private let keychain = KeychainSwift()
     
     lazy var flowLayout: UICollectionViewFlowLayout = {
         let flowLayout = UICollectionViewFlowLayout()
@@ -61,7 +62,6 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
     func searchNewGroups() {
         if let groupIdentifier = groupIdentifierTextField.text {
             if groupIdentifier != "" {
-                let keychain = KeychainSwift()
                 if let userId = keychain.get(Constants.userIdKey) {
                     loader.startAnimating()
                     service.searchNewGroups(userId: userId, groupIdentifier: groupIdentifier) { [weak self] result in
@@ -92,6 +92,8 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
                     groupTitle: group.groupTitle,
                     groupDescription: group.groupDescription,
                     groupImageURL: Constants.getImageURLPrefix + Constants.groupImagePrefix + group.groupId,
+                    groupCapacity: group.groupCapacity,
+                    groupMembersNum: group.groupMembersNum,
                     delegate: self
                 )
             )
@@ -101,16 +103,33 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
     }
     
     func cellDidClick(_ group: GroupCell) {
-        navigateToGroupPage(
-            group: Group(
-                groupId: group.model.groupId,
-                groupImage: (group.groupImage.image ?? UIImage(named: "Groupicon"))!,
-                membersCount: 0,
-                groupName: group.model.groupTitle,
-                groupDescription: group.model.groupDescription,
-                isPrivate: false
-            )
-        )
+        if let userId = keychain.get(Constants.userIdKey) {
+            loader.startAnimating()
+            service.addUserToGroup(userId: userId, groupId: group.model.groupId) { [weak self] result in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.loader.stopAnimating()
+                    switch result {
+                    case .success(_):
+                        self.navigateToGroupPage(
+                            group: Group(
+                                groupId: group.model.groupId,
+                                groupImage: (group.groupImage.image ?? UIImage(named: "Groupicon"))!,
+                                membersCurrentNumber: (Int(group.model.groupMembersNum) ?? 0) + 1,
+                                membersMaxNumber: Int(group.model.groupCapacity) ?? 0,
+                                groupName: group.model.groupTitle,
+                                groupDescription: group.model.groupDescription,
+                                isPrivate: false
+                            )
+                        )
+                    case .failure(let error):
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
+                    }
+                }
+            }
+        } else {
+            showWarningAlert(warningText: Constants.fatalError)
+        }
     }
     
     func showWarningMessage() {
