@@ -44,13 +44,6 @@ class GroupMembersPageVC: UIViewController {
         super.viewDidLayoutSubviews()
         
         memberNameTextField.addTarget(self, action: #selector(GroupMembersPageVC.textFieldDidChange(_:)), for: .editingChanged)
-        
-        memberNameTextField.clearButtonMode = .whileEditing
-        
-        if let button = memberNameTextField.value(forKey: "clearButton") as? UIButton {
-            button.tintColor = .black
-            button.setImage(UIImage(systemName: "xmark.circle"), for: .normal)
-        }
     }
 
     func setupViews() {

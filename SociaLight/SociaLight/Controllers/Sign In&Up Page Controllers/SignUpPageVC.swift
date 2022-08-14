@@ -41,7 +41,7 @@ class SignUpPageVC: UIViewController {
                 if checkPasswordLength(password: passwordTextField.text!) {
                     loader.startAnimating()
                     service.registerNewUser(
-                        username: usernameTextField.text!,
+                        username: usernameTextField.text!.lowercased(),
                         firstName: getFirstName(),
                         lastName: getLastName(),
                         phoneNumber: phoneNumberTextField.text!,

@@ -48,6 +48,8 @@ class MainPageVC: UIViewController, GroupCellDelegate {
             self,
             action: #selector(MainPageVC.textFieldDidChange(_:)), for: .editingChanged
         )
+        
+        filterTextField.delegate = self
     }
     
     func configureCollectionView() {
@@ -236,6 +238,15 @@ extension MainPageVC: UICollectionViewDelegateFlowLayout {
         minimumLineSpacingForSectionAt section: Int
     ) -> CGFloat {
         return Constants.lineSpacing
+    }
+    
+}
+
+extension MainPageVC: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
     
 }

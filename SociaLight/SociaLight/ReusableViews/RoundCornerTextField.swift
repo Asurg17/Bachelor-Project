@@ -30,6 +30,13 @@ class RoundCornerTextField: UITextField {
         self.layer.cornerRadius = self.frame.size.height / 2
         self.layer.borderWidth = 1
         self.layer.borderColor = UIColor.darkGray.cgColor
+        
+        self.clearButtonMode = .whileEditing
+        
+        if let button = self.value(forKey: "clearButton") as? UIButton {
+            button.tintColor = .black
+            button.setImage(UIImage(systemName: "xmark.circle"), for: .normal)
+        }
     }
     
      override func clearButtonRect(forBounds bounds: CGRect) -> CGRect {

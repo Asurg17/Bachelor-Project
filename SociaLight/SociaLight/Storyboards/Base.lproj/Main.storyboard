@@ -164,11 +164,11 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cum-4Q-QwI">
                                 <rect key="frame" x="0.0" y="104" width="414" height="50"/>
                                 <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Group Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7AY-jI-NVq" customClass="RoundCornerTextField" customModule="SociaLight" customModuleProvider="target">
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Group Name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7AY-jI-NVq" customClass="RoundCornerTextField" customModule="SociaLight" customModuleProvider="target">
                                         <rect key="frame" x="41.5" y="2.5" width="331" height="45"/>
                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <textInputTraits key="textInputTraits"/>
+                                        <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="paddingLeft">
                                                 <real key="value" value="20"/>
@@ -853,11 +853,11 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nf6-kk-ym6">
                                 <rect key="frame" x="0.0" y="60" width="414" height="50"/>
                                 <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Group Identifier" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="i7c-ah-vlw" customClass="RoundCornerTextField" customModule="SociaLight" customModuleProvider="target">
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Group Identifier" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="i7c-ah-vlw" customClass="RoundCornerTextField" customModule="SociaLight" customModuleProvider="target">
                                         <rect key="frame" x="41.5" y="2.5" width="331" height="45"/>
                                         <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <textInputTraits key="textInputTraits"/>
+                                        <textInputTraits key="textInputTraits" returnKeyType="search"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="paddingLeft">
                                                 <real key="value" value="20"/>
@@ -980,7 +980,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="empty_avatar_image" translatesAutoresizingMaskIntoConstraints="NO" id="PiK-JQ-r9Q" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="PiK-JQ-r9Q" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
                                 <rect key="frame" x="134.5" y="88" width="145" height="145"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="PiK-JQ-r9Q" secondAttribute="height" multiplier="1:1" id="snt-Gl-Snl"/>
@@ -1943,9 +1943,6 @@
         <designable name="Im3-TV-qu0">
             <size key="intrinsicContentSize" width="66" height="33"/>
         </designable>
-        <designable name="PiK-JQ-r9Q">
-            <size key="intrinsicContentSize" width="612" height="489"/>
-        </designable>
         <designable name="UtA-Pp-i6r">
             <size key="intrinsicContentSize" width="107.5" height="19.5"/>
         </designable>
@@ -2023,7 +2020,6 @@
         <image name="chevron.backward.2" catalog="system" width="128" height="105"/>
         <image name="deep-relief" width="600" height="510"/>
         <image name="ellipsis" catalog="system" width="128" height="37"/>
-        <image name="empty_avatar_image" width="612" height="489"/>
         <image name="great-whale" width="600" height="500"/>
         <image name="homekit" catalog="system" width="128" height="106"/>
         <image name="icons8-age-50" width="50" height="50"/>

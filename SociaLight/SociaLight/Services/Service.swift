@@ -25,24 +25,29 @@ class Service {
         lastName: String,
         phoneNumber: String,
         password: String,
-        completion: @escaping (Result<String, Error>) -> ()) {
+        completion: @escaping (Result<String, Error>) -> ()
+    ) {
         
-        components.path = "/registerClient"
-        
-        let parameters = [
-            "username": username,
-            "firstName": firstName,
-            "lastName": lastName,
-            "phoneNumber": phoneNumber,
-            "password": password
-        ]
-        
-        components.queryItems = parameters.map { key, value in
-           return URLQueryItem(name: key, value: value)
-        }
+        components.path = "/registerNewUser"
         
         if let url = components.url {
-            let request = URLRequest(url: url)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "username": username,
+                "firstName": firstName,
+                "lastName": lastName,
+                "phoneNumber": phoneNumber,
+                "password": password
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
             let task = URLSession.shared.dataTask(
                 with: request,
                 completionHandler: { data, response, error in
@@ -94,17 +99,21 @@ class Service {
         
         components.path = "/validateUser"
         
-        let parameters = [
-            "username": username,
-            "password": password
-        ]
-    
-        components.queryItems = parameters.map { key, value in
-           return URLQueryItem(name: key, value: value)
-        }
-        
         if let url = components.url {
-            let request = URLRequest(url: url)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "username": username,
+                "password": password
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
             let task = URLSession.shared.dataTask(
                 with: request,
                 completionHandler: { data, response, error in
@@ -148,17 +157,21 @@ class Service {
     func getUserInfo(userId: String, completion: @escaping (Result<UserInfoResponse, Error>) -> ()) {
         
         components.path = "/getUserInfo"
-        
-        let parameters = [
-            "userId": userId
-        ]
-        
-        components.queryItems = parameters.map { key, value in
-           return URLQueryItem(name: key, value: value)
-        }
-        
+
         if let url = components.url {
-            let request = URLRequest(url: url)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "userId": userId
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
             let task = URLSession.shared.dataTask(
                 with: request,
                 completionHandler: { data, response, error in
@@ -202,16 +215,20 @@ class Service {
         
         components.path = "/getUserGroups"
         
-        let parameters = [
-            "userId": userId
-        ]
-        
-        components.queryItems = parameters.map { key, value in
-           return URLQueryItem(name: key, value: value)
-        }
-        
         if let url = components.url {
-            let request = URLRequest(url: url)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "userId": userId
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
             let task = URLSession.shared.dataTask(
                 with: request,
                 completionHandler: { data, response, error in
@@ -255,16 +272,20 @@ class Service {
         
         components.path = "/getUserFriends"
         
-        let parameters = [
-            "userId": userId
-        ]
-        
-        components.queryItems = parameters.map { key, value in
-           return URLQueryItem(name: key, value: value)
-        }
-        
         if let url = components.url {
-            let request = URLRequest(url: url)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "userId": userId
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
             let task = URLSession.shared.dataTask(
                 with: request,
                 completionHandler: { data, response, error in
@@ -308,17 +329,21 @@ class Service {
         
         components.path = "/getUserFriendsForGroup"
         
-        let parameters = [
-            "userId": userId,
-            "groupId": groupId
-        ]
-        
-        components.queryItems = parameters.map { key, value in
-           return URLQueryItem(name: key, value: value)
-        }
-        
         if let url = components.url {
-            let request = URLRequest(url: url)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "userId": userId,
+                "groupId": groupId
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
             let task = URLSession.shared.dataTask(
                 with: request,
                 completionHandler: { data, response, error in
@@ -362,17 +387,21 @@ class Service {
         
         components.path = "/searchNewGroups"
         
-        let parameters = [
-            "userId": userId,
-            "groupIdentifier": groupIdentifier
-        ]
-        
-        components.queryItems = parameters.map { key, value in
-           return URLQueryItem(name: key, value: value)
-        }
-        
         if let url = components.url {
-            let request = URLRequest(url: url)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "userId": userId,
+                "groupIdentifier": groupIdentifier
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
             let task = URLSession.shared.dataTask(
                 with: request,
                 completionHandler: { data, response, error in
@@ -416,17 +445,21 @@ class Service {
         
         components.path = "/addUserToGroup"
         
-        let parameters = [
-            "userId": userId,
-            "groupId": groupId
-        ]
-        
-        components.queryItems = parameters.map { key, value in
-           return URLQueryItem(name: key, value: value)
-        }
-        
         if let url = components.url {
-            let request = URLRequest(url: url)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "userId": userId,
+                "groupId": groupId
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
             let task = URLSession.shared.dataTask(
                 with: request,
                 completionHandler: { data, response, error in
@@ -463,18 +496,22 @@ class Service {
         
         components.path = "/changePassword"
         
-        let parameters = [
-            "userId": userId,
-            "oldPassword": oldPassword,
-            "newPassword": newPassword
-        ]
-        
-        components.queryItems = parameters.map { key, value in
-           return URLQueryItem(name: key, value: value)
-        }
-        
         if let url = components.url {
-            let request = URLRequest(url: url)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "userId": userId,
+                "oldPassword": oldPassword,
+                "newPassword": newPassword
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
             let task = URLSession.shared.dataTask(
                 with: request,
                 completionHandler: { data, response, error in
@@ -512,19 +549,23 @@ class Service {
         
         components.path = "/changePersonalInfo"
         
-        let parameters = [
-            "userId": userId,
-            "age": age,
-            "phoneNumber": phoneNumber,
-            "birthDate": birthDate
-        ]
-        
-        components.queryItems = parameters.map { key, value in
-           return URLQueryItem(name: key, value: value)
-        }
-        
         if let url = components.url {
-            let request = URLRequest(url: url)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "userId": userId,
+                "age": age,
+                "phoneNumber": phoneNumber,
+                "birthDate": birthDate
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
             let task = URLSession.shared.dataTask(
                 with: request,
                 completionHandler: { data, response, error in
@@ -604,21 +645,25 @@ class Service {
                      completion: @escaping (Result<CreateGroupResponse, Error>) -> ()) {
         
         components.path = "/createGroup"
-        
-        let parameters = [
-            "groupName": requestParams.groupName,
-            "groupDescription": requestParams.groupDescription,
-            "membersCount": requestParams.membersCount,
-            "isPrivate": requestParams.isPrivate,
-            "userId": requestParams.userId
-        ]
-        
-        components.queryItems = parameters.map { key, value in
-           return URLQueryItem(name: key, value: value)
-        }
-        
+    
         if let url = components.url {
-            let request = URLRequest(url: url)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "groupName": requestParams.groupName,
+                "groupDescription": requestParams.groupDescription,
+                "membersCount": requestParams.membersCount,
+                "isPrivate": requestParams.isPrivate,
+                "userId": requestParams.userId
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
             let task = URLSession.shared.dataTask(
                 with: request,
                 completionHandler: { data, response, error in
@@ -685,8 +730,6 @@ class Service {
         
         if let url = components.url {
             var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            
             let jsonObject: NSMutableDictionary = NSMutableDictionary()
             var jsonData: Data  = Data()
             jsonObject.setValue(members, forKey: "members")
@@ -740,19 +783,23 @@ class Service {
         
         components.path = "/saveGroupUpdates"
         
-        let parameters = [
-            "userId": userId,
-            "groupId": groupId,
-            "groupName": groupName,
-            "groupDescription": groupDescription
-        ]
-        
-        components.queryItems = parameters.map { key, value in
-           return URLQueryItem(name: key, value: value)
-        }
-        
         if let url = components.url {
-            let request = URLRequest(url: url)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "userId": userId,
+                "groupId": groupId,
+                "groupName": groupName,
+                "groupDescription": groupDescription
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
             let task = URLSession.shared.dataTask(
                 with: request,
                 completionHandler: { data, response, error in
@@ -794,18 +841,22 @@ class Service {
                     completion: @escaping (Result<String, Error>) -> ()) {
         
         components.path = "/leaveGroup"
-        
-        let parameters = [
-            "userId": userId,
-            "groupId": groupId
-        ]
-        
-        components.queryItems = parameters.map { key, value in
-           return URLQueryItem(name: key, value: value)
-        }
-        
+    
         if let url = components.url {
-            let request = URLRequest(url: url)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "userId": userId,
+                "groupId": groupId
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
             let task = URLSession.shared.dataTask(
                 with: request,
                 completionHandler: { data, response, error in
@@ -839,17 +890,21 @@ class Service {
         
         components.path = "/getGroupMembers"
         
-        let parameters = [
-            "userId": userId,
-            "groupId": groupId
-        ]
-        
-        components.queryItems = parameters.map { key, value in
-           return URLQueryItem(name: key, value: value)
-        }
-        
         if let url = components.url {
-            let request = URLRequest(url: url)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "userId": userId,
+                "groupId": groupId
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
             let task = URLSession.shared.dataTask(
                 with: request,
                 completionHandler: { data, response, error in
@@ -893,17 +948,21 @@ class Service {
         
         components.path = "/sendFriendshipRequest"
         
-        let parameters = [
-            "fromUserId": fromUserId,
-            "toUserId": toUserId
-        ]
-        
-        components.queryItems = parameters.map { key, value in
-           return URLQueryItem(name: key, value: value)
-        }
-        
         if let url = components.url {
-            let request = URLRequest(url: url)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "fromUserId": fromUserId,
+                "toUserId": toUserId
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
             let task = URLSession.shared.dataTask(
                 with: request,
                 completionHandler: { data, response, error in
@@ -937,16 +996,20 @@ class Service {
         
         components.path = "/getUserNotifications"
         
-        let parameters = [
-            "userId": userId
-        ]
-        
-        components.queryItems = parameters.map { key, value in
-           return URLQueryItem(name: key, value: value)
-        }
-        
         if let url = components.url {
-            let request = URLRequest(url: url)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "userId": userId
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
             let task = URLSession.shared.dataTask(
                 with: request,
                 completionHandler: { data, response, error in
@@ -990,18 +1053,22 @@ class Service {
         
         components.path = "/acceptFriendshipRequest"
         
-        let parameters = [
-            "userId": userId,
-            "fromUserId": fromUserId,
-            "requestUniqueKey": requestUniqueKey
-        ]
-        
-        components.queryItems = parameters.map { key, value in
-           return URLQueryItem(name: key, value: value)
-        }
-        
         if let url = components.url {
-            let request = URLRequest(url: url)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "userId": userId,
+                "fromUserId": fromUserId,
+                "requestUniqueKey": requestUniqueKey
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
             let task = URLSession.shared.dataTask(
                 with: request,
                 completionHandler: { data, response, error in
@@ -1035,17 +1102,21 @@ class Service {
         
         components.path = "/rejectFriendshipRequest"
         
-        let parameters = [
-            "userId": userId,
-            "requestUniqueKey": requestUniqueKey
-        ]
-        
-        components.queryItems = parameters.map { key, value in
-           return URLQueryItem(name: key, value: value)
-        }
-        
         if let url = components.url {
-            let request = URLRequest(url: url)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "userId": userId,
+                "requestUniqueKey": requestUniqueKey
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
             let task = URLSession.shared.dataTask(
                 with: request,
                 completionHandler: { data, response, error in

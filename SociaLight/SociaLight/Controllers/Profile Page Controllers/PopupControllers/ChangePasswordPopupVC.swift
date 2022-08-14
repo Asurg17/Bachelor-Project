@@ -49,15 +49,15 @@ class ChangePasswordPopupVC: UIViewController {
                                 DispatchQueue.main.async {
                                     self.loader.stopAnimating()
                                     switch result {
-                                    case .success(let response):
-                                        self.handleSuccess(response: response)
+                                    case .success(_):
+                                        self.dismissPopup()
                                     case .failure(let error):
                                         self.showWarningAlert(warningText: error.localizedDescription.description)
                                     }
                                 }
                             }
                         } else {
-                            showWarningAlert(warningText: Constants.fatalError)
+                            showWarningAlert(warningText: Constants.changePasswordErrorText)
                         }
                     }
                 } else {
@@ -76,23 +76,23 @@ class ChangePasswordPopupVC: UIViewController {
         return true
     }
     
-    func handleSuccess(response: String) {
-        let alert = UIAlertController(
-            title: "Success",
-            message: response,
-            preferredStyle: .alert
-        )
-        alert.addAction(
-            UIAlertAction(
-                title: "Ok",
-                style: .default,
-                handler: { [unowned self] _ in
-                    self.dismissPopup()
-                }
-            )
-        )
-        present(alert, animated: true, completion: nil)
-    }
+//    func handleSuccess(response: String) {
+//        let alert = UIAlertController(
+//            title: "Success",
+//            message: response,
+//            preferredStyle: .alert
+//        )
+//        alert.addAction(
+//            UIAlertAction(
+//                title: "Ok",
+//                style: .default,
+//                handler: { [unowned self] _ in
+//                    self.dismissPopup()
+//                }
+//            )
+//        )
+//        present(alert, animated: true, completion: nil)
+//    }
     
     @IBAction func changePassword() {
         changeUserPassword()

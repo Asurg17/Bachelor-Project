@@ -26,39 +26,116 @@ const (
 	dbname   = "sandrosurguladze"
 )
 
+// Structs
+
+type GroupMembers struct {
+	Members []string
+}
+
+type NewUser struct {
+	Username    string
+	FirstName   string
+	LastName    string
+	PhoneNumber string
+	Password    string
+}
+
+type UserCredentials struct {
+	Username string
+	Password string
+}
+
+type UserIdentifier struct {
+	UserId string
+}
+
+type GroupIdentifier struct {
+	UserId  string
+	GroupId string
+}
+
+type SearchGroupIdentifier struct {
+	UserId          string
+	GroupIdentifier string
+}
+
+type Group struct {
+	UserId           string
+	GroupName        string
+	GroupDescription string
+	MembersCount     string
+	IsPrivate        string
+}
+
+type GroupChangedValues struct {
+	UserId           string
+	GroupId          string
+	GroupName        string
+	GroupDescription string
+}
+
+type UserPassword struct {
+	UserId      string
+	OldPassword string
+	NewPassword string
+}
+
+type UserPersonalInfo struct {
+	UserId      string
+	Age         string
+	PhoneNumber string
+	BirthDate   string
+}
+
+type Image struct {
+	ImageKey string
+	Image    string
+}
+
+type ImageIdentifier struct {
+	ImageKey string
+}
+
+type FreindshipRequest struct {
+	FromUserId string
+	ToUserId   string
+}
+
+type FreindshipAcceptResponse struct {
+	UserId           string
+	FromUserId       string
+	RequestUniqueKey string
+}
+
+type FreindshipRejectResponse struct {
+	UserId           string
+	RequestUniqueKey string
+}
+
+//  ################################################################################################################
+
 func openConnection() (db *sql.DB, err error) {
 	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
 	db, err = sql.Open("postgres", psqlconn)
 	return
 }
 
-func isUserValid(userId string) bool {
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
-	if err != nil {
-		return false
-	}
-	defer db.Close()
-
+func isUserValid(userId string, db *sql.DB) bool {
 	getQuery := `select s.user_id
 				from users s
 				where s.user_id = $1;`
 
-	_, err = db.Exec(getQuery, userId)
+	_, err := db.Exec(getQuery, userId)
 	if err != nil {
 		return false
 	}
 
-	return userId == ""
+	return !(userId == "")
 }
 
-func registerClient(w http.ResponseWriter, req *http.Request) {
+func registerNewUser(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
@@ -68,47 +145,48 @@ func registerClient(w http.ResponseWriter, req *http.Request) {
 
 	defer db.Close()
 
-	username := req.URL.Query().Get("username")
-	firstName := req.URL.Query().Get("firstName")
-	lastName := req.URL.Query().Get("lastName")
-	phoneNumber := req.URL.Query().Get("phoneNumber")
-	password := req.URL.Query().Get("password")
+	var newUser NewUser
 
-	passwordHash := sha256.New()
-	passwordHash.Write([]byte(password))
-	passwordMd := passwordHash.Sum(nil)
-	passwordMdStr := hex.EncodeToString(passwordMd)
-
-	userId := username + passwordMdStr
-
-	insertQuery := `insert into "users" ("username", "password", "first_name", "last_name", "user_id", "phone") 
-					values ($1, $2, $3, $4, $5, $6)`
-	_, e := db.Exec(insertQuery, username, passwordMdStr, firstName, lastName, userId, phoneNumber)
-	if e != nil {
-		w.Header().Set("Error", e.Error())
+	err = json.NewDecoder(req.Body).Decode(&newUser)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
 		w.WriteHeader(400)
-		http.Error(w, e.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	passwordHash := sha256.New()
+	passwordHash.Write([]byte(newUser.Password))
+	passwordMd := passwordHash.Sum(nil)
+	passwordMdStr := hex.EncodeToString(passwordMd)
+
+	userId := newUser.Username + passwordMdStr
+
+	insertQuery := `insert into "users" ("username", "password", "first_name", "last_name", "user_id", "phone")
+					values ($1, $2, $3, $4, $5, $6)`
+	_, err = db.Exec(insertQuery, newUser.Username, passwordMdStr, newUser.FirstName, newUser.LastName, userId, newUser.PhoneNumber)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(400)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	resp := make(map[string]string)
 	resp["userId"] = userId
 	jsonResp, err := json.Marshal(resp)
 	if err != nil {
-		print("Error happened in JSON marshal. Err: %s", err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
 	}
 	w.Write(jsonResp)
 }
 
 func validateUser(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -117,13 +195,19 @@ func validateUser(w http.ResponseWriter, req *http.Request) {
 
 	defer db.Close()
 
-	username := req.URL.Query().Get("username")
-	givenPassword := req.URL.Query().Get("password")
+	var userCredentials UserCredentials
+
+	err = json.NewDecoder(req.Body).Decode(&userCredentials)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
 
 	var actualPassword string
 	var userId string
 	getQuery := `select s.password, s.user_id from users s where s.username = $1`
-	if err := db.QueryRow(getQuery, username).Scan(&actualPassword, &userId); err != nil {
+	if err := db.QueryRow(getQuery, userCredentials.Username).Scan(&actualPassword, &userId); err != nil {
 		if err == sql.ErrNoRows {
 			w.Header().Set("Error", "No such username!")
 			w.WriteHeader(400)
@@ -137,7 +221,7 @@ func validateUser(w http.ResponseWriter, req *http.Request) {
 	}
 
 	hash := sha256.New()
-	hash.Write([]byte(givenPassword))
+	hash.Write([]byte(userCredentials.Password))
 	md := hash.Sum(nil)
 	mdStr := hex.EncodeToString(md)
 
@@ -148,33 +232,44 @@ func validateUser(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	resp := make(map[string]string)
 	resp["userId"] = userId
 	jsonResp, err := json.Marshal(resp)
 	if err != nil {
-		print("Error happened in JSON marshal. Err: %s", err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
 	}
 	w.Write(jsonResp)
 }
 
 func getUserInfo(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
+
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	defer db.Close()
 
-	userId := req.URL.Query().Get("userId")
+	var userIdentifier UserIdentifier
+
+	err = json.NewDecoder(req.Body).Decode(&userIdentifier)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	if userIdentifier.UserId == "" || !isUserValid(userIdentifier.UserId, db) {
+		w.Header().Set("Error", "Can't get user Info!")
+		w.WriteHeader(400)
+		return
+	}
 
 	var username string
 	var firstName string
@@ -196,20 +291,17 @@ func getUserInfo(w http.ResponseWriter, req *http.Request) {
 				from users s
 				where s.user_id = $1;`
 
-	if err := db.QueryRow(getQuery, userId).Scan(&username, &firstName, &lastName, &gender, &age, &location, &birthDate, &phone); err != nil {
+	if err := db.QueryRow(getQuery, userIdentifier.UserId).Scan(&username, &firstName, &lastName, &gender, &age, &location, &birthDate, &phone); err != nil {
 		if err == sql.ErrNoRows {
 			w.Header().Set("Error", "No user were found!")
 			w.WriteHeader(400)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		w.Header().Set("Error", err.Error())
-		w.WriteHeader(400)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(500)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	resp := make(map[string]string)
 	resp["username"] = username
@@ -222,26 +314,37 @@ func getUserInfo(w http.ResponseWriter, req *http.Request) {
 	resp["phone"] = phone
 	jsonResp, err := json.Marshal(resp)
 	if err != nil {
-		print("Error happened in JSON marshal. Err: %s", err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
 	}
 	w.Write(jsonResp)
 }
 
 func getUserGroups(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer db.Close()
 
-	userId := req.URL.Query().Get("userId")
+	var user UserIdentifier
+
+	err = json.NewDecoder(req.Body).Decode(&user)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	if user.UserId == "" || !isUserValid(user.UserId, db) {
+		w.Header().Set("Error", "Can't get user Groups!")
+		w.WriteHeader(400)
+		return
+	}
 
 	getQuery := `select s.group_id
 					   ,s.group_title
@@ -255,13 +358,13 @@ func getUserGroups(w http.ResponseWriter, req *http.Request) {
 				where s.group_id = m.group_id
 				and m.user_id = $1;`
 
-	rows, err := db.Query(getQuery, userId)
+	rows, err := db.Query(getQuery, user.UserId)
 	if err != nil && err != sql.ErrNoRows {
 		w.Header().Set("Error", err.Error())
-		w.WriteHeader(400)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(500)
 		return
 	}
+
 	defer rows.Close()
 
 	groups := make([]map[string]string, 0)
@@ -275,8 +378,7 @@ func getUserGroups(w http.ResponseWriter, req *http.Request) {
 		err = rows.Scan(&groupId, &groupTitle, &groupDescription, &groupCapacity, &groupMembersNum)
 		if err != nil {
 			w.Header().Set("Error", err.Error())
-			w.WriteHeader(400)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			w.WriteHeader(500)
 			return
 		}
 		group := make(map[string]string)
@@ -292,49 +394,58 @@ func getUserGroups(w http.ResponseWriter, req *http.Request) {
 	response := make(map[string][]map[string]string)
 	response["groups"] = groups
 
-	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	jsonResp, err := json.Marshal(response)
 	if err != nil {
-		print("Error happened in JSON marshal. Err: %s", err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
 	}
 	w.Write(jsonResp)
 }
 
 func searchNewGroups(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer db.Close()
 
-	userId := req.URL.Query().Get("userId")
-	groupIdentifier := req.URL.Query().Get("groupIdentifier")
+	var groupIdentifier SearchGroupIdentifier
+
+	err = json.NewDecoder(req.Body).Decode(&groupIdentifier)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	if groupIdentifier.UserId == "" || !isUserValid(groupIdentifier.UserId, db) {
+		w.Header().Set("Error", "Can't search Groups!")
+		w.WriteHeader(400)
+		return
+	}
 
 	getQuery := "select g.group_id, g.group_title, g.group_description, " +
 		" g.group_capacity, (select count(*) from group_members where group_id = g.group_id) members_count " +
 		"from groups g " +
-		"where (lower(g.group_title) like lower('%" + groupIdentifier + "%') " +
-		"or lower(g.group_description) like lower('%" + groupIdentifier + "%')) " +
+		"where (lower(g.group_title) like lower('%" + groupIdentifier.GroupIdentifier + "%') " +
+		"or lower(g.group_description) like lower('%" + groupIdentifier.GroupIdentifier + "%')) " +
 		"and (select count(*) from group_members m where m.group_id = g.group_id) < g.group_capacity " +
 		"and not exists(select * from group_members m where m.group_id = g.group_id and m.user_id = $1) " +
 		"and exists (select * from users s where s.user_id = $1) " +
 		"order by lower(g.group_title);"
 
-	rows, err := db.Query(getQuery, userId)
+	rows, err := db.Query(getQuery, groupIdentifier.UserId)
 	if err != nil && err != sql.ErrNoRows {
 		w.Header().Set("Error", err.Error())
-		w.WriteHeader(400)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(500)
 		return
 	}
+
 	defer rows.Close()
 
 	groups := make([]map[string]string, 0)
@@ -348,8 +459,7 @@ func searchNewGroups(w http.ResponseWriter, req *http.Request) {
 		err = rows.Scan(&groupId, &groupTitle, &groupDescription, &groupCapacity, &groupMembersNum)
 		if err != nil {
 			w.Header().Set("Error", err.Error())
-			w.WriteHeader(400)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			w.WriteHeader(500)
 			return
 		}
 		group := make(map[string]string)
@@ -365,62 +475,77 @@ func searchNewGroups(w http.ResponseWriter, req *http.Request) {
 	response := make(map[string][]map[string]string)
 	response["groups"] = groups
 
-	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	jsonResp, err := json.Marshal(response)
 	if err != nil {
-		print("Error happened in JSON marshal. Err: %s", err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
 	}
 	w.Write(jsonResp)
 }
 
 func addUserToGroup(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	defer db.Close()
 
-	userId := req.URL.Query().Get("userId")
-	groupId := req.URL.Query().Get("groupId")
+	var groupIdentifier GroupIdentifier
+
+	err = json.NewDecoder(req.Body).Decode(&groupIdentifier)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	if groupIdentifier.UserId == "" || !isUserValid(groupIdentifier.UserId, db) {
+		w.Header().Set("Error", "Can't add user to Group!")
+		w.WriteHeader(400)
+		return
+	}
 
 	updateQuery := `insert into group_members (group_id, user_id)
 					values ($1, $2)`
 
-	_, e := db.Exec(updateQuery, groupId, userId)
-	if e != nil {
-		w.Header().Set("Error", e.Error())
-		w.WriteHeader(400)
-		http.Error(w, e.Error(), http.StatusInternalServerError)
+	_, err = db.Exec(updateQuery, groupIdentifier.GroupId, groupIdentifier.UserId)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 func getUserFriends(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer db.Close()
 
-	userId := req.URL.Query().Get("userId")
+	var user UserIdentifier
+
+	err = json.NewDecoder(req.Body).Decode(&user)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	if user.UserId == "" || !isUserValid(user.UserId, db) {
+		w.Header().Set("Error", "Can't get user friends!")
+		w.WriteHeader(400)
+		return
+	}
 
 	getQuery := `select s.user_id
 					,s.first_name
@@ -431,13 +556,13 @@ func getUserFriends(w http.ResponseWriter, req *http.Request) {
 				where f.user_id = $1
 				and s.user_id = f.friend_id;`
 
-	rows, err := db.Query(getQuery, userId)
+	rows, err := db.Query(getQuery, user.UserId)
 	if err != nil && err != sql.ErrNoRows {
 		w.Header().Set("Error", err.Error())
-		w.WriteHeader(400)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(500)
 		return
 	}
+
 	defer rows.Close()
 
 	friends := make([]map[string]string, 0)
@@ -450,8 +575,7 @@ func getUserFriends(w http.ResponseWriter, req *http.Request) {
 		err = rows.Scan(&friendId, &friendFirstName, &friendLastName, &friendPhone)
 		if err != nil {
 			w.Header().Set("Error", err.Error())
-			w.WriteHeader(400)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			w.WriteHeader(500)
 			return
 		}
 		friend := make(map[string]string)
@@ -466,31 +590,40 @@ func getUserFriends(w http.ResponseWriter, req *http.Request) {
 	response := make(map[string][]map[string]string)
 	response["friends"] = friends
 
-	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	jsonResp, err := json.Marshal(response)
 	if err != nil {
-		print("Error happened in JSON marshal. Err: %s", err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
 	}
 	w.Write(jsonResp)
 }
 
 func getUserFriendsForGroup(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer db.Close()
 
-	userId := req.URL.Query().Get("userId")
-	groupId := req.URL.Query().Get("groupId")
+	var groupIdentifier GroupIdentifier
+
+	err = json.NewDecoder(req.Body).Decode(&groupIdentifier)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	if groupIdentifier.UserId == "" || !isUserValid(groupIdentifier.UserId, db) {
+		w.Header().Set("Error", "Can't get user friends!")
+		w.WriteHeader(400)
+		return
+	}
 
 	getQuery := `select s.user_id
 					,s.first_name
@@ -505,13 +638,13 @@ func getUserFriendsForGroup(w http.ResponseWriter, req *http.Request) {
 								where m.group_id = $2
 								and m.user_id = f.friend_id);`
 
-	rows, err := db.Query(getQuery, userId, groupId)
+	rows, err := db.Query(getQuery, groupIdentifier.UserId, groupIdentifier.GroupId)
 	if err != nil && err != sql.ErrNoRows {
 		w.Header().Set("Error", err.Error())
-		w.WriteHeader(400)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(500)
 		return
 	}
+
 	defer rows.Close()
 
 	friends := make([]map[string]string, 0)
@@ -524,8 +657,7 @@ func getUserFriendsForGroup(w http.ResponseWriter, req *http.Request) {
 		err = rows.Scan(&friendId, &friendFirstName, &friendLastName, &friendPhone)
 		if err != nil {
 			w.Header().Set("Error", err.Error())
-			w.WriteHeader(400)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			w.WriteHeader(500)
 			return
 		}
 		friend := make(map[string]string)
@@ -540,31 +672,40 @@ func getUserFriendsForGroup(w http.ResponseWriter, req *http.Request) {
 	response := make(map[string][]map[string]string)
 	response["friends"] = friends
 
-	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	jsonResp, err := json.Marshal(response)
 	if err != nil {
-		print("Error happened in JSON marshal. Err: %s", err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
 	}
 	w.Write(jsonResp)
 }
 
 func getGroupMembers(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer db.Close()
 
-	userId := req.URL.Query().Get("userId")
-	groupId := req.URL.Query().Get("groupId")
+	var groupIdentifier GroupIdentifier
+
+	err = json.NewDecoder(req.Body).Decode(&groupIdentifier)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	if groupIdentifier.UserId == "" || !isUserValid(groupIdentifier.UserId, db) {
+		w.Header().Set("Error", "Can't get group members!")
+		w.WriteHeader(400)
+		return
+	}
 
 	getQuery := `select s.user_id
 				,s.first_name
@@ -592,11 +733,10 @@ func getGroupMembers(w http.ResponseWriter, req *http.Request) {
 				order by case when m.user_id = $1 then 1
 						 else 2 end, lower(s.first_name)`
 
-	rows, err := db.Query(getQuery, userId, groupId)
+	rows, err := db.Query(getQuery, groupIdentifier.UserId, groupIdentifier.GroupId)
 	if err != nil && err != sql.ErrNoRows {
 		w.Header().Set("Error", err.Error())
-		w.WriteHeader(400)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(500)
 		return
 	}
 	defer rows.Close()
@@ -613,8 +753,7 @@ func getGroupMembers(w http.ResponseWriter, req *http.Request) {
 		err = rows.Scan(&memberId, &memberFirstName, &memberLastName, &memberPhone, &isFriendRequestAlreadySent, &areAlreadyFriends)
 		if err != nil {
 			w.Header().Set("Error", err.Error())
-			w.WriteHeader(400)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			w.WriteHeader(500)
 			return
 		}
 		member := make(map[string]string)
@@ -631,122 +770,124 @@ func getGroupMembers(w http.ResponseWriter, req *http.Request) {
 	response := make(map[string][]map[string]string)
 	response["members"] = members
 
-	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	jsonResp, err := json.Marshal(response)
 	if err != nil {
-		print("Error happened in JSON marshal. Err: %s", err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
 	}
 	w.Write(jsonResp)
 }
 
 func changePassword(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	defer db.Close()
+
+	var userPassword UserPassword
+
+	err = json.NewDecoder(req.Body).Decode(&userPassword)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	if userPassword.UserId == "" || !isUserValid(userPassword.UserId, db) {
+		w.Header().Set("Error", "Can't change password!")
+		w.WriteHeader(400)
+		return
+	}
+
+	var actualPassword string
+	getQuery := `select s.password from users s where s.user_id = $1`
+	if err := db.QueryRow(getQuery, userPassword.UserId).Scan(&actualPassword); err != nil {
+		if err == sql.ErrNoRows {
+			w.Header().Set("Error", "Can't update password!")
+			w.WriteHeader(500)
+			return
+		}
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	defer db.Close()
-
-	userId := req.URL.Query().Get("userId")
-	oldPassword := req.URL.Query().Get("oldPassword")
-	newPassword := req.URL.Query().Get("newPassword")
-
-	var actualPassword string
-	getQuery := `select s.password from users s where s.user_id = $1`
-	if err := db.QueryRow(getQuery, userId).Scan(&actualPassword); err != nil {
-		if err == sql.ErrNoRows {
-			w.Header().Set("Error", "Can't update password!")
-			w.WriteHeader(400)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.Header().Set("Error", err.Error())
-		w.WriteHeader(400)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
 	oldPasswordhHash := sha256.New()
-	oldPasswordhHash.Write([]byte(oldPassword))
+	oldPasswordhHash.Write([]byte(userPassword.OldPassword))
 	oldPasswordhMd := oldPasswordhHash.Sum(nil)
 	oldPasswordhMdStr := hex.EncodeToString(oldPasswordhMd)
 
 	if oldPasswordhMdStr != actualPassword {
 		w.Header().Set("Error", "Incorrect Password!")
 		w.WriteHeader(400)
-		http.Error(w, "Incorrect Password!", http.StatusInternalServerError)
 		return
 	}
 
 	newPasswordHash := sha256.New()
-	newPasswordHash.Write([]byte(newPassword))
+	newPasswordHash.Write([]byte(userPassword.NewPassword))
 	newPasswordMd := newPasswordHash.Sum(nil)
 	newPasswordMdStr := hex.EncodeToString(newPasswordMd)
 
 	updateQuery := `update users set password = $1 where user_id = $2`
 
-	_, e := db.Exec(updateQuery, newPasswordMdStr, userId)
+	_, e := db.Exec(updateQuery, newPasswordMdStr, userPassword.UserId)
 	if e != nil {
 		w.Header().Set("Error", "Can't update password!")
-		w.WriteHeader(400)
-		http.Error(w, e.Error(), http.StatusInternalServerError)
+		w.WriteHeader(500)
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 func changePersonalInfo(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	defer db.Close()
 
-	userId := req.URL.Query().Get("userId")
-	age := req.URL.Query().Get("age")
-	phoneNumber := req.URL.Query().Get("phoneNumber")
-	birthDate := req.URL.Query().Get("birthDate")
+	var userPersonalInfo UserPersonalInfo
 
-	updateQuery := `update users set age = $1, phone = $2, birthdate = $3 where user_id = $4`
-
-	_, e := db.Exec(updateQuery, age, phoneNumber, birthDate, userId)
-	if e != nil {
-		w.Header().Set("Error", "Can't save Changes!")
+	err = json.NewDecoder(req.Body).Decode(&userPersonalInfo)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
 		w.WriteHeader(400)
-		http.Error(w, e.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	if userPersonalInfo.UserId == "" || !isUserValid(userPersonalInfo.UserId, db) {
+		w.Header().Set("Error", "Can't change personal info!")
+		w.WriteHeader(400)
+		return
+	}
+
+	updateQuery := `update users set age = $1, phone = $2, birthdate = $3 where user_id = $4`
+
+	_, e := db.Exec(updateQuery, userPersonalInfo.Age, userPersonalInfo.PhoneNumber, userPersonalInfo.BirthDate, userPersonalInfo.UserId)
+	if e != nil {
+		w.Header().Set("Error", "Can't save Changes!")
+		w.WriteHeader(500)
+		return
+	}
 }
 
 func uploadImage(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -758,10 +899,8 @@ func uploadImage(w http.ResponseWriter, req *http.Request) {
 	if _, err := os.Stat(imageFolderPath); os.IsNotExist(err) {
 		err := os.Mkdir(imageFolderPath, os.ModePerm)
 		if err != nil {
-			print(err)
 			w.Header().Set("Error", err.Error())
 			w.WriteHeader(500)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 	}
@@ -771,36 +910,26 @@ func uploadImage(w http.ResponseWriter, req *http.Request) {
 	out, err := os.Create(imageFolderPath + "/" + imageKey + ".png")
 
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	err = png.Encode(out, img)
 
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 func getImage(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -809,70 +938,64 @@ func getImage(w http.ResponseWriter, req *http.Request) {
 	imageFolderPath := "./images"
 	imageKey := req.URL.Query().Get("imageKey")
 	dat, _ := os.ReadFile(imageFolderPath + "/" + imageKey + ".png")
-
 	w.Write(dat)
 }
 
 func createGroup(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	defer db.Close()
 
-	userId := req.URL.Query().Get("userId")
-	groupName := req.URL.Query().Get("groupName")
-	groupDescription := req.URL.Query().Get("groupDescription")
-	membersCount := req.URL.Query().Get("membersCount")
-	isPrivate := req.URL.Query().Get("isPrivate")
+	var group Group
 
-	groupId := groupName + userId
-
-	insertQuery := `insert into "groups" ("group_id", "group_title", "group_description", "group_capacity", "creator_id", "is_private") 
-					values ($1, $2, $3, $4, $5, $6)`
-	_, e := db.Exec(insertQuery, groupId, groupName, groupDescription, membersCount, userId, isPrivate)
-	if e != nil {
-		w.Header().Set("Error", e.Error())
+	err = json.NewDecoder(req.Body).Decode(&group)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
 		w.WriteHeader(400)
-		http.Error(w, e.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	if group.UserId == "" || !isUserValid(group.UserId, db) {
+		w.Header().Set("Error", "Can't create new group!")
+		w.WriteHeader(400)
+		return
+	}
+
+	groupId := group.GroupName + group.UserId
+
+	insertQuery := `insert into "groups" ("group_id", "group_title", "group_description", "group_capacity", "creator_id", "is_private") 
+					values ($1, $2, $3, $4, $5, $6)`
+	_, e := db.Exec(insertQuery, groupId, group.GroupName, group.GroupDescription, group.MembersCount, group.UserId, group.IsPrivate)
+	if e != nil {
+		w.Header().Set("Error", e.Error())
+		w.WriteHeader(500)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	resp := make(map[string]string)
 	resp["groupId"] = groupId
 	jsonResp, err := json.Marshal(resp)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
-		w.WriteHeader(400)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(500)
+		return
 	}
 	w.Write(jsonResp)
 }
 
-type GroupMembers struct {
-	Members []string
-}
-
 func addGroupMembers(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -882,13 +1005,18 @@ func addGroupMembers(w http.ResponseWriter, req *http.Request) {
 	groupId := req.URL.Query().Get("groupId")
 	addSelfToGroup := req.URL.Query().Get("addSelfToGroup")
 
+	if userId == "" || !isUserValid(userId, db) {
+		w.Header().Set("Error", "Can't add froup members!")
+		w.WriteHeader(400)
+		return
+	}
+
 	var groupMembers GroupMembers
 	dataBytes, _ := ioutil.ReadAll(req.Body)
 	e := json.Unmarshal(dataBytes, &groupMembers)
 	if e != nil {
 		w.Header().Set("Error", e.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -898,8 +1026,7 @@ func addGroupMembers(w http.ResponseWriter, req *http.Request) {
 		_, e = db.Exec(adminInsertQuery, groupId, userId, "A")
 		if e != nil {
 			w.Header().Set("Error", e.Error())
-			w.WriteHeader(400)
-			http.Error(w, e.Error(), http.StatusInternalServerError)
+			w.WriteHeader(500)
 			return
 		}
 	}
@@ -910,125 +1037,145 @@ func addGroupMembers(w http.ResponseWriter, req *http.Request) {
 		_, e = db.Exec(memberInsertQuery, groupId, groupMemberId, "M")
 		if e != nil {
 			w.Header().Set("Error", e.Error())
-			w.WriteHeader(400)
-			http.Error(w, e.Error(), http.StatusInternalServerError)
+			w.WriteHeader(500)
 			return
 		}
 	}
-
 }
 
 func saveGroupUpdates(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	defer db.Close()
 
-	userId := req.URL.Query().Get("userId")
-	groupId := req.URL.Query().Get("groupId")
-	groupName := req.URL.Query().Get("groupName")
-	groupDescription := req.URL.Query().Get("groupDescription")
+	var groupChangedValues GroupChangedValues
 
-	updateQuery := `update groups set group_title = $1, group_description = $2  where group_id = $3 and exists(select * from users s where s.user_id = $4)`
-
-	_, e := db.Exec(updateQuery, groupName, groupDescription, groupId, userId)
-	if e != nil {
-		w.Header().Set("Error", "Can't save Changes!")
+	err = json.NewDecoder(req.Body).Decode(&groupChangedValues)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
 		w.WriteHeader(400)
-		http.Error(w, e.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	if groupChangedValues.UserId == "" || !isUserValid(groupChangedValues.UserId, db) {
+		w.Header().Set("Error", "Can't save updates!")
+		w.WriteHeader(400)
+		return
+	}
+
+	updateQuery := `update groups set group_title = $1, group_description = $2  where group_id = $3 and exists(select * from users s where s.user_id = $4)`
+
+	_, e := db.Exec(updateQuery, groupChangedValues.GroupName, groupChangedValues.GroupDescription, groupChangedValues.GroupId, groupChangedValues.UserId)
+	if e != nil {
+		w.Header().Set("Error", "Can't save Changes!")
+		w.WriteHeader(500)
+		return
+	}
 }
 
 func leaveGroup(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	defer db.Close()
 
-	userId := req.URL.Query().Get("userId")
-	groupId := req.URL.Query().Get("groupId")
+	var groupIdentifier GroupIdentifier
 
-	deleteQuery := `delete from group_members where group_id = $1 and user_id = $2`
-
-	_, e := db.Exec(deleteQuery, groupId, userId)
-	if e != nil {
-		w.Header().Set("Error", "Can't save Changes!")
+	err = json.NewDecoder(req.Body).Decode(&groupIdentifier)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
 		w.WriteHeader(400)
-		http.Error(w, e.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	if groupIdentifier.UserId == "" || !isUserValid(groupIdentifier.UserId, db) {
+		w.Header().Set("Error", "Error!")
+		w.WriteHeader(400)
+		return
+	}
+
+	deleteQuery := `delete from group_members where group_id = $1 and user_id = $2`
+
+	_, e := db.Exec(deleteQuery, groupIdentifier.GroupId, groupIdentifier.UserId)
+	if e != nil {
+		w.Header().Set("Error", "Can't save Changes!")
+		w.WriteHeader(500)
+		return
+	}
 }
 
 func sendFriendshipRequest(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	defer db.Close()
 
-	fromUserId := req.URL.Query().Get("fromUserId")
-	toUserId := req.URL.Query().Get("toUserId")
+	var freindshipRequest FreindshipRequest
+
+	err = json.NewDecoder(req.Body).Decode(&freindshipRequest)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	if freindshipRequest.FromUserId == "" || freindshipRequest.ToUserId == "" || !isUserValid(freindshipRequest.FromUserId, db) || !isUserValid(freindshipRequest.ToUserId, db) {
+		w.Header().Set("Error", "Can't send friendship request!")
+		w.WriteHeader(400)
+		return
+	}
 
 	insertQuery := `insert into friendship_requests(from_user_id, to_user_id) 
 					values ($1, $2);`
 
-	_, e := db.Exec(insertQuery, fromUserId, toUserId)
+	_, e := db.Exec(insertQuery, freindshipRequest.FromUserId, freindshipRequest.ToUserId)
 	if e != nil {
 		w.Header().Set("Error", "Can't save Changes!")
-		w.WriteHeader(400)
-		http.Error(w, e.Error(), http.StatusInternalServerError)
+		w.WriteHeader(500)
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 func getUserNotifications(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer db.Close()
 
-	userId := req.URL.Query().Get("userId")
+	var userIdentifier UserIdentifier
+
+	err = json.NewDecoder(req.Body).Decode(&userIdentifier)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	if userIdentifier.UserId == "" || !isUserValid(userIdentifier.UserId, db) {
+		w.Header().Set("Error", "Can't get notifications!")
+		w.WriteHeader(400)
+		return
+	}
 
 	getQuery := `select r.id,
 						s.user_id,
@@ -1041,11 +1188,10 @@ func getUserNotifications(w http.ResponseWriter, req *http.Request) {
 				and r.status = 'N'
 				order by request_date desc;`
 
-	rows, err := db.Query(getQuery, userId)
+	rows, err := db.Query(getQuery, userIdentifier.UserId)
 	if err != nil && err != sql.ErrNoRows {
 		w.Header().Set("Error", err.Error())
-		w.WriteHeader(400)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(500)
 		return
 	}
 	defer rows.Close()
@@ -1060,8 +1206,7 @@ func getUserNotifications(w http.ResponseWriter, req *http.Request) {
 		err = rows.Scan(&requestUniqueKey, &userId, &userWholeName, &isFriendshipRequestNotification)
 		if err != nil {
 			w.Header().Set("Error", err.Error())
-			w.WriteHeader(400)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			w.WriteHeader(500)
 			return
 		}
 		notification := make(map[string]string)
@@ -1076,33 +1221,40 @@ func getUserNotifications(w http.ResponseWriter, req *http.Request) {
 	response := make(map[string][]map[string]string)
 	response["notifications"] = notifications
 
-	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	jsonResp, err := json.Marshal(response)
 	if err != nil {
-		print("Error happened in JSON marshal. Err: %s", err)
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
 	}
 	w.Write(jsonResp)
 }
 
 func acceptFriendshipRequest(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	defer db.Close()
 
-	userId := req.URL.Query().Get("userId")
-	fromUserId := req.URL.Query().Get("fromUserId")
-	requestUniqueKey := req.URL.Query().Get("requestUniqueKey")
+	var freindshipResponse FreindshipAcceptResponse
+
+	err = json.NewDecoder(req.Body).Decode(&freindshipResponse)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	if freindshipResponse.UserId == "" || freindshipResponse.FromUserId == "" || !isUserValid(freindshipResponse.UserId, db) || !isUserValid(freindshipResponse.FromUserId, db) {
+		w.Header().Set("Error", "Can't accept friendship!")
+		w.WriteHeader(400)
+		return
+	}
 
 	updateQuery := `create or replace procedure acceptFriendship(requestUniqueKey integer
 																,fromUserId character varying
@@ -1122,80 +1274,60 @@ func acceptFriendshipRequest(w http.ResponseWriter, req *http.Request) {
 					values(fromUserId, toUserId);
 					end;$$`
 
-	_, e := db.Exec(updateQuery)
-	if e != nil {
+	_, err = db.Exec(updateQuery)
+	if err != nil {
 		w.Header().Set("Error", "Can't save Changes!")
-		w.WriteHeader(400)
-		print(e.Error())
-		http.Error(w, e.Error(), http.StatusInternalServerError)
+		w.WriteHeader(500)
 		return
 	}
 
 	insertQuery := `call acceptFriendship($1, $2, $3);`
 
-	_, e = db.Exec(insertQuery, requestUniqueKey, fromUserId, userId)
-	if e != nil {
+	_, err = db.Exec(insertQuery, freindshipResponse.RequestUniqueKey, freindshipResponse.FromUserId, freindshipResponse.UserId)
+	if err != nil {
 		w.Header().Set("Error", "Can't save Changes!")
 		w.WriteHeader(400)
-		print(e.Error())
-		http.Error(w, e.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	// insertQuery := `insert into friends (user_id, friend_id)
-	// 				values($1, $2);`
-
-	// _, e = db.Exec(insertQuery, userId, fromUserId)
-	// if e != nil {
-	// 	w.Header().Set("Error", "Can't save Changes!")
-	// 	w.WriteHeader(400)
-	// 	http.Error(w, e.Error(), http.StatusInternalServerError)
-	// 	return
-	// }
-
-	// _, e = db.Exec(insertQuery, fromUserId, userId)
-	// if e != nil {
-	// 	w.Header().Set("Error", "Can't save Changes!")
-	// 	w.WriteHeader(400)
-	// 	http.Error(w, e.Error(), http.StatusInternalServerError)
-	// 	return
-	// }
-
-	w.WriteHeader(http.StatusOK)
 }
 
 func rejectFriendshipRequest(w http.ResponseWriter, req *http.Request) {
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := openConnection()
 	if err != nil {
-		print(err)
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	defer db.Close()
 
-	userId := req.URL.Query().Get("userId")
-	requestUniqueKey := req.URL.Query().Get("requestUniqueKey")
+	var freindshipResponse FreindshipRejectResponse
+
+	err = json.NewDecoder(req.Body).Decode(&freindshipResponse)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	if freindshipResponse.UserId == "" || !isUserValid(freindshipResponse.UserId, db) {
+		w.Header().Set("Error", "Can't reject friendship!")
+		w.WriteHeader(400)
+		return
+	}
 
 	updateQuery := `update friendship_requests
 					set status = 'R'
 					where id = $1
 					and to_user_id = $2;`
 
-	_, e := db.Exec(updateQuery, requestUniqueKey, userId)
+	_, e := db.Exec(updateQuery, freindshipResponse.RequestUniqueKey, freindshipResponse.UserId)
 	if e != nil {
 		w.Header().Set("Error", "Can't save Changes!")
-		w.WriteHeader(400)
-		http.Error(w, e.Error(), http.StatusInternalServerError)
+		w.WriteHeader(500)
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 var upgrader = websocket.Upgrader{
@@ -1249,7 +1381,7 @@ func setupRoutes() {
 	http.HandleFunc("/createGroup", createGroup)
 	http.HandleFunc("/validateUser", validateUser)
 	http.HandleFunc("/getUserGroups", getUserGroups)
-	http.HandleFunc("/registerClient", registerClient)
+	http.HandleFunc("/registerNewUser", registerNewUser)
 	http.HandleFunc("/getUserFriends", getUserFriends)
 	http.HandleFunc("/getUserFriendsForGroup", getUserFriendsForGroup)
 	http.HandleFunc("/addUserToGroup", addUserToGroup)

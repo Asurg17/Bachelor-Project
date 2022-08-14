@@ -30,6 +30,11 @@ class ProfilePageVC: UIViewController, DismissProtocol {
         super.viewDidLoad()
         
         setupViews()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         loadUserInfo()
     }
     
@@ -98,17 +103,20 @@ class ProfilePageVC: UIViewController, DismissProtocol {
     }
     
     func reloadView(userInfo: UserInfoResponse, userId: String){
-        SDImageCache.shared.clearMemory()
-        SDImageCache.shared.clearDisk()
         
-        profileImage.sd_setImage(
-            with: URL(string: (Constants.getImageURLPrefix + Constants.userImagePrefix + userId).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!),
-            completed: { (image, error, cacheType, imageURL) in
-                if image == nil {
-                    self.profileImage.image = UIImage(named: "user")
+        if self.profileImage.image == nil {
+            SDImageCache.shared.clearMemory()
+            SDImageCache.shared.clearDisk()
+            
+            profileImage.sd_setImage(
+                with: URL(string: (Constants.getImageURLPrefix + Constants.userImagePrefix + userId).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!),
+                completed: { (image, error, cacheType, imageURL) in
+                    if image == nil {
+                        self.profileImage.image = UIImage(named: "empty_avatar_image")
+                    }
                 }
-            }
-        )
+            )
+        }
         
         usernameLabel.text = userInfo.username
         firstNameLabel.text = userInfo.firstName

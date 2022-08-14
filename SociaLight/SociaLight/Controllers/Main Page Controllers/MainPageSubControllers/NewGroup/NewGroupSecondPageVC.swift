@@ -51,13 +51,6 @@ class NewGroupSecondPageVC: UIViewController {
         tableView.clipsToBounds = true
         tableView.layer.cornerRadius = tableView.frame.size.width / 10
         tableView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
-        
-        friendNameTextField.clearButtonMode = .whileEditing
-        
-        if let button = friendNameTextField.value(forKey: "clearButton") as? UIButton {
-            button.tintColor = .black
-            button.setImage(UIImage(systemName: "xmark.circle"), for: .normal)
-        }
     }
     
     func setupViews() {

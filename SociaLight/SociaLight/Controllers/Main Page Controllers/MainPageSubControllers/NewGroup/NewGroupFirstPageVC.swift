@@ -164,6 +164,11 @@ extension NewGroupFirstPageVC: UIPickerViewDataSource {
 }
 
 extension NewGroupFirstPageVC: UITextFieldDelegate {
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        print("aaa")
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         switch textField {
         case groupName:

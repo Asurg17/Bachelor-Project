@@ -114,4 +114,3 @@ struct Notification: Codable {
     let isFriendshipRequestNotification: String
 }
 
-

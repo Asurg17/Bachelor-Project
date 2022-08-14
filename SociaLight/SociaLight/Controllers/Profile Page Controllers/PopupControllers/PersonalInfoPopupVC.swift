@@ -50,6 +50,8 @@ class PersonalInfoPopupVC: UIViewController {
         }
         if UserDefaults.standard.string(forKey: "user.birthDate") != "-" {
             birthDateTextField.text = UserDefaults.standard.string(forKey: "user.birthDate")
+        } else {
+            birthDateTextField.text = formatDate(date: datePicker.date)
         }
     }
     
@@ -68,8 +70,9 @@ class PersonalInfoPopupVC: UIViewController {
                     DispatchQueue.main.async {
                         self.loader.stopAnimating()
                         switch result {
-                        case .success(let response):
-                            self.handleSuccess(response: response)
+                        case .success(_):
+                            self.delegate?.refresh()
+                            self.dismissPopup()
                         case .failure(let error):
                             self.showWarningAlert(warningText: error.localizedDescription.description)
                         }
@@ -99,24 +102,24 @@ class PersonalInfoPopupVC: UIViewController {
         return dateComponents.year?.description ?? ""
     }
     
-    func handleSuccess(response: String) {
-        let alert = UIAlertController(
-            title: "Success",
-            message: response,
-            preferredStyle: .alert
-        )
-        alert.addAction(
-            UIAlertAction(
-                title: "Ok",
-                style: .default,
-                handler: { [unowned self] _ in
-                    delegate?.refresh()
-                    self.dismissPopup()
-                }
-            )
-        )
-        present(alert, animated: true, completion: nil)
-    }
+//    func handleSuccess(response: String) {
+//        let alert = UIAlertController(
+//            title: "Success",
+//            message: response,
+//            preferredStyle: .alert
+//        )
+//        alert.addAction(
+//            UIAlertAction(
+//                title: "Ok",
+//                style: .default,
+//                handler: { [unowned self] _ in
+//                    delegate?.refresh()
+//                    self.dismissPopup()
+//                }
+//            )
+//        )
+//        present(alert, animated: true, completion: nil)
+//    }
     
     @IBAction func saveMadeChanges() {
         saveChanges()
