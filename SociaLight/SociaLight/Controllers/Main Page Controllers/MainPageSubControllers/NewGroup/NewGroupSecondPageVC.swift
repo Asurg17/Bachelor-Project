@@ -224,15 +224,17 @@ class NewGroupSecondPageVC: UIViewController {
     func addGroupMembers(groupId: String) {
         if let userId = keychain.get(Constants.userIdKey) {
             let members = getMembers()
-            service.addGroupMembers(userId: userId, groupId: groupId, addSelfToGroup: "Y", members: members) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.loader.stopAnimating()
-                    switch result {
-                    case .success(_):
-                        self.navigateToGroupPage(group: self.group!)
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
+            if members.count > 0 {
+                service.addGroupMembers(userId: userId, groupId: groupId, addSelfToGroup: "Y", members: members) { [weak self] result in
+                    guard let self = self else { return }
+                    DispatchQueue.main.async {
+                        self.loader.stopAnimating()
+                        switch result {
+                        case .success(_):
+                            self.navigateToGroupPage(group: self.group!, isUserGroupMember: true)
+                        case .failure(let error):
+                            self.showWarningAlert(warningText: error.localizedDescription.description)
+                        }
                     }
                 }
             }
@@ -282,7 +284,7 @@ extension NewGroupSecondPageVC: FriendCellDelegate {
     
     func cellDidClick(_ friend: FriendCell) {
         if(friend.model.isSelected) {
-            if collectionData.count < (group?.membersMaxNumber ?? 0) - 1 {
+            //if collectionData.count < (group?.membersMaxNumber ?? 0) - 1 {
                 collectionData.append(
                     SelectedFriendCellModel(
                         friendId: friend.model.friendId,
@@ -290,12 +292,12 @@ extension NewGroupSecondPageVC: FriendCellDelegate {
                         friendImage: friend.model.friendImage
                     )
                 )
-            } else {
-                friend.toggleSelection()
-                showWarningAlert(
-                    warningText: Constants.maximalGroupMembersNumberReachedWarningText
-                )
-            }
+//            } else {
+//                friend.toggleSelection()
+//                showWarningAlert(
+//                    warningText: Constants.maximalGroupMembersNumberReachedWarningText
+//                )
+//            }
         } else {
             if let offset = collectionData.firstIndex(where: {$0.friendId == friend.model.friendId}) {
                 collectionData.remove(at: offset)

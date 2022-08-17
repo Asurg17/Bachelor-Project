@@ -22,14 +22,14 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ECE-5R-m8O">
-                    <rect key="frame" x="16" y="12.5" width="57.5" height="57"/>
+                    <rect key="frame" x="16" y="16.5" width="49" height="49"/>
                     <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="ECE-5R-m8O" secondAttribute="height" multiplier="1:1" id="uDe-TA-1h4"/>
                     </constraints>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o7j-N6-meH">
-                    <rect key="frame" x="89.5" y="31" width="277.5" height="20.5"/>
+                    <rect key="frame" x="81" y="31" width="286" height="20.5"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
@@ -67,7 +67,7 @@
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="Iob-qv-9gK" secondAttribute="trailing" constant="16" id="kKD-Y1-rj9"/>
                 <constraint firstAttribute="bottom" secondItem="ZV7-95-Cin" secondAttribute="bottom" id="pHn-vY-VYF"/>
                 <constraint firstAttribute="trailing" secondItem="ZV7-95-Cin" secondAttribute="trailing" id="reE-lQ-lPG"/>
-                <constraint firstItem="ECE-5R-m8O" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" multiplier="0.7" id="y3h-eB-YKv"/>
+                <constraint firstItem="ECE-5R-m8O" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" multiplier="0.6" id="y3h-eB-YKv"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="-114" y="55"/>

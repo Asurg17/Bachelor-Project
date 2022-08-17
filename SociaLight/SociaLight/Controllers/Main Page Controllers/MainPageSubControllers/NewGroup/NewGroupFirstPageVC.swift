@@ -20,7 +20,7 @@ class NewGroupFirstPageVC: UIViewController {
     
     let imagePicker = UIImagePickerController()
     var pickerView: UIPickerView!
-    var pickerValue: Int?
+    var pickerValue = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +34,11 @@ class NewGroupFirstPageVC: UIViewController {
         imageOuterView.layer.borderWidth = 2
         imageOuterView.layer.borderColor = UIColor.white.cgColor//UIColor(hexString: "#2a2727").cgColor
         imageOuterView.layer.cornerRadius = imageOuterView.frame.size.width / 2
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        groupName.becomeFirstResponder()
     }
     
     func setupViews() {
@@ -59,10 +64,10 @@ class NewGroupFirstPageVC: UIViewController {
             showWarningAlert(warningText: Constants.groupNameWarningText)
             return false
         }
-        if let _ = pickerValue {} else {
-            showWarningAlert(warningText: Constants.membersCountNotChosenWarningText)
-            return false
-        }
+//        if let _ = pickerValue {} else {
+//            showWarningAlert(warningText: Constants.membersCountNotChosenWarningText)
+//            return false
+//        }
         return true
     }
 
@@ -103,7 +108,7 @@ class NewGroupFirstPageVC: UIViewController {
                     groupId: "",
                     groupImage: groupImage.image!,
                     membersCurrentNumber: 1,
-                    membersMaxNumber: pickerValue!,
+                    membersMaxNumber: pickerValue,
                     groupName: groupName.text!,
                     groupDescription: groupDescription.text ?? "",
                     isPrivate: isGroupPrivate
@@ -164,10 +169,6 @@ extension NewGroupFirstPageVC: UIPickerViewDataSource {
 }
 
 extension NewGroupFirstPageVC: UITextFieldDelegate {
-    
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        print("aaa")
-    }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         switch textField {

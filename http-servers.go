@@ -112,6 +112,18 @@ type FreindshipRejectResponse struct {
 	RequestUniqueKey string
 }
 
+type InvitationAcceptResponse struct {
+	UserId           string
+	FromUserId       string
+	GroupId          string
+	RequestUniqueKey string
+}
+
+type invitationRejectResponse struct {
+	UserId           string
+	RequestUniqueKey string
+}
+
 //  ################################################################################################################
 
 func openConnection() (db *sql.DB, err error) {
@@ -434,7 +446,7 @@ func searchNewGroups(w http.ResponseWriter, req *http.Request) {
 		"from groups g " +
 		"where (lower(g.group_title) like lower('%" + groupIdentifier.GroupIdentifier + "%') " +
 		"or lower(g.group_description) like lower('%" + groupIdentifier.GroupIdentifier + "%')) " +
-		"and (select count(*) from group_members m where m.group_id = g.group_id) < g.group_capacity " +
+		//"and (select count(*) from group_members m where m.group_id = g.group_id) < g.group_capacity " +
 		"and not exists(select * from group_members m where m.group_id = g.group_id and m.user_id = $1) " +
 		"and exists (select * from users s where s.user_id = $1) " +
 		"order by lower(g.group_title);"
@@ -511,10 +523,30 @@ func addUserToGroup(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	updateQuery := `insert into group_members (group_id, user_id)
-					values ($1, $2)`
+	query := `create or replace procedure addUserToGroup(groupId character varying
+														,userId  character varying)
+				language plpgsql
+				as $$
+				begin 
+				insert into group_members (group_id, user_id)
+				values (groupId, userId);
 
-	_, err = db.Exec(updateQuery, groupIdentifier.GroupId, groupIdentifier.UserId)
+				update invitations
+			 	set status = 'A'
+				where group_id = groupId
+				and to_user_id = userId; 
+				end;$$`
+
+	_, err = db.Exec(query)
+	if err != nil {
+		w.Header().Set("Error", "Can't save Changes!")
+		w.WriteHeader(500)
+		return
+	}
+
+	exequteQuery := `call addUserToGroup($1, $2);`
+
+	_, err = db.Exec(exequteQuery, groupIdentifier.GroupId, groupIdentifier.UserId)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
@@ -636,7 +668,12 @@ func getUserFriendsForGroup(w http.ResponseWriter, req *http.Request) {
 				and not exists (select *
 								from group_members m
 								where m.group_id = $2
-								and m.user_id = f.friend_id);`
+								and m.user_id = f.friend_id)
+				and not exists (select *
+							    from invitations i
+								where i.group_id = $2
+								and i.to_user_id = f.friend_id
+								and i.status = 'N');`
 
 	rows, err := db.Query(getQuery, groupIdentifier.UserId, groupIdentifier.GroupId)
 	if err != nil && err != sql.ErrNoRows {
@@ -1006,7 +1043,7 @@ func addGroupMembers(w http.ResponseWriter, req *http.Request) {
 	addSelfToGroup := req.URL.Query().Get("addSelfToGroup")
 
 	if userId == "" || !isUserValid(userId, db) {
-		w.Header().Set("Error", "Can't add froup members!")
+		w.Header().Set("Error", "Can't add group members. User not Valid!")
 		w.WriteHeader(400)
 		return
 	}
@@ -1021,9 +1058,9 @@ func addGroupMembers(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if addSelfToGroup == "Y" {
-		adminInsertQuery := `insert into "group_members" ("group_id", "user_id", "user_role") 
+		query := `insert into group_members ("group_id", "user_id", "user_role") 
 						values ($1, $2, $3)`
-		_, e = db.Exec(adminInsertQuery, groupId, userId, "A")
+		_, e = db.Exec(query, groupId, userId, "A")
 		if e != nil {
 			w.Header().Set("Error", e.Error())
 			w.WriteHeader(500)
@@ -1032,9 +1069,9 @@ func addGroupMembers(w http.ResponseWriter, req *http.Request) {
 	}
 
 	for _, groupMemberId := range groupMembers.Members {
-		memberInsertQuery := `insert into "group_members" ("group_id", "user_id", "user_role") 
+		query := `insert into invitations ("from_user_id", "to_user_id", "group_id") 
 						values ($1, $2, $3)`
-		_, e = db.Exec(memberInsertQuery, groupId, groupMemberId, "M")
+		_, e = db.Exec(query, userId, groupMemberId, groupId)
 		if e != nil {
 			w.Header().Set("Error", e.Error())
 			w.WriteHeader(500)
@@ -1177,16 +1214,57 @@ func getUserNotifications(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	getQuery := `select r.id,
-						s.user_id,
-						s.first_name || ' ' || s.last_name whole_name,
-						true is_friendship_request
+	getQuery := `select r.id request_unique_id
+					,s.user_id from_user_id
+					,s.first_name || ' ' || s.last_name whole_name
+					,true is_friendship_request
+					,'' group_id
+					,'' group_title
+					,'' group_description
+					,0 group_capacity
+					,0 members_count
+					,r.request_date
 				from friendship_requests r,
-					users s
+				users s
 				where s.user_id = from_user_id
 				and r.to_user_id = $1
 				and r.status = 'N'
-				order by request_date desc;`
+				UNION ALL
+				select s.id request_unique_id
+					,u.user_id from_user_id
+					,u.first_name || ' ' || u.last_name whole_name
+					,false is_friendship_request
+					,g.group_id
+					,g.group_title
+					,g.group_description
+					,g.group_capacity
+					,(select count(*)
+					from group_members 
+					where group_id = g.group_id) members_count
+					,invitation_date
+				from invitations s,
+				groups g,
+				users u
+				where s.to_user_id = $1
+				and s.status = 'N'
+				and g.group_id = s.group_id
+				and u.user_id = s.from_user_id
+				and not exists (select *
+							from group_members m
+							where m.group_id = g.group_id
+							and m.user_id = s.to_user_id)
+				order by 10 desc;`
+
+	// getQuery := `select r.id,
+	// 					s.user_id,
+	// 					s.first_name || ' ' || s.last_name whole_name,
+	// 					true is_friendship_request
+	// 			from friendship_requests r,
+	// 				users s
+	// 			where s.user_id = from_user_id
+	// 			and r.to_user_id = $1
+	// 			and r.status = 'N'
+	// 			order by request_date desc;`
 
 	rows, err := db.Query(getQuery, userIdentifier.UserId)
 	if err != nil && err != sql.ErrNoRows {
@@ -1200,10 +1278,17 @@ func getUserNotifications(w http.ResponseWriter, req *http.Request) {
 
 	for rows.Next() {
 		var requestUniqueKey string
-		var userId string
-		var userWholeName string
-		var isFriendshipRequestNotification string
-		err = rows.Scan(&requestUniqueKey, &userId, &userWholeName, &isFriendshipRequestNotification)
+		var fromUserId string
+		var fromUserWholeName string
+		var isFriendshipRequest string
+		var groupId string
+		var groupTitle string
+		var groupDescription string
+		var groupCapacity string
+		var membersCount string
+		var sendDate string
+		err = rows.Scan(&requestUniqueKey, &fromUserId, &fromUserWholeName, &isFriendshipRequest,
+			&groupId, &groupTitle, &groupDescription, &groupCapacity, &membersCount, &sendDate)
 		if err != nil {
 			w.Header().Set("Error", err.Error())
 			w.WriteHeader(500)
@@ -1211,9 +1296,14 @@ func getUserNotifications(w http.ResponseWriter, req *http.Request) {
 		}
 		notification := make(map[string]string)
 		notification["requestUniqueKey"] = requestUniqueKey
-		notification["userId"] = userId
-		notification["userWholeName"] = userWholeName
-		notification["isFriendshipRequestNotification"] = isFriendshipRequestNotification
+		notification["fromUserId"] = fromUserId
+		notification["fromUserWholeName"] = fromUserWholeName
+		notification["isFriendshipRequest"] = isFriendshipRequest
+		notification["groupId"] = groupId
+		notification["groupTitle"] = groupTitle
+		notification["groupDescription"] = groupDescription
+		notification["groupCapacity"] = groupCapacity
+		notification["membersCount"] = membersCount
 
 		notifications = append(notifications, notification)
 	}
@@ -1251,12 +1341,12 @@ func acceptFriendshipRequest(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if freindshipResponse.UserId == "" || freindshipResponse.FromUserId == "" || !isUserValid(freindshipResponse.UserId, db) || !isUserValid(freindshipResponse.FromUserId, db) {
-		w.Header().Set("Error", "Can't accept friendship!")
+		w.Header().Set("Error", "Can't accept friendship. User not Valid!")
 		w.WriteHeader(400)
 		return
 	}
 
-	updateQuery := `create or replace procedure acceptFriendship(requestUniqueKey integer
+	query := `create or replace procedure acceptFriendship(requestUniqueKey integer
 																,fromUserId character varying
 																,toUserId   character varying)
 					language plpgsql
@@ -1265,7 +1355,8 @@ func acceptFriendshipRequest(w http.ResponseWriter, req *http.Request) {
 					update friendship_requests
 					set status = 'A'
 					where id = requestUniqueKey
-					and to_user_id = toUserId;
+					and to_user_id = toUserId
+					and from_user_id = fromUserId;
 					
 					insert into friends (user_id, friend_id)
 					values(toUserId, fromUserId);
@@ -1274,19 +1365,19 @@ func acceptFriendshipRequest(w http.ResponseWriter, req *http.Request) {
 					values(fromUserId, toUserId);
 					end;$$`
 
-	_, err = db.Exec(updateQuery)
+	_, err = db.Exec(query)
 	if err != nil {
 		w.Header().Set("Error", "Can't save Changes!")
 		w.WriteHeader(500)
 		return
 	}
 
-	insertQuery := `call acceptFriendship($1, $2, $3);`
+	exequteQuery := `call acceptFriendship($1, $2, $3);`
 
-	_, err = db.Exec(insertQuery, freindshipResponse.RequestUniqueKey, freindshipResponse.FromUserId, freindshipResponse.UserId)
+	_, err = db.Exec(exequteQuery, freindshipResponse.RequestUniqueKey, freindshipResponse.FromUserId, freindshipResponse.UserId)
 	if err != nil {
 		w.Header().Set("Error", "Can't save Changes!")
-		w.WriteHeader(400)
+		w.WriteHeader(500)
 		return
 	}
 }
@@ -1312,7 +1403,7 @@ func rejectFriendshipRequest(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if freindshipResponse.UserId == "" || !isUserValid(freindshipResponse.UserId, db) {
-		w.Header().Set("Error", "Can't reject friendship!")
+		w.Header().Set("Error", "Can't reject friendship. User not valid!")
 		w.WriteHeader(400)
 		return
 	}
@@ -1323,6 +1414,105 @@ func rejectFriendshipRequest(w http.ResponseWriter, req *http.Request) {
 					and to_user_id = $2;`
 
 	_, e := db.Exec(updateQuery, freindshipResponse.RequestUniqueKey, freindshipResponse.UserId)
+	if e != nil {
+		w.Header().Set("Error", "Can't save Changes!")
+		w.WriteHeader(500)
+		return
+	}
+}
+
+func acceptInvitation(w http.ResponseWriter, req *http.Request) {
+
+	db, err := openConnection()
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	defer db.Close()
+
+	var invitationResponse InvitationAcceptResponse
+
+	err = json.NewDecoder(req.Body).Decode(&invitationResponse)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	if invitationResponse.UserId == "" || invitationResponse.FromUserId == "" || !isUserValid(invitationResponse.UserId, db) || !isUserValid(invitationResponse.FromUserId, db) {
+		w.Header().Set("Error", "Can't accept invitation. User not valid!")
+		w.WriteHeader(400)
+		return
+	}
+
+	query := `create or replace procedure acceptInvitation(requestUniqueKey integer
+															,groupId        character varying
+															,fromUserId     character varying
+															,toUserId       character varying)
+					language plpgsql
+					as $$
+					begin 
+					update invitations
+					set status = 'A'
+					where id = requestUniqueKey
+					and to_user_id = toUserId
+					and from_user_id = fromUserId;
+					
+					insert into group_members (group_id, user_id)
+					values (groupId, toUserId);
+					end;$$`
+
+	_, err = db.Exec(query)
+	if err != nil {
+		w.Header().Set("Error", "Can't save Changes!")
+		w.WriteHeader(500)
+		return
+	}
+
+	insertQuery := `call acceptInvitation($1, $2, $3, $4);`
+
+	_, err = db.Exec(insertQuery, invitationResponse.RequestUniqueKey, invitationResponse.GroupId, invitationResponse.FromUserId, invitationResponse.UserId)
+	if err != nil {
+		w.Header().Set("Error", "Can't save Changes!")
+		w.WriteHeader(500)
+		return
+	}
+}
+
+func rejectInvitation(w http.ResponseWriter, req *http.Request) {
+
+	db, err := openConnection()
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	defer db.Close()
+
+	var invitationResponse invitationRejectResponse
+
+	err = json.NewDecoder(req.Body).Decode(&invitationResponse)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	if invitationResponse.UserId == "" || !isUserValid(invitationResponse.UserId, db) {
+		w.Header().Set("Error", "Can't reject invitation. User not valid!")
+		w.WriteHeader(400)
+		return
+	}
+
+	updateQuery := `update invitations
+					set status = 'R'
+					where id = $1
+					and to_user_id = $2;`
+
+	_, e := db.Exec(updateQuery, invitationResponse.RequestUniqueKey, invitationResponse.UserId)
 	if e != nil {
 		w.Header().Set("Error", "Can't save Changes!")
 		w.WriteHeader(500)
@@ -1395,6 +1585,8 @@ func setupRoutes() {
 	http.HandleFunc("/sendFriendshipRequest", sendFriendshipRequest)
 	http.HandleFunc("/acceptFriendshipRequest", acceptFriendshipRequest)
 	http.HandleFunc("/rejectFriendshipRequest", rejectFriendshipRequest)
+	http.HandleFunc("/acceptInvitation", acceptInvitation)
+	http.HandleFunc("/rejectInvitation", rejectInvitation)
 
 	http.ListenAndServe(":9000", nil)
 }

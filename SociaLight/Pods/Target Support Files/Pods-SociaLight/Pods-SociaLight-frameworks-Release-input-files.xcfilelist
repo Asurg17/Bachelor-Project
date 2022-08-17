@@ -1,3 +1,6 @@
 ${PODS_ROOT}/Target Support Files/Pods-SociaLight/Pods-SociaLight-frameworks.sh
+${BUILT_PRODUCTS_DIR}/InputBarAccessoryView/InputBarAccessoryView.framework
+${BUILT_PRODUCTS_DIR}/JGProgressHUD/JGProgressHUD.framework
 ${BUILT_PRODUCTS_DIR}/KeychainSwift/KeychainSwift.framework
+${BUILT_PRODUCTS_DIR}/MessageKit/MessageKit.framework
 ${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework

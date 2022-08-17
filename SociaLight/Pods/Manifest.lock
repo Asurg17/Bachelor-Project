@@ -1,22 +1,36 @@
 PODS:
+  - InputBarAccessoryView (5.5.0):
+    - InputBarAccessoryView/Core (= 5.5.0)
+  - InputBarAccessoryView/Core (5.5.0)
+  - JGProgressHUD (2.2)
   - KeychainSwift (20.0.0)
+  - MessageKit (3.8.0):
+    - InputBarAccessoryView (~> 5.5.0)
   - SDWebImage (5.12.3):
     - SDWebImage/Core (= 5.12.3)
   - SDWebImage/Core (5.12.3)
 
 DEPENDENCIES:
+  - JGProgressHUD
   - KeychainSwift
+  - MessageKit
   - SDWebImage
 
 SPEC REPOS:
   trunk:
+    - InputBarAccessoryView
+    - JGProgressHUD
     - KeychainSwift
+    - MessageKit
     - SDWebImage
 
 SPEC CHECKSUMS:
+  InputBarAccessoryView: 1d7b0a672b36e370f01f264b3907ef39d03328e3
+  JGProgressHUD: d83d7a981b85d11205e19ff8ad5bb9c40571c847
   KeychainSwift: 0ce6a4d13f7228054d1a71bb1b500448fb2ab837
+  MessageKit: a1ba0c69ebead94029867853eb44dd05b9b3f453
   SDWebImage: 53179a2dba77246efa8a9b85f5c5b21f8f43e38f
 
-PODFILE CHECKSUM: 3cfa0450076c151960df2419c23dc3f0b1315956
+PODFILE CHECKSUM: bc598865913c595af9d58ea1813a33338b2a69d5
 
 COCOAPODS: 1.11.2

@@ -111,20 +111,26 @@ class NotificationPageVC: UIViewController {
             
             var id = ""
             
-            if notification.isFriendshipRequestNotification.boolValue {
+            if notification.isFriendshipRequest.boolValue {
                 id = "Friendship Requests"
             } else {
-                id = "Unknown"
+                id = "Invitations"
             }
             
             if let sectionIndex = tableData.firstIndex(where: { $0.id == id }) {
                 tableData[sectionIndex].notifications.append(
                     NotificationCellModel(
                         requestUniqueKey: notification.requestUniqueKey,
-                        userId: notification.userId,
-                        userWholeName: notification.userWholeName,
-                        userImageURL: Constants.getImageURLPrefix + Constants.userImagePrefix + notification.userId,
-                        isFriendshipRequestNotification: notification.isFriendshipRequestNotification.boolValue,
+                        fromUserId: notification.fromUserId,
+                        fromUserWholeName: notification.fromUserWholeName,
+                        fromUserImageURL: Constants.getImageURLPrefix + Constants.userImagePrefix + notification.fromUserId,
+                        isFriendshipRequest: notification.isFriendshipRequest.boolValue,
+                        groupId: notification.groupId,
+                        groupImageURL: Constants.getImageURLPrefix + Constants.groupImagePrefix + notification.groupId,
+                        groupTitle: notification.groupTitle,
+                        groupDescription: notification.groupDescription,
+                        groupCapacity: notification.groupCapacity,
+                        membersCount: notification.membersCount,
                         delegate: self
                     )
                 )
@@ -141,10 +147,16 @@ class NotificationPageVC: UIViewController {
                     notifications: [
                         NotificationCellModel(
                             requestUniqueKey: notification.requestUniqueKey,
-                            userId: notification.userId,
-                            userWholeName: notification.userWholeName,
-                            userImageURL: Constants.getImageURLPrefix + Constants.userImagePrefix + notification.userId,
-                            isFriendshipRequestNotification: notification.isFriendshipRequestNotification.boolValue,
+                            fromUserId: notification.fromUserId,
+                            fromUserWholeName: notification.fromUserWholeName,
+                            fromUserImageURL: Constants.getImageURLPrefix + Constants.userImagePrefix + notification.fromUserId,
+                            isFriendshipRequest: notification.isFriendshipRequest.boolValue,
+                            groupId: notification.groupId,
+                            groupImageURL: Constants.getImageURLPrefix + Constants.groupImagePrefix + notification.groupId,
+                            groupTitle: notification.groupTitle,
+                            groupDescription: notification.groupDescription,
+                            groupCapacity: notification.groupCapacity,
+                            membersCount: notification.membersCount,
                             delegate: self
                         )
                     ]
@@ -194,11 +206,11 @@ class NotificationPageVC: UIViewController {
 }
 
 extension NotificationPageVC: NotificationCellDelegate {
-    
+
     func friendshipAccepted(_ notification: NotificationCell) {
         if let userId = keychain.get(Constants.userIdKey) {
             loader.startAnimating()
-            service.acceptFriendshipRequest(userId: userId, fromUserId: notification.model.userId, requestUniqueKey: notification.model.requestUniqueKey) { [weak self] result in
+            service.acceptFriendshipRequest(userId: userId, fromUserId: notification.model.fromUserId, requestUniqueKey: notification.model.requestUniqueKey) { [weak self] result in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     self.loader.stopAnimating()
@@ -233,6 +245,62 @@ extension NotificationPageVC: NotificationCellDelegate {
         } else {
             showWarningAlert(warningText: Constants.fatalError)
         }
+    }
+        
+    func acceptInvitation(_ notification: NotificationCell) {
+        if let userId = keychain.get(Constants.userIdKey) {
+            loader.startAnimating()
+            service.addUserToGroup(userId: userId, groupId: notification.model.groupId) { [weak self] result in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.loader.stopAnimating()
+                    switch result {
+                    case .success(_):
+                        self.removeFromTable(elem: notification.model)
+                    case .failure(let error):
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
+                    }
+                }
+            }
+        } else {
+            showWarningAlert(warningText: Constants.fatalError)
+        }
+    }
+
+    func rejectInvitation(_ notification: NotificationCell) {
+        if let userId = keychain.get(Constants.userIdKey) {
+            loader.startAnimating()
+            service.rejectInvitation(userId: userId, requestUniqueKey: notification.model.requestUniqueKey) { [weak self] result in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.loader.stopAnimating()
+                    switch result {
+                    case .success(_):
+                        self.removeFromTable(elem: notification.model)
+                    case .failure(let error):
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
+                    }
+                }
+            }
+        } else {
+            showWarningAlert(warningText: Constants.fatalError)
+        }
+    }
+    
+    func navigateToGroupPage(_ notification: NotificationCell) {
+        print(notification.model.image)
+        navigateToGroupPage(
+            group: Group(
+                groupId: notification.model.groupId,
+                groupImage: notification.model.image,
+                membersCurrentNumber: Int(notification.model.membersCount) ?? 0,
+                membersMaxNumber: Int(notification.model.groupCapacity) ?? 0,
+                groupName: notification.model.groupTitle,
+                groupDescription: notification.model.groupDescription,
+                isPrivate: false
+            ),
+            isUserGroupMember: false
+        )
     }
     
 }
@@ -277,7 +345,7 @@ extension NotificationPageVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return Constants.tableRowHeight
+        return 100
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

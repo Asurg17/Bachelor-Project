@@ -277,14 +277,14 @@
                                     <constraint firstItem="nmL-vF-l85" firstAttribute="centerY" secondItem="ChE-li-L8p" secondAttribute="centerY" id="hRv-sr-Tz9"/>
                                 </constraints>
                             </view>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Group Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="w9g-Fh-sX7">
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Group Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="w9g-Fh-sX7">
                                 <rect key="frame" x="62" y="216" width="290" height="31.5"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
                                 <textInputTraits key="textInputTraits" returnKeyType="next"/>
                             </textField>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Description" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gNm-fD-mE5">
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Description" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gNm-fD-mE5">
                                 <rect key="frame" x="83" y="255.5" width="248" height="22"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -307,7 +307,7 @@
                                     <action selector="changeGroupPrivacy" destination="bvc-Ig-fRW" eventType="touchUpInside" id="yeK-fa-1kt"/>
                                 </connections>
                             </segmentedControl>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ohr-2W-PJK" customClass="RoundCornerButton" customModule="SociaLight" customModuleProvider="target">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ohr-2W-PJK" customClass="RoundCornerButton" customModule="SociaLight" customModuleProvider="target">
                                 <rect key="frame" x="124" y="408.5" width="166" height="29"/>
                                 <color key="backgroundColor" red="0.95504863685260089" green="1" blue="0.9965586851154612" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
@@ -315,9 +315,6 @@
                                 <state key="normal" title="Members Count">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
-                                <connections>
-                                    <action selector="showPicker" destination="bvc-Ig-fRW" eventType="touchUpInside" id="lLC-yd-WaN"/>
-                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7hg-4o-ybt" customClass="RoundButton" customModule="SociaLight" customModuleProvider="target">
                                 <rect key="frame" x="299" y="781" width="83" height="83"/>
@@ -434,7 +431,7 @@
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
-                                <label key="backgroundView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Friend Selected" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="rm9-I4-oGA">
+                                <label key="backgroundView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select Friends to Invite" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="rm9-I4-oGA">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="134.5"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -462,10 +459,7 @@
                                 </constraints>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain">
-                                    <imageReference key="image" image="arrow.right" catalog="system" symbolScale="large"/>
-                                    <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage" scale="default"/>
-                                </buttonConfiguration>
+                                <buttonConfiguration key="configuration" style="plain" image="arrow.right" catalog="system"/>
                                 <connections>
                                     <action selector="createGroup" destination="ped-qf-cPT" eventType="touchUpInside" id="Hg0-Dp-ld0"/>
                                 </connections>
@@ -553,7 +547,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ehO-Op-ZIq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6116" y="43"/>
+            <point key="canvasLocation" x="6115.9420289855079" y="42.857142857142854"/>
         </scene>
         <!--Title-->
         <scene sceneID="V6I-gd-g9K">
@@ -587,7 +581,7 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="CPc-hO-DsK">
                                 <rect key="frame" x="32" y="295.5" width="350" height="150"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PK1-wP-hny" customClass="GroupInfoActionView" customModule="SociaLight" customModuleProvider="target">
+                                    <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="PK1-wP-hny" customClass="GroupInfoActionView" customModule="SociaLight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="350" height="50"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
@@ -598,7 +592,7 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="labelText" value="See group members"/>
                                         </userDefinedRuntimeAttributes>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u4k-0u-LJ8" customClass="GroupInfoActionView" customModule="SociaLight" customModuleProvider="target">
+                                    <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="u4k-0u-LJ8" customClass="GroupInfoActionView" customModule="SociaLight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="50" width="350" height="50"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <userDefinedRuntimeAttributes>
@@ -606,7 +600,7 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="labelText" value="View media &amp; files"/>
                                         </userDefinedRuntimeAttributes>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QAZ-Ok-5gA" customClass="GroupInfoActionView" customModule="SociaLight" customModuleProvider="target">
+                                    <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="QAZ-Ok-5gA" customClass="GroupInfoActionView" customModule="SociaLight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="100" width="350" height="50"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <userDefinedRuntimeAttributes>
@@ -853,7 +847,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nf6-kk-ym6">
                                 <rect key="frame" x="0.0" y="60" width="414" height="50"/>
                                 <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Group Identifier" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="i7c-ah-vlw" customClass="RoundCornerTextField" customModule="SociaLight" customModuleProvider="target">
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search Group" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="i7c-ah-vlw" customClass="RoundCornerTextField" customModule="SociaLight" customModuleProvider="target">
                                         <rect key="frame" x="41.5" y="2.5" width="331" height="45"/>
                                         <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -1812,7 +1806,7 @@
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
-                                <label key="backgroundView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Friend Selected" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="sO9-Pn-2HV">
+                                <label key="backgroundView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select Friends to Invite" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="sO9-Pn-2HV">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="134.5"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -1840,7 +1834,7 @@
                                 </constraints>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" image="plus" catalog="system"/>
+                                <buttonConfiguration key="configuration" style="plain" image="paperplane" catalog="system"/>
                                 <connections>
                                     <action selector="add" destination="Z6T-lB-Sjq" eventType="touchUpInside" id="0YD-Qr-96o"/>
                                 </connections>
@@ -1926,7 +1920,7 @@
             <size key="intrinsicContentSize" width="100" height="100"/>
         </designable>
         <designable name="1nf-3O-zvb">
-            <size key="intrinsicContentSize" width="163" height="18"/>
+            <size key="intrinsicContentSize" width="145" height="18"/>
         </designable>
         <designable name="6ae-VL-KCI">
             <size key="intrinsicContentSize" width="115" height="33"/>
@@ -1938,16 +1932,16 @@
             <size key="intrinsicContentSize" width="45.5" height="31"/>
         </designable>
         <designable name="Bla-5R-cOB">
-            <size key="intrinsicContentSize" width="165" height="18"/>
+            <size key="intrinsicContentSize" width="145" height="18"/>
         </designable>
         <designable name="Im3-TV-qu0">
             <size key="intrinsicContentSize" width="66" height="33"/>
         </designable>
         <designable name="UtA-Pp-i6r">
-            <size key="intrinsicContentSize" width="107.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="88.5" height="19.5"/>
         </designable>
         <designable name="Xyd-x5-ey8">
-            <size key="intrinsicContentSize" width="138.5" height="18"/>
+            <size key="intrinsicContentSize" width="120.5" height="18"/>
         </designable>
         <designable name="ZIq-23-Uxr">
             <size key="intrinsicContentSize" width="146" height="33"/>
@@ -1956,7 +1950,7 @@
             <size key="intrinsicContentSize" width="63" height="33"/>
         </designable>
         <designable name="cLO-ue-g6S">
-            <size key="intrinsicContentSize" width="109.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="90.5" height="19.5"/>
         </designable>
         <designable name="cmk-O4-5Tc">
             <size key="intrinsicContentSize" width="156.5" height="23"/>
@@ -1965,43 +1959,43 @@
             <size key="intrinsicContentSize" width="173" height="23"/>
         </designable>
         <designable name="fIj-Bk-OXc">
-            <size key="intrinsicContentSize" width="110.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="90.5" height="19.5"/>
         </designable>
         <designable name="h7D-Q5-Gbx">
             <size key="intrinsicContentSize" width="156.5" height="23"/>
         </designable>
         <designable name="i7c-ah-vlw">
-            <size key="intrinsicContentSize" width="159" height="22"/>
+            <size key="intrinsicContentSize" width="145" height="22"/>
         </designable>
         <designable name="iMN-gP-Y7z">
             <size key="intrinsicContentSize" width="107" height="33"/>
         </designable>
         <designable name="lx3-sJ-7TZ">
-            <size key="intrinsicContentSize" width="102" height="18"/>
+            <size key="intrinsicContentSize" width="86" height="18"/>
         </designable>
         <designable name="mBI-QS-r4u">
-            <size key="intrinsicContentSize" width="139.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="122.5" height="19.5"/>
         </designable>
         <designable name="nmL-vF-l85">
             <size key="intrinsicContentSize" width="100" height="100"/>
         </designable>
         <designable name="oHy-lM-yhv">
-            <size key="intrinsicContentSize" width="110" height="19.5"/>
+            <size key="intrinsicContentSize" width="89" height="19.5"/>
         </designable>
         <designable name="ohr-2W-PJK">
             <size key="intrinsicContentSize" width="106" height="29"/>
         </designable>
         <designable name="pAR-c0-5gQ">
-            <size key="intrinsicContentSize" width="139.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="122.5" height="19.5"/>
         </designable>
         <designable name="q8O-sX-dcy">
-            <size key="intrinsicContentSize" width="132" height="18"/>
+            <size key="intrinsicContentSize" width="114" height="18"/>
         </designable>
         <designable name="sAv-1g-3C5">
-            <size key="intrinsicContentSize" width="106" height="18"/>
+            <size key="intrinsicContentSize" width="86" height="18"/>
         </designable>
         <designable name="wDT-Gh-g4k">
-            <size key="intrinsicContentSize" width="43.5" height="31"/>
+            <size key="intrinsicContentSize" width="46.5" height="31"/>
         </designable>
         <designable name="xWD-9U-x3k">
             <size key="intrinsicContentSize" width="45.5" height="31"/>
@@ -2031,6 +2025,7 @@
         <image name="lock.shield.fill" catalog="system" width="128" height="118"/>
         <image name="lock.slash" catalog="system" width="124" height="128"/>
         <image name="magnifyingglass" catalog="system" width="128" height="115"/>
+        <image name="paperplane" catalog="system" width="128" height="118"/>
         <image name="person" catalog="system" width="128" height="117"/>
         <image name="person.3.fill" catalog="system" width="128" height="61"/>
         <image name="person.badge.plus" catalog="system" width="128" height="124"/>

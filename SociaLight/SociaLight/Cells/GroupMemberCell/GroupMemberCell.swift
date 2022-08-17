@@ -82,7 +82,7 @@ class GroupMemberCell: UITableViewCell {
             actionButton.isHidden = true
         } else if model.isFriendRequestAlreadySent == "Y" {
             actionButton.isHidden = false
-            actionButton.setImage(UIImage(systemName: "paperplane"), for: .normal)
+            actionButton.setImage(UIImage(systemName: "paperplane.fill"), for: .normal)
         } else {
             actionButton.isHidden = false
             actionButton.setImage(UIImage(systemName: "person.badge.plus"), for: .normal)

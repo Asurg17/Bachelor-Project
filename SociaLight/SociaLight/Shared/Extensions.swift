@@ -113,7 +113,8 @@ extension UIViewController {
         self.navigationController?.pushViewController(newGroupSecondPageController, animated: true)
     }
     
-    func navigateToGroupPage(group: Group) {
+    func navigateToGroupPage(group: Group, isUserGroupMember: Bool) {
+        UserDefaults.standard.set(isUserGroupMember, forKey: "isUserGroupMember")
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let groupPageController = storyBoard.instantiateViewController(withIdentifier: "GroupPageVC") as! GroupPageVC
         groupPageController.group = group

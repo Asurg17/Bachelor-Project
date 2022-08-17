@@ -20,6 +20,7 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     @IBOutlet var groupMembersActionView: GroupInfoActionView!
     @IBOutlet var seeMediaActionView: GroupInfoActionView!
     @IBOutlet var leaveGroupActionView: GroupInfoActionView!
+//    @IBOutlet var joinGroupActionView: GroupInfoActionView!
     
     @IBOutlet var loader: UIActivityIndicatorView!
     
@@ -55,6 +56,12 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
         groupMembersActionView.delegate = self
         seeMediaActionView.delegate = self
         leaveGroupActionView.delegate = self
+//        joinGroupActionView.delegate = self
+        
+        let isUserGroupMember = UserDefaults.standard.bool(forKey: "isUserGroupMember")
+        groupMembersActionView.isHidden = !isUserGroupMember
+        leaveGroupActionView.isHidden = !isUserGroupMember
+//        joinGroupActionView.isHidden = isUserGroupMember
     }
     
     func setupImageView() {
@@ -100,8 +107,10 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
             navigateToGroupMembersPage(group: group!)
           case seeMediaActionView:
             navigateToGroupMediaFilesPage(group: group!)
-          default:
+          case leaveGroupActionView:
             leaveGroup()
+          default:
+            ()
         }
     }
     
@@ -124,6 +133,27 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
             showWarningAlert(warningText: Constants.fatalError)
         }
     }
+    
+//    func joinGroup() {
+//        if let userId = keychain.get(Constants.userIdKey) {
+//            loader.startAnimating()
+//            service.addUserToGroup(userId: userId, groupId: group!.groupId) { [weak self] result in
+//                guard let self = self else { return }
+//                DispatchQueue.main.async {
+//                    self.loader.stopAnimating()
+//                    switch result {
+//                    case .success(_):
+//                        UserDefaults.standard.set(true, forKey: "isUserGroupMember")
+//                        self.setupActionViews()
+//                    case .failure(let error):
+//                        self.showWarningAlert(warningText: error.localizedDescription.description)
+//                    }
+//                }
+//            }
+//        } else {
+//            showWarningAlert(warningText: Constants.fatalError)
+//        }
+//    }
     
     func uploadGroupImage() {
         if let _ = keychain.get(Constants.userIdKey) {
@@ -204,50 +234,52 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
 
             
     @objc func showAlert(_ sender:AnyObject){
-        let alert = UIAlertController(
-            title: "Group Name & Description",
-            message: "",
-            preferredStyle: .alert
-        )
-        alert.addTextField(configurationHandler: { [unowned self] textField in
-            textField.placeholder = "Group Name"
-            textField.text = group!.groupName
-            textField.keyboardType = .default
-            textField.addTarget(
-                self,
-                action: #selector(self.groupNameChanged(textField:)),
-                for: .editingChanged
+        if UserDefaults.standard.bool(forKey: "isUserGroupMember") {
+            let alert = UIAlertController(
+                title: "Group Name & Description",
+                message: "",
+                preferredStyle: .alert
             )
-        })
-        alert.addTextField(configurationHandler: { [unowned self] textField in
-            textField.placeholder = "Group Description"
-            textField.text = group!.groupDescription
-            textField.keyboardType = .default
-            textField.addTarget(
-                self,
-                action: #selector(self.groupDescriptionChanged(textField:)),
-                for: .editingChanged
+            alert.addTextField(configurationHandler: { [unowned self] textField in
+                textField.placeholder = "Group Name"
+                textField.text = group!.groupName
+                textField.keyboardType = .default
+                textField.addTarget(
+                    self,
+                    action: #selector(self.groupNameChanged(textField:)),
+                    for: .editingChanged
+                )
+            })
+            alert.addTextField(configurationHandler: { [unowned self] textField in
+                textField.placeholder = "Group Description"
+                textField.text = group!.groupDescription
+                textField.keyboardType = .default
+                textField.addTarget(
+                    self,
+                    action: #selector(self.groupDescriptionChanged(textField:)),
+                    for: .editingChanged
+                )
+            })
+            alert.addAction(
+                UIAlertAction(
+                    title: "Save",
+                    style: .default,
+                    handler: { [unowned self] _ in
+                        self.updateGroup()
+                    }
+                )
             )
-        })
-        alert.addAction(
-            UIAlertAction(
-                title: "Save",
-                style: .default,
-                handler: { [unowned self] _ in
-                    self.updateGroup()
-                }
+            alert.addAction(
+                UIAlertAction(
+                    title: "Cancel",
+                    style: .cancel,
+                    handler: { [unowned self] _ in
+                        self.clearLabels()
+                    }
+                )
             )
-        )
-        alert.addAction(
-            UIAlertAction(
-                title: "Cancel",
-                style: .cancel,
-                handler: { [unowned self] _ in
-                    self.clearLabels()
-                }
-            )
-        )
-        present(alert, animated: true)
+            present(alert, animated: true)
+        }
     }
     
     @objc func groupNameChanged(textField: UITextField) {
@@ -260,10 +292,12 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
         
     
     @objc func imageViewTapped(_ sender:AnyObject){
-        imagePicker.sourceType = .photoLibrary
-        imagePicker.delegate = self
-        imagePicker.allowsEditing = true
-        present(imagePicker, animated: true)
+        if UserDefaults.standard.bool(forKey: "isUserGroupMember") {
+            imagePicker.sourceType = .photoLibrary
+            imagePicker.delegate = self
+            imagePicker.allowsEditing = true
+            present(imagePicker, animated: true)
+        }
     }
     
 }

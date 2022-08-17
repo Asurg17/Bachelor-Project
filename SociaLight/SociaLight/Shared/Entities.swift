@@ -109,8 +109,13 @@ struct Notifications: Codable {
 
 struct Notification: Codable {
     let requestUniqueKey: String
-    let userId: String
-    let userWholeName: String
-    let isFriendshipRequestNotification: String
+    let fromUserId: String
+    let fromUserWholeName: String
+    let isFriendshipRequest: String
+    let groupId: String
+    let groupTitle: String
+    let groupDescription: String
+    let groupCapacity: String
+    let membersCount: String
 }
 

@@ -175,15 +175,17 @@ class AddGroupMembersPageVC: UIViewController {
     func addGroupMembers() {
         if let userId = keychain.get(Constants.userIdKey) {
             let members = getMembers()
-            service.addGroupMembers(userId: userId, groupId: group!.groupId, addSelfToGroup: "N", members: members) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.loader.stopAnimating()
-                    switch result {
-                    case .success(_):
-                        self.back()
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
+            if members.count > 0 {
+                service.addGroupMembers(userId: userId, groupId: group!.groupId, addSelfToGroup: "N", members: members) { [weak self] result in
+                    guard let self = self else { return }
+                    DispatchQueue.main.async {
+                        self.loader.stopAnimating()
+                        switch result {
+                        case .success(_):
+                            self.back()
+                        case .failure(let error):
+                            self.showWarningAlert(warningText: error.localizedDescription.description)
+                        }
                     }
                 }
             }
@@ -232,7 +234,7 @@ extension AddGroupMembersPageVC: FriendCellDelegate {
     
     func cellDidClick(_ friend: FriendCell) {
         if(friend.model.isSelected) {
-            if collectionData.count < (group!.membersMaxNumber - group!.membersCurrentNumber) {
+            //if collectionData.count < (group!.membersMaxNumber - group!.membersCurrentNumber) {
                 collectionData.append(
                     SelectedFriendCellModel(
                         friendId: friend.model.friendId,
@@ -240,12 +242,12 @@ extension AddGroupMembersPageVC: FriendCellDelegate {
                         friendImage: friend.model.friendImage
                     )
                 )
-            } else {
-                friend.toggleSelection()
-                showWarningAlert(
-                    warningText: Constants.maximalGroupMembersNumberReachedWarningText
-                )
-            }
+//            } else {
+//                friend.toggleSelection()
+//                showWarningAlert(
+//                    warningText: Constants.maximalGroupMembersNumberReachedWarningText
+//                )
+//            }
         } else {
             if let offset = collectionData.firstIndex(where: {$0.friendId == friend.model.friendId}) {
                 collectionData.remove(at: offset)

@@ -18,36 +18,54 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KFY-3C-9hJ">
-                        <rect key="frame" x="32" y="12" width="96" height="96"/>
+                        <rect key="frame" x="32" y="24" width="72" height="72"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user" translatesAutoresizingMaskIntoConstraints="NO" id="KvW-w5-UF0" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
-                                <rect key="frame" x="7" y="7" width="82" height="82"/>
+                                <rect key="frame" x="5.5" y="5.5" width="61" height="61"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="KvW-w5-UF0" secondAttribute="height" multiplier="1:1" id="Vnd-Zc-8Zj"/>
                                 </constraints>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M0w-Hg-cG6">
+                                <rect key="frame" x="0.0" y="0.0" width="72" height="72"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain"/>
+                                <connections>
+                                    <action selector="navigateToGroupPage" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Kjn-cx-3OB"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="KvW-w5-UF0" firstAttribute="centerX" secondItem="KFY-3C-9hJ" secondAttribute="centerX" id="3TX-gv-TWb"/>
                             <constraint firstItem="KvW-w5-UF0" firstAttribute="height" secondItem="KFY-3C-9hJ" secondAttribute="height" multiplier="0.85" id="5qC-nd-G6k"/>
+                            <constraint firstItem="M0w-Hg-cG6" firstAttribute="centerX" secondItem="KFY-3C-9hJ" secondAttribute="centerX" id="CCW-eN-49V"/>
                             <constraint firstItem="KvW-w5-UF0" firstAttribute="centerY" secondItem="KFY-3C-9hJ" secondAttribute="centerY" id="IJ1-7c-4lo"/>
+                            <constraint firstItem="M0w-Hg-cG6" firstAttribute="centerY" secondItem="KFY-3C-9hJ" secondAttribute="centerY" id="K0d-jb-NAj"/>
+                            <constraint firstItem="M0w-Hg-cG6" firstAttribute="height" secondItem="KFY-3C-9hJ" secondAttribute="height" id="UX6-SI-OZZ"/>
+                            <constraint firstItem="M0w-Hg-cG6" firstAttribute="width" secondItem="KFY-3C-9hJ" secondAttribute="width" id="dgX-Pw-ifu"/>
                         </constraints>
                     </view>
-                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="kel-s9-3tH">
-                        <rect key="frame" x="144" y="12" width="333" height="96"/>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="kel-s9-3tH">
+                        <rect key="frame" x="120" y="12" width="357" height="96"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Full Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zcr-Nf-KL4">
-                                <rect key="frame" x="0.0" y="0.0" width="333" height="43"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zcr-Nf-KL4">
+                                <rect key="frame" x="0.0" y="0.0" width="357" height="28.5"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Invited you to join: " lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pS7-jo-CPX">
+                                <rect key="frame" x="0.0" y="33.5" width="357" height="29"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="kw5-5y-7Q8">
-                                <rect key="frame" x="0.0" y="53" width="333" height="43"/>
+                                <rect key="frame" x="0.0" y="67.5" width="357" height="28.5"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oVF-xv-SGM" customClass="RoundCornerButton" customModule="SociaLight" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="161.5" height="43"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="173.5" height="28.5"/>
                                         <color key="backgroundColor" red="0.12774153839999999" green="0.29815587240000002" blue="0.61682558239999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -59,7 +77,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KZ0-gW-M6q" customClass="RoundCornerButton" customModule="SociaLight" customModuleProvider="target">
-                                        <rect key="frame" x="171.5" y="0.0" width="161.5" height="43"/>
+                                        <rect key="frame" x="183.5" y="0.0" width="173.5" height="28.5"/>
                                         <color key="backgroundColor" systemColor="systemGray4Color"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -83,16 +101,19 @@
                     <constraint firstItem="KFY-3C-9hJ" firstAttribute="width" secondItem="KFY-3C-9hJ" secondAttribute="height" multiplier="1:1" id="hQf-P7-31v"/>
                     <constraint firstItem="kel-s9-3tH" firstAttribute="leading" secondItem="KFY-3C-9hJ" secondAttribute="trailing" constant="16" id="hTW-uQ-c3a"/>
                     <constraint firstAttribute="trailing" secondItem="kel-s9-3tH" secondAttribute="trailing" constant="32" id="kS2-gH-Fj4"/>
-                    <constraint firstItem="KFY-3C-9hJ" firstAttribute="height" secondItem="H2p-sc-9uM" secondAttribute="height" multiplier="0.8" id="ugQ-Y1-3ge"/>
+                    <constraint firstItem="KFY-3C-9hJ" firstAttribute="height" secondItem="H2p-sc-9uM" secondAttribute="height" multiplier="0.6" id="ugQ-Y1-3ge"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="acceptButton" destination="oVF-xv-SGM" id="jcb-gE-9xA"/>
+                <outlet property="friendshipButtonsStackView" destination="kw5-5y-7Q8" id="66h-52-w14"/>
                 <outlet property="imageOuterView" destination="KFY-3C-9hJ" id="vaL-3H-SW3"/>
+                <outlet property="navigationButton" destination="M0w-Hg-cG6" id="7IO-J3-mPr"/>
+                <outlet property="notificationDescriptionLabel" destination="pS7-jo-CPX" id="KtK-f0-8vi"/>
+                <outlet property="notificationHeaderLabel" destination="Zcr-Nf-KL4" id="vWG-Ud-Pif"/>
+                <outlet property="notificationImageView" destination="KvW-w5-UF0" id="7Hj-6r-PxK"/>
                 <outlet property="rejectButton" destination="KZ0-gW-M6q" id="at7-s4-hh4"/>
-                <outlet property="userImageView" destination="KvW-w5-UF0" id="PoE-U0-RsE"/>
-                <outlet property="userWholeNameLable" destination="Zcr-Nf-KL4" id="vWG-Ud-Pif"/>
             </connections>
             <point key="canvasLocation" x="274.63768115942031" y="65.625"/>
         </tableViewCell>

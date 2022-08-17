@@ -20,6 +20,9 @@ protocol UpdateGroup {
 protocol NotificationCellDelegate: AnyObject {
     func friendshipAccepted(_ notification: NotificationCell)
     func friendshipRejected(_ notification: NotificationCell)
+    func acceptInvitation(_ notification: NotificationCell)
+    func rejectInvitation(_ notification: NotificationCell)
+    func navigateToGroupPage(_ notification: NotificationCell)
 }
 
 protocol FriendCellDelegate: AnyObject {

@@ -154,7 +154,8 @@ class MainPageVC: UIViewController, GroupCellDelegate {
                 groupName: group.model.groupTitle,
                 groupDescription: group.model.groupDescription,
                 isPrivate: false
-            )
+            ),
+            isUserGroupMember: true
         )
     }
     

@@ -117,7 +117,7 @@ class GroupMembersPageVC: UIViewController {
         }
         members = groupMembers
         tableData = groupMembers
-        checkGroupMembersNum()
+        //checkGroupMembersNum()
         tableView.reloadData()
     }
     

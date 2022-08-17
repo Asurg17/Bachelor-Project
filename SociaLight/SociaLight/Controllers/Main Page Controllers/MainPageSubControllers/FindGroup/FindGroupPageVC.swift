@@ -19,6 +19,8 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
     private let service = Service()
     private let keychain = KeychainSwift()
     
+    private var isServiceCalled = false
+    
     lazy var flowLayout: UICollectionViewFlowLayout = {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .vertical
@@ -33,10 +35,15 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
         super.viewDidLoad()
         
         setupViews()
-        configureCollectionView()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        groupIdentifierTextField.becomeFirstResponder()
     }
     
     func setupViews() {
+        configureCollectionView()
         groupIdentifierTextField.delegate = self
     }
     
@@ -103,33 +110,18 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
     }
     
     func cellDidClick(_ group: GroupCell) {
-        if let userId = keychain.get(Constants.userIdKey) {
-            loader.startAnimating()
-            service.addUserToGroup(userId: userId, groupId: group.model.groupId) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.loader.stopAnimating()
-                    switch result {
-                    case .success(_):
-                        self.navigateToGroupPage(
-                            group: Group(
-                                groupId: group.model.groupId,
-                                groupImage: (group.groupImage.image ?? UIImage(named: "Groupicon"))!,
-                                membersCurrentNumber: (Int(group.model.groupMembersNum) ?? 0) + 1,
-                                membersMaxNumber: Int(group.model.groupCapacity) ?? 0,
-                                groupName: group.model.groupTitle,
-                                groupDescription: group.model.groupDescription,
-                                isPrivate: false
-                            )
-                        )
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
-                }
-            }
-        } else {
-            showWarningAlert(warningText: Constants.fatalError)
-        }
+        self.navigateToGroupPage(
+            group: Group(
+                groupId: group.model.groupId,
+                groupImage: (group.groupImage.image ?? UIImage(named: "Groupicon"))!,
+                membersCurrentNumber: (Int(group.model.groupMembersNum) ?? 0) + 1,
+                membersMaxNumber: Int(group.model.groupCapacity) ?? 0,
+                groupName: group.model.groupTitle,
+                groupDescription: group.model.groupDescription,
+                isPrivate: false
+            ),
+            isUserGroupMember: false
+        )
     }
     
     func showWarningMessage() {
@@ -154,6 +146,7 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
 
 extension FindGroupPageVC: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        isServiceCalled = true
         searchNewGroups()
         textField.resignFirstResponder()
         return true
@@ -163,7 +156,7 @@ extension FindGroupPageVC: UITextFieldDelegate {
 extension FindGroupPageVC: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if (collectionData.count == 0) { showWarningMessage() } else { hideWarningMessage() }
+        if (collectionData.count == 0 && isServiceCalled) { showWarningMessage() } else { hideWarningMessage() }
         return collectionData.count
     }
     
