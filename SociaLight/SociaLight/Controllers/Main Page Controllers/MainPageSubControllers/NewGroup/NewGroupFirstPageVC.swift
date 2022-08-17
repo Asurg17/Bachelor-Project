@@ -56,7 +56,7 @@ class NewGroupFirstPageVC: UIViewController {
     
     func areViewsValid() -> Bool {
         if let name = groupName.text {
-            if name == "" {
+            if name.replacingOccurrences(of: " ", with: "").isEmpty {
                 showWarningAlert(warningText: Constants.groupNameWarningText)
                 return false
             }
@@ -86,7 +86,7 @@ class NewGroupFirstPageVC: UIViewController {
                 handler: { _ in
                     self.pickerValue = Constants.pickerData[self.pickerView.selectedRow(inComponent: 0)]
                     self.membersCount.setTitle(
-                        "Members Count (" + String(self.pickerValue ?? 0) + ")",
+                        "Members Count (" + String(self.pickerValue) + ")",
                         for: .normal
                     )
                 }

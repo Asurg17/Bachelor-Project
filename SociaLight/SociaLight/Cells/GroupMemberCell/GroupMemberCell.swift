@@ -92,7 +92,7 @@ class GroupMemberCell: UITableViewCell {
     @IBAction func handleCellClick() {
         if model.isFriendRequestAlreadySent == "N" {
             model.isFriendRequestAlreadySent = "Y"
-            actionButton.setImage(UIImage(systemName: "paperplane"), for: .normal)
+            actionButton.setImage(UIImage(systemName: "paperplane.fill"), for: .normal)
             model.delegate?.cellDidClick(self)
         }
     }

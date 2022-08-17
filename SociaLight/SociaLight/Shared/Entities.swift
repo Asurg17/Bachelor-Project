@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import MessageKit
 
 struct ServiceResponse {
     let response: String
@@ -117,5 +118,20 @@ struct Notification: Codable {
     let groupDescription: String
     let groupCapacity: String
     let membersCount: String
+}
+
+// Messages
+
+struct Message: MessageType {
+    var sender: SenderType
+    var messageId: String
+    var sentDate: Date
+    var kind: MessageKind
+}
+
+struct Sender: SenderType {
+    var imageURL: String
+    var senderId: String
+    var displayName: String
 }
 

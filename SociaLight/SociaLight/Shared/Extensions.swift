@@ -6,8 +6,17 @@
 //
 
 import UIKit
+import MessageKit
 
 extension UIViewController {
+    
+    public static let dateFormatter: DateFormatter = {
+        let formattre = DateFormatter()
+        formattre.dateStyle = .medium
+        formattre.timeStyle = .long
+        formattre.locale = .current
+        return formattre
+    }()
     
     // ------------Shared Functions-----------
     
@@ -69,7 +78,7 @@ extension UIViewController {
     
     func checkGroup(group: Group?) {
         guard let _ = group else {
-            showWarningAlert(warningText: Constants.unspecifiedErrorText)
+            fatalError(Constants.unspecifiedErrorText)
             return //maybe only back button has to be active (need to add global error views)
         }
     }
@@ -320,5 +329,32 @@ extension NSMutableData {
     func appendString(string: String) {
         let data = string.data(using: String.Encoding.utf8, allowLossyConversion: true)
         append(data!)
+    }
+}
+
+extension MessageKind {
+    var description: String {
+        switch self {
+        case .text(_):
+            return "text"
+        case .attributedText(_):
+            return "attributedText"
+        case .photo(_):
+            return "photo"
+        case .video(_):
+            return "video"
+        case .location(_):
+            return "location"
+        case .emoji(_):
+            return "emoji"
+        case .audio(_):
+            return "audio"
+        case .contact(_):
+            return "contact"
+        case .linkPreview(_):
+            return "linkPreview"
+        case .custom(_):
+            return "custom"
+        }
     }
 }

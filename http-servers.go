@@ -119,9 +119,18 @@ type InvitationAcceptResponse struct {
 	RequestUniqueKey string
 }
 
-type invitationRejectResponse struct {
+type InvitationRejectResponse struct {
 	UserId           string
 	RequestUniqueKey string
+}
+
+type Message struct {
+	MessageId string
+	Type      string
+	SenderId  string
+	GroupId   string
+	Content   string
+	SendDate  string
 }
 
 //  ################################################################################################################
@@ -1492,7 +1501,7 @@ func rejectInvitation(w http.ResponseWriter, req *http.Request) {
 
 	defer db.Close()
 
-	var invitationResponse invitationRejectResponse
+	var invitationResponse InvitationRejectResponse
 
 	err = json.NewDecoder(req.Body).Decode(&invitationResponse)
 	if err != nil {
@@ -1514,6 +1523,43 @@ func rejectInvitation(w http.ResponseWriter, req *http.Request) {
 
 	_, e := db.Exec(updateQuery, invitationResponse.RequestUniqueKey, invitationResponse.UserId)
 	if e != nil {
+		w.Header().Set("Error", "Can't save Changes!")
+		w.WriteHeader(500)
+		return
+	}
+}
+
+func sendMessage(w http.ResponseWriter, req *http.Request) {
+
+	db, err := openConnection()
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	defer db.Close()
+
+	var message Message
+
+	err = json.NewDecoder(req.Body).Decode(&message)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	if message.SenderId == "" || !isUserValid(message.SenderId, db) {
+		w.Header().Set("Error", "Can't send message. User not Valid!")
+		w.WriteHeader(400)
+		return
+	}
+
+	query := `insert into messages(message_id, type, sender_id, group_id, content, send_date)
+				values ($1, $2, $3, $4, $5, $6);`
+
+	_, err = db.Exec(query, message.MessageId, message.Type, message.SenderId, message.GroupId, message.Content, message.SendDate)
+	if err != nil {
 		w.Header().Set("Error", "Can't save Changes!")
 		w.WriteHeader(500)
 		return
@@ -1587,6 +1633,8 @@ func setupRoutes() {
 	http.HandleFunc("/rejectFriendshipRequest", rejectFriendshipRequest)
 	http.HandleFunc("/acceptInvitation", acceptInvitation)
 	http.HandleFunc("/rejectInvitation", rejectInvitation)
+
+	http.HandleFunc("/sendMessage", sendMessage)
 
 	http.ListenAndServe(":9000", nil)
 }

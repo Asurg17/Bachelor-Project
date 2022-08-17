@@ -224,17 +224,15 @@ class NewGroupSecondPageVC: UIViewController {
     func addGroupMembers(groupId: String) {
         if let userId = keychain.get(Constants.userIdKey) {
             let members = getMembers()
-            if members.count > 0 {
-                service.addGroupMembers(userId: userId, groupId: groupId, addSelfToGroup: "Y", members: members) { [weak self] result in
-                    guard let self = self else { return }
-                    DispatchQueue.main.async {
-                        self.loader.stopAnimating()
-                        switch result {
-                        case .success(_):
-                            self.navigateToGroupPage(group: self.group!, isUserGroupMember: true)
-                        case .failure(let error):
-                            self.showWarningAlert(warningText: error.localizedDescription.description)
-                        }
+            service.addGroupMembers(userId: userId, groupId: groupId, addSelfToGroup: "Y", members: members) { [weak self] result in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.loader.stopAnimating()
+                    switch result {
+                    case .success(_):
+                        self.navigateToGroupPage(group: self.group!, isUserGroupMember: true)
+                    case .failure(let error):
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
                 }
             }

@@ -1244,4 +1244,50 @@ class Service {
         }
     }
     
+    
+    // Messages
+    
+    func sendMessage(message: [String:String],  completion: @escaping (Result<String, Error>) -> ()) {
+        
+        components.path = "/sendMessage"
+        
+        if let url = components.url {
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: message, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            completion(.success(""))
+                        } else {
+                            completion(.failure(NSError(domain: "",
+                                                        code: 400,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                       )))
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    }
+    
 }

@@ -9,19 +9,7 @@ import UIKit
 import KeychainSwift
 import SDWebImage
 import MessageKit
-
-struct Message: MessageType {
-    var sender: SenderType
-    var messageId: String
-    var sentDate: Date
-    var kind: MessageKind
-}
-
-struct Sender: SenderType {
-    var imageURL: String
-    var senderId: String
-    var displayName: String
-}
+import InputBarAccessoryView
 
 class GroupPageVC: MessagesViewController {
     
@@ -31,7 +19,18 @@ class GroupPageVC: MessagesViewController {
     private let keychain = KeychainSwift()
     
     private var messages = [Message]()
-    private let selfSender = Sender(imageURL: "", senderId: "1", displayName: "Alex")
+    
+    private var selfSender: Sender? {
+        guard let userId = keychain.get(Constants.userIdKey) else {
+            return nil
+        }
+
+        return Sender(
+            imageURL: (Constants.getImageURLPrefix + Constants.userImagePrefix + userId).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "",
+            senderId: userId,
+            displayName: "My name"
+        )
+    }
     
     var group: Group?
     
@@ -44,166 +43,10 @@ class GroupPageVC: MessagesViewController {
         
         messages.append(
             Message(
-                sender: selfSender,
+                sender: selfSender!,
                 messageId: "1",
                 sentDate: Date(),
                 kind: .text("Hello, this is my first message here.")
-            )
-        )
-        
-        messages.append(
-            Message(
-                sender: selfSender,
-                messageId: "1",
-                sentDate: Date(),
-                kind: .text("Hello, this is my first message here. Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla!")
-            )
-        )
-        
-        messages.append(
-            Message(
-                sender: selfSender,
-                messageId: "1",
-                sentDate: Date(),
-                kind: .text("Hello, this is my first message here. Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla!")
-            )
-        )
-        messages.append(
-            Message(
-                sender: selfSender,
-                messageId: "1",
-                sentDate: Date(),
-                kind: .text("Hello, this is my first message here. Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla!")
-            )
-        )
-        
-        messages.append(
-            Message(
-                sender: selfSender,
-                messageId: "1",
-                sentDate: Date(),
-                kind: .text("Hello, this is my first message here. Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla!")
-            )
-        )
-        
-        messages.append(
-            Message(
-                sender: selfSender,
-                messageId: "1",
-                sentDate: Date(),
-                kind: .text("Hello, this is my first message here. Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla!")
-            )
-        )
-        
-        messages.append(
-            Message(
-                sender: selfSender,
-                messageId: "1",
-                sentDate: Date(),
-                kind: .text("Hello, this is my first message here. Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla!")
-            )
-        )
-        
-        messages.append(
-            Message(
-                sender: selfSender,
-                messageId: "1",
-                sentDate: Date(),
-                kind: .text("Hello, this is my first message here. Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla!")
-            )
-        )
-        messages.append(
-            Message(
-                sender: selfSender,
-                messageId: "1",
-                sentDate: Date(),
-                kind: .text("Hello, this is my first message here. Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla!")
-            )
-        )
-        
-        messages.append(
-            Message(
-                sender: selfSender,
-                messageId: "1",
-                sentDate: Date(),
-                kind: .text("Hello, this is my first message here. Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla!")
-            )
-        )
-        messages.append(
-            Message(
-                sender: selfSender,
-                messageId: "1",
-                sentDate: Date(),
-                kind: .text("Hello, this is my first message here. Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla!")
-            )
-        )
-        
-        messages.append(
-            Message(
-                sender: selfSender,
-                messageId: "1",
-                sentDate: Date(),
-                kind: .text("Hello, this is my first message here. Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla!")
-            )
-        )
-        messages.append(
-            Message(
-                sender: selfSender,
-                messageId: "1",
-                sentDate: Date(),
-                kind: .text("Hello, this is my first message here. Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla!")
-            )
-        )
-        
-        messages.append(
-            Message(
-                sender: selfSender,
-                messageId: "1",
-                sentDate: Date(),
-                kind: .text("Hello, this is my first message here. Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla!")
-            )
-        )
-        
-        messages.append(
-            Message(
-                sender: selfSender,
-                messageId: "1",
-                sentDate: Date(),
-                kind: .text("Hello, this is my first message here. Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla!")
-            )
-        )
-        messages.append(
-            Message(
-                sender: selfSender,
-                messageId: "1",
-                sentDate: Date(),
-                kind: .text("Hello, this is my first message here. Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla!")
-            )
-        )
-        
-        messages.append(
-            Message(
-                sender: selfSender,
-                messageId: "1",
-                sentDate: Date(),
-                kind: .text("Hello, this is my first message here. Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla!")
-            )
-        )
-        
-        messages.append(
-            Message(
-                sender: selfSender,
-                messageId: "1",
-                sentDate: Date(),
-                kind: .text("Hello, this is my first message here. Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla!")
-            )
-        )
-        messages.append(
-            Message(
-                sender: selfSender,
-                messageId: "1",
-                sentDate: Date(),
-                kind: .text("Hello, this is my first message here. Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla Bla bla bla!")
             )
         )
     }
@@ -214,6 +57,11 @@ class GroupPageVC: MessagesViewController {
         setupBottomViews()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        messageInputBar.inputTextView.becomeFirstResponder()
+    }
+    
     func setupViews() {
         setupMessagesCollectionView()
     }
@@ -222,6 +70,7 @@ class GroupPageVC: MessagesViewController {
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
+        messageInputBar.delegate = self
     }
     
     func setupBottomViews() {
@@ -302,10 +151,98 @@ extension GroupPageVC: UpdateGroup {
     
 }
 
+extension GroupPageVC: InputBarAccessoryViewDelegate {
+    
+    func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
+        guard !text.replacingOccurrences(of: " ", with: "").isEmpty,
+        let sender  = self.selfSender,
+        let messageId = createMessageId() else {
+             return
+        }
+        
+        let collectionMessage = Message(
+            sender: sender,
+            messageId: messageId,
+            sentDate: Date(),
+            kind: .text(text)
+        )
+        
+        sendMessage(collectionMessage: collectionMessage)
+    }
+    
+    private func sendMessage(collectionMessage: Message) {
+        let message = [
+            "messageId": collectionMessage.messageId,
+            "type": collectionMessage.kind.description,
+            "senderId": collectionMessage.sender.senderId,
+            "groupId": group!.groupId,
+            "content": getMessageContent(message: collectionMessage),
+            "sendDate": GroupPageVC.dateFormatter.string(from: collectionMessage.sentDate)
+        ]
+        
+        service.sendMessage(message: message) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    self.messages.append(collectionMessage)
+                    self.messagesCollectionView.reloadData()
+                case .failure(let error):
+                    self.showWarningAlert(warningText: "Message send failed! Error: " + error.localizedDescription.description)
+                }
+            }
+        }
+    }
+    
+    private func getMessageContent(message: Message) -> String {
+        var content = ""
+        switch message.kind {
+        case .text(let messageText):
+            content =  messageText
+        case .attributedText(_):
+            break
+        case .photo(_):
+            break
+        case .video(_):
+            break
+        case .location(_):
+            break
+        case .emoji(_):
+            break
+        case .audio(_):
+            break
+        case .contact(_):
+            break
+        case .linkPreview(_):
+            break
+        case .custom(_):
+            break
+        }
+        
+        return content
+    }
+    
+    private func createMessageId() -> String? {
+        guard let userId = keychain.get(Constants.userIdKey) else {
+            return nil
+        }
+
+        let dateString = GroupPageVC.dateFormatter.string(from: Date())
+        let newIdentifier = "\(group!.groupId)_\(userId)_\(dateString)"
+
+        return newIdentifier
+    }
+    
+}
+
 extension GroupPageVC: MessagesDataSource, MessagesLayoutDelegate, MessagesDisplayDelegate {
     
     func currentSender() -> SenderType {
-        return selfSender
+        if let sender = selfSender {
+            return sender
+        }
+        
+        fatalError("User can't be validated!")
     }
     
     func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
