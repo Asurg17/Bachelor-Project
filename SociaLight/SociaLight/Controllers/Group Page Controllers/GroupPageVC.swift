@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import KeychainSwift
 import SDWebImage
 import MessageKit
 import InputBarAccessoryView
@@ -17,7 +16,6 @@ class GroupPageVC: MessagesViewController {
     private var bottomView: UIView?
     
     private let service = Service()
-    private let keychain = KeychainSwift()
     
     private var messages = [Message]()
     
@@ -31,9 +29,7 @@ class GroupPageVC: MessagesViewController {
     
     
     private var selfSender: Sender? {
-        guard let userId = keychain.get(Constants.userIdKey) else {
-            return nil
-        }
+        let userId = getUserId()
 
         return Sender(
             imageURL: (Constants.getImageURLPrefix + Constants.userImagePrefix + userId).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "",
@@ -252,25 +248,21 @@ class GroupPageVC: MessagesViewController {
     }
     
     func getAllGroupMessages() {
-        if let userId = keychain.get(Constants.userIdKey) {
-            let parameters = [
-                "groupId": group!.groupId,
-                "userId": userId
-            ]
-            
-            service.getAllGroupMessages(parameters: parameters) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let response):
-                        self.handleSuccess(response: response)
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
+        let parameters = [
+            "groupId": group!.groupId,
+            "userId": getUserId()
+        ]
+        
+        service.getAllGroupMessages(parameters: parameters) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.handleSuccess(response: response)
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
-        } else {
-            fatalError(Constants.fatalError)
         }
     }
     
@@ -322,33 +314,28 @@ class GroupPageVC: MessagesViewController {
     
     @objc func listenForNewMessages() {
         if didFinishLoadingMessages {
-            if let userId = keychain.get(Constants.userIdKey) {
+            var lastMessageSentDateTimestamp = "0"
                 
-                var lastMessageSentDateTimestamp = "0"
-                
-                if !messages.isEmpty {
-                    lastMessageSentDateTimestamp = messages[messages.count-1].sentDateTimestamp
-                }
-                
-                let parameters = [
-                    "groupId": group!.groupId,
-                    "userId": userId,
-                    "lastMessageSentDateTimestamp": lastMessageSentDateTimestamp
-                ]
-                
-                service.getNewMessages(parameters: parameters) { [weak self] result in
-                    guard let self = self else { return }
-                    DispatchQueue.main.async {
-                        switch result {
-                        case .success(let response):
-                            self.addNewMessagesToCollectionView(response: response)
-                        case .failure(let error):
-                            self.showWarningAlert(warningText: error.localizedDescription.description)
-                        }
+            if !messages.isEmpty {
+                lastMessageSentDateTimestamp = messages[messages.count-1].sentDateTimestamp
+            }
+            
+            let parameters = [
+                "groupId": group!.groupId,
+                "userId": getUserId(),
+                "lastMessageSentDateTimestamp": lastMessageSentDateTimestamp
+            ]
+            
+            service.getNewMessages(parameters: parameters) { [weak self] result in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let response):
+                        self.addNewMessagesToCollectionView(response: response)
+                    case .failure(let error):
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
                 }
-            } else {
-                fatalError(Constants.fatalError)
             }
         }
     }
@@ -421,21 +408,19 @@ class GroupPageVC: MessagesViewController {
     
     
     @objc func joinGroup() {
-        if let userId = keychain.get(Constants.userIdKey) {
-            service.addUserToGroup(userId: userId, groupId: group!.groupId) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(_):
-                        UserDefaults.standard.set(true, forKey: "isUserGroupMember")
-                        self.setupBottomViews()
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
+        let userId = getUserId()
+        
+        service.addUserToGroup(userId: userId, groupId: group!.groupId) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    UserDefaults.standard.set(true, forKey: "isUserGroupMember")
+                    self.setupBottomViews()
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
-        } else {
-            fatalError(Constants.fatalError)
         }
     }
     
@@ -486,21 +471,19 @@ extension GroupPageVC: UIImagePickerControllerDelegate, UINavigationControllerDe
     }
     
     private func uploadImage(image: UIImage, messageId: String, sender: Sender) {
-        if let _ = keychain.get(Constants.userIdKey) {
-            let imageKey = "in_group_image_" + messageId.replacingOccurrences(of: " ", with: "-")
-            service.uploadImage(imageKey: imageKey, image: image) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(_):
-                        self.sendImageMessage(messageId: messageId, sender: sender, imageKey: imageKey)
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
+        let _ = getUserId()
+        
+        let imageKey = "in_group_image_" + messageId.replacingOccurrences(of: " ", with: "-")
+        service.uploadImage(imageKey: imageKey, image: image) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    self.sendImageMessage(messageId: messageId, sender: sender, imageKey: imageKey)
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
-        } else {
-            fatalError(Constants.fatalError)
         }
     }
     
@@ -601,9 +584,7 @@ extension GroupPageVC: InputBarAccessoryViewDelegate {
     }
     
     private func createMessageId() -> String? {
-        guard let userId = keychain.get(Constants.userIdKey) else {
-            return nil
-        }
+        let userId = getUserId()
 
         let dateString = GroupPageVC.dateFormatter.string(from: Date())
         let newIdentifier = "\(group!.groupId)_\(userId)_\(dateString)"

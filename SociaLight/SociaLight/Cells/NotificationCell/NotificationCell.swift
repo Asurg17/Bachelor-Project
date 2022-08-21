@@ -43,7 +43,6 @@ class NotificationCellModel {
 
 class NotificationCell: UITableViewCell {
     
-    @IBOutlet private var imageOuterView: UIView!
     @IBOutlet private var notificationImageView: UIImageView!
     @IBOutlet private var notificationHeaderLabel: UILabel!
     @IBOutlet private var notificationDescriptionLabel: UILabel!
@@ -80,7 +79,7 @@ class NotificationCell: UITableViewCell {
             completed: { (image, error, cacheType, imageURL) in
                 if image == nil {
                     if model.isFriendshipRequest {
-                        self.notificationImageView.image = UIImage(named: "user")
+                        self.notificationImageView.image = UIImage(named: "empty_avatar_image")
                     } else {
                         self.notificationImageView.image = UIImage(named: "GroupIcon")
                     }
@@ -99,10 +98,6 @@ class NotificationCell: UITableViewCell {
                 view.removeFromSuperview()
             }
         }
-        
-        imageOuterView.layer.borderWidth = 1.25
-        imageOuterView.layer.borderColor = UIColor.random().cgColor
-        imageOuterView.layer.cornerRadius = imageOuterView.frame.size.width / 2
     }
     
     @IBAction func navigateToGroupPage() {

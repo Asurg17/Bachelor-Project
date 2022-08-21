@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import KeychainSwift
 import SDWebImage
 
 class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
@@ -25,7 +24,6 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     @IBOutlet var loader: UIActivityIndicatorView!
     
     private let service = Service()
-    private let keychain = KeychainSwift()
     
     let imagePicker = UIImagePickerController()
     var group: Group?
@@ -115,93 +113,66 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     }
     
     func leaveGroup() {
-        if let userId = keychain.get(Constants.userIdKey) {
-            loader.startAnimating()
-            service.leaveGroup(userId: userId, groupId: group!.groupId) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.loader.stopAnimating()
-                    switch result {
-                    case .success(_):
-                        self.navigationController?.popToRootViewController(animated: true)
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
+        let userId = getUserId()
+        
+        loader.startAnimating()
+        service.leaveGroup(userId: userId, groupId: group!.groupId) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.loader.stopAnimating()
+                switch result {
+                case .success(_):
+                    self.navigationController?.popToRootViewController(animated: true)
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
-        } else {
-            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     
-//    func joinGroup() {
-//        if let userId = keychain.get(Constants.userIdKey) {
-//            loader.startAnimating()
-//            service.addUserToGroup(userId: userId, groupId: group!.groupId) { [weak self] result in
-//                guard let self = self else { return }
-//                DispatchQueue.main.async {
-//                    self.loader.stopAnimating()
-//                    switch result {
-//                    case .success(_):
-//                        UserDefaults.standard.set(true, forKey: "isUserGroupMember")
-//                        self.setupActionViews()
-//                    case .failure(let error):
-//                        self.showWarningAlert(warningText: error.localizedDescription.description)
-//                    }
-//                }
-//            }
-//        } else {
-//            showWarningAlert(warningText: Constants.fatalError)
-//        }
-//    }
-    
     func uploadGroupImage() {
-        if let _ = keychain.get(Constants.userIdKey) {
+        let _ = getUserId()
+            
+        loader.startAnimating()
+        service.uploadImage(imageKey: Constants.groupImagePrefix + group!.groupId, image: groupImageView.image!) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.loader.stopAnimating()
+                switch result {
+                case .success(_):
+                    self.groupHasUpdated = true
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
+                }
+            }
+        }
+    }
+    
+    func updateGroup() {
+        if hasLabelsChaned() {
+            let userId = getUserId()
+                
             loader.startAnimating()
-            service.uploadImage(imageKey: Constants.groupImagePrefix + group!.groupId, image: groupImageView.image!) { [weak self] result in
+            service.saveGroupUpdates(
+                userId: userId,
+                groupId: group!.groupId,
+                groupName: groupName!,
+                groupDescription: groupDescription!
+            ) { [weak self] result in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     self.loader.stopAnimating()
                     switch result {
                     case .success(_):
                         self.groupHasUpdated = true
+                        self.group!.groupName = self.groupName!
+                        self.groupNameLabel.text = self.groupName
+                        self.group!.groupDescription = self.groupDescription!
+                        self.groupDescriptionLabel.text = self.groupDescription
                     case .failure(let error):
                         self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
                 }
-            }
-        } else {
-            showWarningAlert(warningText: Constants.fatalError)
-        }
-    }
-    
-    func updateGroup() {
-        if hasLabelsChaned() {
-            if let userId = keychain.get(Constants.userIdKey) {
-                loader.startAnimating()
-                service.saveGroupUpdates(
-                    userId: userId,
-                    groupId: group!.groupId,
-                    groupName: groupName!,
-                    groupDescription: groupDescription!
-                ) { [weak self] result in
-                    guard let self = self else { return }
-                    DispatchQueue.main.async {
-                        self.loader.stopAnimating()
-                        switch result {
-                        case .success(_):
-                            self.groupHasUpdated = true
-                            self.group!.groupName = self.groupName!
-                            self.groupNameLabel.text = self.groupName
-                            self.group!.groupDescription = self.groupDescription!
-                            self.groupDescriptionLabel.text = self.groupDescription
-                        case .failure(let error):
-                            self.showWarningAlert(warningText: error.localizedDescription.description)
-                        }
-                    }
-                }
-            } else {
-                showWarningAlert(warningText: Constants.fatalError)
             }
         }
     }

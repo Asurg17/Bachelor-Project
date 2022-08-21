@@ -33,7 +33,6 @@ class GroupMemberCellModel {
 
 class GroupMemberCell: UITableViewCell {
     
-    @IBOutlet private var imageOuterView: UIView!
     @IBOutlet private var memberImageView: UIImageView!
     @IBOutlet private var memberName: UILabel!
     @IBOutlet private var memberPhone: UILabel!
@@ -53,7 +52,7 @@ class GroupMemberCell: UITableViewCell {
             with: URL(string: model.memberImageURL.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!),
             completed: { (image, error, cacheType, imageURL) in
                 if image == nil {
-                    self.memberImageView.image = UIImage(named: "user")
+                    self.memberImageView.image = UIImage(named: "empty_avatar_image")
                 }
             }
         )
@@ -71,10 +70,6 @@ class GroupMemberCell: UITableViewCell {
                 view.removeFromSuperview()
             }
         }
-        
-        imageOuterView.layer.borderWidth = 1.25
-        imageOuterView.layer.borderColor = UIColor.random().cgColor
-        imageOuterView.layer.cornerRadius = imageOuterView.frame.size.width / 2
     }
     
     func setIcon() {
@@ -89,12 +84,16 @@ class GroupMemberCell: UITableViewCell {
         }
     }
     
-    @IBAction func handleCellClick() {
+    @IBAction func handleActionButtonClick() {
         if model.isFriendRequestAlreadySent == "N" {
             model.isFriendRequestAlreadySent = "Y"
             actionButton.setImage(UIImage(systemName: "paperplane.fill"), for: .normal)
-            model.delegate?.cellDidClick(self)
+            model.delegate?.sendFriendshipRequest(self)
         }
+    }
+    
+    @IBAction func handleUserClick() {
+        model.delegate?.userIsClicked(self)
     }
     
 }

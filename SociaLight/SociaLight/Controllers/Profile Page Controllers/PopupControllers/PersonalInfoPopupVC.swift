@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import KeychainSwift
 
 class PersonalInfoPopupVC: UIViewController {
     
@@ -57,29 +56,26 @@ class PersonalInfoPopupVC: UIViewController {
     
     func saveChanges() {
         if checkForChanges() {
-            let keychain = KeychainSwift()
-            if let userId = keychain.get(Constants.userIdKey) {
-                loader.startAnimating()
-                service.changePersonalInfo(
-                    userId: userId,
-                    age: getUserAge(),
-                    phoneNumber: phoneTextField.text ?? "",
-                    birthDate: birthDateTextField.text ?? ""
-                ) { [weak self] result in
-                    guard let self = self else { return }
-                    DispatchQueue.main.async {
-                        self.loader.stopAnimating()
-                        switch result {
-                        case .success(_):
-                            self.delegate?.refresh()
-                            self.dismissPopup()
-                        case .failure(let error):
-                            self.showWarningAlert(warningText: error.localizedDescription.description)
-                        }
+            let userId = getUserId()
+                
+            loader.startAnimating()
+            service.changePersonalInfo(
+                userId: userId,
+                age: getUserAge(),
+                phoneNumber: phoneTextField.text ?? "",
+                birthDate: birthDateTextField.text ?? ""
+            ) { [weak self] result in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.loader.stopAnimating()
+                    switch result {
+                    case .success(_):
+                        self.delegate?.refresh()
+                        self.dismissPopup()
+                    case .failure(let error):
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
                 }
-            } else {
-                showWarningAlert(warningText: Constants.fatalError)
             }
         } else {
             showWarningAlert(warningText: Constants.noChangesdWarningText)

@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import KeychainSwift
 
 class NewGroupSecondPageVC: UIViewController {
     
@@ -19,7 +18,6 @@ class NewGroupSecondPageVC: UIViewController {
     @IBOutlet var loader: UIActivityIndicatorView!
     
     private let service = Service()
-    private let keychain = KeychainSwift()
     
     private let refreshControl = UIRefreshControl()
     
@@ -97,22 +95,20 @@ class NewGroupSecondPageVC: UIViewController {
     }
     
     func getFiends() {
-        if let userId = keychain.get(Constants.userIdKey) {
-            loader.startAnimating()
-            service.getUserFriends(userId: userId) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.loader.stopAnimating()
-                    switch result {
-                    case .success(let response):
-                        self.handleSuccess(response: response)
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
+        let userId = getUserId()
+        
+        loader.startAnimating()
+        service.getUserFriends(userId: userId) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.loader.stopAnimating()
+                switch result {
+                case .success(let response):
+                    self.handleSuccess(response: response)
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
-        } else {
-            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     
@@ -127,6 +123,7 @@ class NewGroupSecondPageVC: UIViewController {
                     friendImageURL: Constants.getImageURLPrefix + Constants.userImagePrefix + friend.friendId,
                     friendPhone: friend.friendPhone,
                     isSelected: false,
+                    isFriendsPage: false,
                     delegate: self
                 )
             )
@@ -171,73 +168,67 @@ class NewGroupSecondPageVC: UIViewController {
     }
     
     func createNewGroup() {
-        if let userId = keychain.get(Constants.userIdKey) {
-            loader.startAnimating()
-            service.createGroup(
-                requestParams:
-                    CreateGroupRequest(groupName: group?.groupName ?? "",
-                                       groupDescription: group?.groupDescription ?? "",
-                                       membersCount: String(group?.membersMaxNumber ?? 0),
-                                       isPrivate: group?.isPrivate.description ?? "none",
-                                       userId: userId)
-            ) { [weak self] result in
-                        guard let self = self else { return }
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let response):
-                        self.group?.groupId = response.groupId
-                        self.group?.membersCurrentNumber += self.collectionData.count
-                        self.uploadGroupImage(groupId: response.groupId)
-                    case .failure(let error):
-                        self.loader.stopAnimating()
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
+        let userId = getUserId()
+        
+        loader.startAnimating()
+        service.createGroup(
+            requestParams:
+                CreateGroupRequest(groupName: group?.groupName ?? "",
+                                   groupDescription: group?.groupDescription ?? "",
+                                   membersCount: String(group?.membersMaxNumber ?? 0),
+                                   isPrivate: group?.isPrivate.description ?? "none",
+                                   userId: userId)
+        ) { [weak self] result in
+                    guard let self = self else { return }
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.group?.groupId = response.groupId
+                    self.group?.membersCurrentNumber += self.collectionData.count
+                    self.uploadGroupImage(groupId: response.groupId)
+                case .failure(let error):
+                    self.loader.stopAnimating()
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
-        } else {
-            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     
     func uploadGroupImage(groupId: String) {
-        if let _ = keychain.get(Constants.userIdKey) {
-            service.uploadImage(
-                imageKey: Constants.groupImagePrefix + groupId,
-                image: (group?.groupImage ?? UIImage(named: "Groupicon"))!
-            ) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(_):
-                        self.addGroupMembers(groupId: groupId)
-                    case .failure(let error):
-                        self.loader.stopAnimating()
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
+        let _ = getUserId()
+       
+        service.uploadImage(
+            imageKey: Constants.groupImagePrefix + groupId,
+            image: (group?.groupImage ?? UIImage(named: "Groupicon"))!
+        ) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    self.addGroupMembers(groupId: groupId)
+                case .failure(let error):
+                    self.loader.stopAnimating()
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
-        } else {
-            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     
     func addGroupMembers(groupId: String) {
-        if let userId = keychain.get(Constants.userIdKey) {
-            let members = getMembers()
-            service.addGroupMembers(userId: userId, groupId: groupId, addSelfToGroup: "Y", members: members) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.loader.stopAnimating()
-                    switch result {
-                    case .success(_):
-                        self.navigateToGroupPage(group: self.group!, isUserGroupMember: true)
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
+        let userId = getUserId()
+        
+        let members = getMembers()
+        service.addGroupMembers(userId: userId, groupId: groupId, addSelfToGroup: "Y", members: members) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.loader.stopAnimating()
+                switch result {
+                case .success(_):
+                    self.navigateToGroupPage(group: self.group!, isUserGroupMember: true)
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
-        } else {
-            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     

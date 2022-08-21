@@ -69,22 +69,20 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
     func searchNewGroups() {
         if let groupIdentifier = groupIdentifierTextField.text {
             if groupIdentifier != "" {
-                if let userId = keychain.get(Constants.userIdKey) {
-                    loader.startAnimating()
-                    service.searchNewGroups(userId: userId, groupIdentifier: groupIdentifier) { [weak self] result in
-                        guard let self = self else { return }
-                        DispatchQueue.main.async {
-                            self.loader.stopAnimating()
-                            switch result {
-                            case .success(let response):
-                                self.handleSuccess(response: response)
-                            case .failure(let error):
-                                self.showWarningAlert(warningText: error.localizedDescription.description)
-                            }
+                let userId = getUserId()
+                    
+                loader.startAnimating()
+                service.searchNewGroups(userId: userId, groupIdentifier: groupIdentifier) { [weak self] result in
+                    guard let self = self else { return }
+                    DispatchQueue.main.async {
+                        self.loader.stopAnimating()
+                        switch result {
+                        case .success(let response):
+                            self.handleSuccess(response: response)
+                        case .failure(let error):
+                            self.showWarningAlert(warningText: error.localizedDescription.description)
                         }
                     }
-                } else {
-                    showWarningAlert(warningText: Constants.fatalError)
                 }
             }
         }

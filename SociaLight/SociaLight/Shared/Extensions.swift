@@ -7,6 +7,7 @@
 
 import UIKit
 import MessageKit
+import KeychainSwift
 
 extension UIViewController {
     
@@ -19,6 +20,15 @@ extension UIViewController {
     }()
     
     // ------------Shared Functions-----------
+    
+    func getUserId() -> String {
+        let keychain = KeychainSwift()
+        if let userId = keychain.get(Constants.userIdKey) {
+            return userId
+        } else {
+            fatalError(Constants.fatalError)
+        }
+    }
     
     func showWarningAlert(warningText: String?) {
         let alert = UIAlertController(
@@ -155,6 +165,13 @@ extension UIViewController {
         let imagePageController = storyBoard.instantiateViewController(withIdentifier: "ImagePageVC") as! ImagePageVC
         imagePageController.url = url
         self.navigationController?.pushViewController(imagePageController, animated: true)
+    }
+    
+    func navigateToGroupMemberProfilePage(memberId: String) {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let groupMemberProfilePageController = storyBoard.instantiateViewController(withIdentifier: "GroupMemberProfilePageVC") as! GroupMemberProfilePageVC
+        groupMemberProfilePageController.currUserId = memberId
+        self.navigationController?.pushViewController(groupMemberProfilePageController, animated: true)
     }
     
     // ----------------Constants--------------

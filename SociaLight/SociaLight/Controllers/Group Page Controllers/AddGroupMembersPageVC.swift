@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import KeychainSwift
 import SDWebImage
 
 class AddGroupMembersPageVC: UIViewController {
@@ -20,7 +19,6 @@ class AddGroupMembersPageVC: UIViewController {
     @IBOutlet var loader: UIActivityIndicatorView!
     
     private let service = Service()
-    private let keychain = KeychainSwift()
     
     private let refreshControl = UIRefreshControl()
     
@@ -99,22 +97,20 @@ class AddGroupMembersPageVC: UIViewController {
     }
     
     func getFiends() {
-        if let userId = keychain.get(Constants.userIdKey) {
-            loader.startAnimating()
-            service.getUserFriends(userId: userId, groupId: group!.groupId) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.loader.stopAnimating()
-                    switch result {
-                    case .success(let response):
-                        self.handleSuccess(response: response)
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
+        let userId = getUserId()
+            
+        loader.startAnimating()
+        service.getUserFriends(userId: userId, groupId: group!.groupId) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.loader.stopAnimating()
+                switch result {
+                case .success(let response):
+                    self.handleSuccess(response: response)
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
-        } else {
-            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     
@@ -129,6 +125,7 @@ class AddGroupMembersPageVC: UIViewController {
                     friendImageURL: Constants.getImageURLPrefix + Constants.userImagePrefix + friend.friendId,
                     friendPhone: friend.friendPhone,
                     isSelected: false,
+                    isFriendsPage: false,
                     delegate: self
                 )
             )
@@ -173,24 +170,22 @@ class AddGroupMembersPageVC: UIViewController {
     }
     
     func addGroupMembers() {
-        if let userId = keychain.get(Constants.userIdKey) {
-            let members = getMembers()
-            if members.count > 0 {
-                service.addGroupMembers(userId: userId, groupId: group!.groupId, addSelfToGroup: "N", members: members) { [weak self] result in
-                    guard let self = self else { return }
-                    DispatchQueue.main.async {
-                        self.loader.stopAnimating()
-                        switch result {
-                        case .success(_):
-                            self.back()
-                        case .failure(let error):
-                            self.showWarningAlert(warningText: error.localizedDescription.description)
-                        }
+        let userId = getUserId()
+        
+        let members = getMembers()
+        if members.count > 0 {
+            service.addGroupMembers(userId: userId, groupId: group!.groupId, addSelfToGroup: "N", members: members) { [weak self] result in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.loader.stopAnimating()
+                    switch result {
+                    case .success(_):
+                        self.back()
+                    case .failure(let error):
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
                 }
             }
-        } else {
-            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     

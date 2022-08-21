@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import KeychainSwift
 
 class NotificationsSection {
     
@@ -33,7 +32,6 @@ class NotificationPageVC: UIViewController {
     @IBOutlet var warningText: UILabel!
     
     private let service = Service()
-    private let keychain = KeychainSwift()
     
     private var tableData = [NotificationsSection]()
 
@@ -87,22 +85,21 @@ class NotificationPageVC: UIViewController {
     
     func getNotifications() {
         clearTable()
-        if let userId = keychain.get(Constants.userIdKey) {
-            loader.startAnimating()
-            service.getUserNotifications(userId: userId) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.loader.stopAnimating()
-                    switch result {
-                    case .success(let response):
-                        self.handleSuccess(response: response)
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
+        
+        let userId = getUserId()
+        
+        loader.startAnimating()
+        service.getUserNotifications(userId: userId) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.loader.stopAnimating()
+                switch result {
+                case .success(let response):
+                    self.handleSuccess(response: response)
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
-        } else {
-            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     
@@ -208,87 +205,78 @@ class NotificationPageVC: UIViewController {
 extension NotificationPageVC: NotificationCellDelegate {
 
     func friendshipAccepted(_ notification: NotificationCell) {
-        if let userId = keychain.get(Constants.userIdKey) {
-            loader.startAnimating()
-            service.acceptFriendshipRequest(userId: userId, fromUserId: notification.model.fromUserId, requestUniqueKey: notification.model.requestUniqueKey) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.loader.stopAnimating()
-                    switch result {
-                    case .success(_):
-                        self.removeFromTable(elem: notification.model)
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
+        let userId = getUserId()
+            
+        loader.startAnimating()
+        service.acceptFriendshipRequest(userId: userId, fromUserId: notification.model.fromUserId, requestUniqueKey: notification.model.requestUniqueKey) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.loader.stopAnimating()
+                switch result {
+                case .success(_):
+                    self.removeFromTable(elem: notification.model)
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
-        } else {
-            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     
     func friendshipRejected(_ notification: NotificationCell) {
-        if let userId = keychain.get(Constants.userIdKey) {
-            loader.startAnimating()
-            service.rejectFriendshipRequest(userId: userId, requestUniqueKey: notification.model.requestUniqueKey) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.loader.stopAnimating()
-                    switch result {
-                    case .success(_):
-                        self.removeFromTable(elem: notification.model)
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
+        let userId = getUserId()
+        
+        loader.startAnimating()
+        service.rejectFriendshipRequest(userId: userId, requestUniqueKey: notification.model.requestUniqueKey) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.loader.stopAnimating()
+                switch result {
+                case .success(_):
+                    self.removeFromTable(elem: notification.model)
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
-        } else {
-            showWarningAlert(warningText: Constants.fatalError)
         }
     }
         
     func acceptInvitation(_ notification: NotificationCell) {
-        if let userId = keychain.get(Constants.userIdKey) {
-            loader.startAnimating()
-            service.addUserToGroup(userId: userId, groupId: notification.model.groupId) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.loader.stopAnimating()
-                    switch result {
-                    case .success(_):
-                        self.removeFromTable(elem: notification.model)
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
+        let userId = getUserId()
+        
+        loader.startAnimating()
+        service.addUserToGroup(userId: userId, groupId: notification.model.groupId) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.loader.stopAnimating()
+                switch result {
+                case .success(_):
+                    self.removeFromTable(elem: notification.model)
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
-        } else {
-            showWarningAlert(warningText: Constants.fatalError)
         }
     }
 
     func rejectInvitation(_ notification: NotificationCell) {
-        if let userId = keychain.get(Constants.userIdKey) {
-            loader.startAnimating()
-            service.rejectInvitation(userId: userId, requestUniqueKey: notification.model.requestUniqueKey) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.loader.stopAnimating()
-                    switch result {
-                    case .success(_):
-                        self.removeFromTable(elem: notification.model)
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
+        let userId = getUserId()
+        
+        loader.startAnimating()
+        service.rejectInvitation(userId: userId, requestUniqueKey: notification.model.requestUniqueKey) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.loader.stopAnimating()
+                switch result {
+                case .success(_):
+                    self.removeFromTable(elem: notification.model)
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
-        } else {
-            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     
     func navigateToGroupPage(_ notification: NotificationCell) {
-        print(notification.model.image)
         navigateToGroupPage(
             group: Group(
                 groupId: notification.model.groupId,

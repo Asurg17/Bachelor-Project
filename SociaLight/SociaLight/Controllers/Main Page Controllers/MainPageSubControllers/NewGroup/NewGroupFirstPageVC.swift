@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import KeychainSwift
 
 class NewGroupFirstPageVC: UIViewController {
     

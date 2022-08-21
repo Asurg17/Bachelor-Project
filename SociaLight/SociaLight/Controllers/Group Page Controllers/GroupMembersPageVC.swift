@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import KeychainSwift
 import SDWebImage
 
 class GroupMembersPageVC: UIViewController {
@@ -17,7 +16,6 @@ class GroupMembersPageVC: UIViewController {
     @IBOutlet var addNewMemberBarButton: UIBarButtonItem!
     
     private let service = Service()
-    private let keychain = KeychainSwift()
     
     private var members = [GroupMemberCellModel]()
     private var tableData = [GroupMemberCellModel]()
@@ -81,22 +79,20 @@ class GroupMembersPageVC: UIViewController {
     }
     
     func getGroupMembers() {
-        if let userId = keychain.get(Constants.userIdKey) {
-            loader.startAnimating()
-            service.getGroupMembers(userId: userId, groupId: group!.groupId) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.loader.stopAnimating()
-                    switch result {
-                    case .success(let response):
-                        self.handleSuccess(response: response)
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
+        let userId = getUserId()
+        
+        loader.startAnimating()
+        service.getGroupMembers(userId: userId, groupId: group!.groupId) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.loader.stopAnimating()
+                switch result {
+                case .success(let response):
+                    self.handleSuccess(response: response)
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
-        } else {
-            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     
@@ -167,23 +163,27 @@ class GroupMembersPageVC: UIViewController {
 }
 
 extension GroupMembersPageVC: GroupMemberCellDelegate {
-    
-    func cellDidClick(_ member: GroupMemberCell) {
-        if let userId = keychain.get(Constants.userIdKey) {
-            service.sendFriendshipRequest(fromUserId: userId, toUserId: member.model.memberId) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.loader.stopAnimating()
-                    switch result {
-                    case .success(_):
-                        ()
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
+ 
+    func sendFriendshipRequest(_ member: GroupMemberCell) {
+        let userId = getUserId()
+        
+        service.sendFriendshipRequest(fromUserId: userId, toUserId: member.model.memberId) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.loader.stopAnimating()
+                switch result {
+                case .success(_):
+                    ()
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
-        } else {
-            showWarningAlert(warningText: Constants.fatalError)
+        }
+    }
+    
+    func userIsClicked(_ member: GroupMemberCell) {
+        if member.model.memberId != getUserId() {
+            navigateToGroupMemberProfilePage(memberId: member.model.memberId)
         }
     }
     

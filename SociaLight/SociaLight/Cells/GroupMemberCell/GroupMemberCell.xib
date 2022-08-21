@@ -16,10 +16,10 @@
                 <rect key="frame" x="0.0" y="0.0" width="592" height="121"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uT0-b9-gMu">
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uT0-b9-gMu" customClass="ImageOuterView" customModule="SociaLight" customModuleProvider="target">
                         <rect key="frame" x="32" y="12" width="97" height="97"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user" translatesAutoresizingMaskIntoConstraints="NO" id="k6h-hI-1Fy" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="empty_avatar_image" translatesAutoresizingMaskIntoConstraints="NO" id="k6h-hI-1Fy" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
                                 <rect key="frame" x="7.5" y="7.5" width="82" height="82"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -50,6 +50,15 @@
                             </label>
                         </subviews>
                     </stackView>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eKm-71-oRD">
+                        <rect key="frame" x="32" y="12" width="451.5" height="97"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <state key="normal" title="Button"/>
+                        <buttonConfiguration key="configuration" style="plain"/>
+                        <connections>
+                            <action selector="handleUserClick" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Tph-YS-KM1"/>
+                        </connections>
+                    </button>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tBA-eF-JVC">
                         <rect key="frame" x="499.5" y="30.5" width="60.5" height="60.5"/>
                         <constraints>
@@ -59,28 +68,31 @@
                         <state key="normal" title="Button"/>
                         <buttonConfiguration key="configuration" style="plain" image="person.badge.plus" catalog="system"/>
                         <connections>
-                            <action selector="handleCellClick" destination="KGk-i7-Jjw" eventType="touchUpInside" id="t7M-hr-vgs"/>
+                            <action selector="handleActionButtonClick" destination="KGk-i7-Jjw" eventType="touchUpInside" id="fVs-Hj-t27"/>
                         </connections>
                     </button>
                 </subviews>
                 <constraints>
                     <constraint firstItem="tBA-eF-JVC" firstAttribute="leading" secondItem="mcc-7w-QIQ" secondAttribute="trailing" constant="16" id="30C-Pc-lWz"/>
                     <constraint firstItem="uT0-b9-gMu" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="7Cf-sp-S4g"/>
+                    <constraint firstItem="eKm-71-oRD" firstAttribute="height" secondItem="H2p-sc-9uM" secondAttribute="height" multiplier="0.8" id="BTq-GG-CGk"/>
                     <constraint firstItem="tBA-eF-JVC" firstAttribute="height" secondItem="H2p-sc-9uM" secondAttribute="height" multiplier="0.5" id="GDP-q8-2o3"/>
                     <constraint firstItem="uT0-b9-gMu" firstAttribute="height" secondItem="H2p-sc-9uM" secondAttribute="height" multiplier="0.8" id="L2N-ix-GtR"/>
+                    <constraint firstItem="eKm-71-oRD" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="32" id="Lyx-fw-0up"/>
                     <constraint firstAttribute="trailing" secondItem="tBA-eF-JVC" secondAttribute="trailing" constant="32" id="ND4-wy-W0R"/>
                     <constraint firstItem="uT0-b9-gMu" firstAttribute="width" secondItem="uT0-b9-gMu" secondAttribute="height" multiplier="1:1" id="Slp-tt-hQ2"/>
                     <constraint firstItem="tBA-eF-JVC" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="Tmz-zC-uzr"/>
                     <constraint firstItem="mcc-7w-QIQ" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="YLS-Ab-WAC"/>
                     <constraint firstItem="uT0-b9-gMu" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="32" id="ezc-q2-cNm"/>
+                    <constraint firstItem="eKm-71-oRD" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="juV-mO-0bk"/>
                     <constraint firstItem="mcc-7w-QIQ" firstAttribute="height" secondItem="H2p-sc-9uM" secondAttribute="height" multiplier="0.6" id="uUL-uV-cRq"/>
+                    <constraint firstItem="tBA-eF-JVC" firstAttribute="leading" secondItem="eKm-71-oRD" secondAttribute="trailing" constant="16" id="xE5-8M-AQO"/>
                     <constraint firstItem="mcc-7w-QIQ" firstAttribute="leading" secondItem="uT0-b9-gMu" secondAttribute="trailing" constant="16" id="zcY-kn-ij7"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="actionButton" destination="tBA-eF-JVC" id="HGN-Uz-PZh"/>
-                <outlet property="imageOuterView" destination="uT0-b9-gMu" id="608-Lz-A0i"/>
                 <outlet property="memberImageView" destination="k6h-hI-1Fy" id="nDM-SA-asD"/>
                 <outlet property="memberName" destination="Ahs-pp-E3u" id="YYW-DQ-cdE"/>
                 <outlet property="memberPhone" destination="hAM-EU-u71" id="6LH-nn-tYt"/>
@@ -90,11 +102,11 @@
     </objects>
     <designables>
         <designable name="k6h-hI-1Fy">
-            <size key="intrinsicContentSize" width="512" height="512"/>
+            <size key="intrinsicContentSize" width="612" height="489"/>
         </designable>
     </designables>
     <resources>
+        <image name="empty_avatar_image" width="612" height="489"/>
         <image name="person.badge.plus" catalog="system" width="128" height="124"/>
-        <image name="user" width="512" height="512"/>
     </resources>
 </document>

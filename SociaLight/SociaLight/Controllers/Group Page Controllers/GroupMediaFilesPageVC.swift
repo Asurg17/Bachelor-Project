@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import KeychainSwift
 import SDWebImage
 
 class GroupMediaFilesPageVC: UIViewController {

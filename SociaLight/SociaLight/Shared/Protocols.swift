@@ -34,7 +34,8 @@ protocol GroupCellDelegate: AnyObject {
 }
 
 protocol GroupMemberCellDelegate: AnyObject {
-    func cellDidClick(_ member: GroupMemberCell)
+    func sendFriendshipRequest(_ member: GroupMemberCell)
+    func userIsClicked(_ member: GroupMemberCell)
 }
 
 protocol GroupInfoActionViewDelegate: AnyObject {

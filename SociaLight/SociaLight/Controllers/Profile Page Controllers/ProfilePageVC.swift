@@ -22,7 +22,6 @@ class ProfilePageVC: UIViewController, DismissProtocol {
     @IBOutlet var loader: UIActivityIndicatorView!
     
     private let service = Service()
-    private let keychain = KeychainSwift()
     
     private let imagePicker = UIImagePickerController()
     
@@ -59,47 +58,39 @@ class ProfilePageVC: UIViewController, DismissProtocol {
     }
     
     func loadUserInfo() {
-        if let userId = keychain.get(Constants.userIdKey) {
-            loader.startAnimating()
-            service.getUserInfo(userId: userId) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.loader.stopAnimating()
-                    switch result {
-                    case .success(let response):
-                        self.handleSuccess(response: response, userId: userId)
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
+        let userId = getUserId()
+        
+        loader.startAnimating()
+        service.getUserInfo(userId: userId) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.loader.stopAnimating()
+                switch result {
+                case .success(let response):
+                    self.reloadView(userInfo: response, userId: userId)
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
-        } else {
-            showWarningAlert(warningText: Constants.fatalError)
         }
     }
 
     func uploadUserImage(userImage: UIImage) {
-        if let userId = keychain.get(Constants.userIdKey) {
-            loader.startAnimating()
-            service.uploadImage(imageKey: Constants.userImagePrefix + userId, image: userImage) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.loader.stopAnimating()
-                    switch result {
-                    case .success(_):
-                        ()
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
+        let userId = getUserId()
+        
+        loader.startAnimating()
+        service.uploadImage(imageKey: Constants.userImagePrefix + userId, image: userImage) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.loader.stopAnimating()
+                switch result {
+                case .success(_):
+                    ()
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
-        } else {
-            showWarningAlert(warningText: Constants.fatalError)
         }
-    }
-    
-    func handleSuccess(response: UserInfoResponse, userId: String) {
-        reloadView(userInfo: response, userId: userId)
     }
     
     func reloadView(userInfo: UserInfoResponse, userId: String){
@@ -135,6 +126,7 @@ class ProfilePageVC: UIViewController, DismissProtocol {
     
     
     @IBAction func signOut() {
+        let keychain = KeychainSwift()
         keychain.delete(Constants.userIdKey)
         self.parent?.navigationController?.popToRootViewController(animated: true)
     }

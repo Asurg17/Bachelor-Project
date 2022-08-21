@@ -17,10 +17,10 @@
                 <rect key="frame" x="0.0" y="0.0" width="592" height="121"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NrQ-rP-b5f">
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NrQ-rP-b5f" customClass="ImageOuterView" customModule="SociaLight" customModuleProvider="target">
                         <rect key="frame" x="32" y="12" width="97" height="97"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user" translatesAutoresizingMaskIntoConstraints="NO" id="POM-NU-0Cv" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="empty_avatar_image" translatesAutoresizingMaskIntoConstraints="NO" id="POM-NU-0Cv" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
                                 <rect key="frame" x="7.5" y="7.5" width="82" height="82"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -114,23 +114,23 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="button" destination="ILZ-lJ-q8O" id="8Ey-VU-fCt"/>
                 <outlet property="checkboxInnerView" destination="Fsb-f6-INH" id="R4v-ua-bga"/>
                 <outlet property="checkboxOuterView" destination="yjj-2m-N04" id="M2y-Qf-JeE"/>
                 <outlet property="friendImageView" destination="POM-NU-0Cv" id="ghc-uk-woF"/>
                 <outlet property="friendName" destination="Ur1-9H-3MO" id="Nok-Bl-2mC"/>
                 <outlet property="friendPhone" destination="1yI-jq-fHL" id="GIs-PU-mPm"/>
-                <outlet property="imageOuterView" destination="NrQ-rP-b5f" id="5Bp-YC-2wm"/>
             </connections>
             <point key="canvasLocation" x="334.78260869565219" y="145.64732142857142"/>
         </tableViewCell>
     </objects>
     <designables>
         <designable name="POM-NU-0Cv">
-            <size key="intrinsicContentSize" width="512" height="512"/>
+            <size key="intrinsicContentSize" width="612" height="489"/>
         </designable>
     </designables>
     <resources>
         <image name="checkmark" catalog="system" width="128" height="114"/>
-        <image name="user" width="512" height="512"/>
+        <image name="empty_avatar_image" width="612" height="489"/>
     </resources>
 </document>

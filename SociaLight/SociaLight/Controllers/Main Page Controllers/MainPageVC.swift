@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import KeychainSwift
 
 class MainPageVC: UIViewController, GroupCellDelegate {
 
@@ -73,24 +72,20 @@ class MainPageVC: UIViewController, GroupCellDelegate {
     }
     
     func getUserGroups() {
-        let keychain = KeychainSwift()
-        if let userId = keychain.get(Constants.userIdKey) {
-            loader.startAnimating()
-            service.getUserGroups(userId: userId) { [weak self] result in
-                guard let self = self else { return }
-                DispatchQueue.main.async { }
-                DispatchQueue.main.async {
-                    self.loader.stopAnimating()
-                    switch result {
-                    case .success(let response):
-                        self.handleSuccess(response: response)
-                    case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
-                    }
+        let userId = getUserId()
+       
+        loader.startAnimating()
+        service.getUserGroups(userId: userId) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.loader.stopAnimating()
+                switch result {
+                case .success(let response):
+                    self.handleSuccess(response: response)
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
-        } else {
-            showWarningAlert(warningText: Constants.fatalError)
         }
     }
     

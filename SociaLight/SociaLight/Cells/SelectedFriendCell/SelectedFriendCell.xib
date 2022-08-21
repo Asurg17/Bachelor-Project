@@ -22,7 +22,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zwr-7Z-8su">
                                 <rect key="frame" x="11.5" y="8" width="52.5" height="52.5"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user" translatesAutoresizingMaskIntoConstraints="NO" id="KHb-sd-9fu" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="empty_avatar_image" translatesAutoresizingMaskIntoConstraints="NO" id="KHb-sd-9fu" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
                                         <rect key="frame" x="3" y="3.5" width="46" height="45.5"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
@@ -76,10 +76,10 @@
     </objects>
     <designables>
         <designable name="KHb-sd-9fu">
-            <size key="intrinsicContentSize" width="512" height="512"/>
+            <size key="intrinsicContentSize" width="612" height="489"/>
         </designable>
     </designables>
     <resources>
-        <image name="user" width="512" height="512"/>
+        <image name="empty_avatar_image" width="612" height="489"/>
     </resources>
 </document>

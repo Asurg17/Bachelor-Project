@@ -17,10 +17,10 @@
                 <rect key="frame" x="0.0" y="0.0" width="509" height="120"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KFY-3C-9hJ">
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KFY-3C-9hJ" customClass="ImageOuterView" customModule="SociaLight" customModuleProvider="target">
                         <rect key="frame" x="32" y="24" width="72" height="72"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user" translatesAutoresizingMaskIntoConstraints="NO" id="KvW-w5-UF0" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="clean-mirror" translatesAutoresizingMaskIntoConstraints="NO" id="KvW-w5-UF0" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
                                 <rect key="frame" x="5.5" y="5.5" width="61" height="61"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -30,7 +30,7 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M0w-Hg-cG6">
                                 <rect key="frame" x="0.0" y="0.0" width="72" height="72"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain"/>
+                                <buttonConfiguration key="configuration" style="plain" title=""/>
                                 <connections>
                                     <action selector="navigateToGroupPage" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Kjn-cx-3OB"/>
                                 </connections>
@@ -108,7 +108,6 @@
             <connections>
                 <outlet property="acceptButton" destination="oVF-xv-SGM" id="jcb-gE-9xA"/>
                 <outlet property="friendshipButtonsStackView" destination="kw5-5y-7Q8" id="66h-52-w14"/>
-                <outlet property="imageOuterView" destination="KFY-3C-9hJ" id="vaL-3H-SW3"/>
                 <outlet property="navigationButton" destination="M0w-Hg-cG6" id="7IO-J3-mPr"/>
                 <outlet property="notificationDescriptionLabel" destination="pS7-jo-CPX" id="KtK-f0-8vi"/>
                 <outlet property="notificationHeaderLabel" destination="Zcr-Nf-KL4" id="vWG-Ud-Pif"/>
@@ -123,14 +122,14 @@
             <size key="intrinsicContentSize" width="52" height="33"/>
         </designable>
         <designable name="KvW-w5-UF0">
-            <size key="intrinsicContentSize" width="512" height="512"/>
+            <size key="intrinsicContentSize" width="600" height="500"/>
         </designable>
         <designable name="oVF-xv-SGM">
             <size key="intrinsicContentSize" width="58" height="33"/>
         </designable>
     </designables>
     <resources>
-        <image name="user" width="512" height="512"/>
+        <image name="clean-mirror" width="600" height="500"/>
         <systemColor name="systemGray4Color">
             <color red="0.81960784313725488" green="0.81960784313725488" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

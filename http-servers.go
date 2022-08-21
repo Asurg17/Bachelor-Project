@@ -136,6 +136,11 @@ type Message struct {
 	SendDateTimestamp string
 }
 
+type Friendship struct {
+	UserId   string
+	FriendId string
+}
+
 //  ################################################################################################################
 
 func openConnection() (db *sql.DB, err error) {
@@ -1560,6 +1565,44 @@ func rejectInvitation(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func unfriend(w http.ResponseWriter, req *http.Request) {
+
+	db, err := openConnection()
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	defer db.Close()
+
+	var friendship Friendship
+
+	err = json.NewDecoder(req.Body).Decode(&friendship)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	if friendship.UserId == "" || friendship.FriendId == "" || !isUserValid(friendship.UserId, db) || !isUserValid(friendship.FriendId, db) {
+		w.Header().Set("Error", "Can't send message. User not Valid!")
+		w.WriteHeader(400)
+		return
+	}
+
+	query := `delete from friends
+			where user_id = $1
+			and friend_id = $2;`
+
+	_, err = db.Exec(query, friendship.UserId, friendship.FriendId)
+	if err != nil {
+		w.Header().Set("Error", "Can't save Changes!")
+		w.WriteHeader(500)
+		return
+	}
+}
+
 func sendMessage(w http.ResponseWriter, req *http.Request) {
 
 	db, err := openConnection()
@@ -1841,6 +1884,8 @@ func setupRoutes() {
 	http.HandleFunc("/rejectFriendshipRequest", rejectFriendshipRequest)
 	http.HandleFunc("/acceptInvitation", acceptInvitation)
 	http.HandleFunc("/rejectInvitation", rejectInvitation)
+
+	http.HandleFunc("/unfriend", unfriend)
 
 	// Messages
 	http.HandleFunc("/sendMessage", sendMessage)
