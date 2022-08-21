@@ -7,5 +7,6 @@ pod 'KeychainSwift'
 
 pod 'MessageKit'
 pod 'JGProgressHUD'
+pod 'IQKeyboardManagerSwift'
 
 end

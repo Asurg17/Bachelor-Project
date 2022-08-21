@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import MessageKit
+import CoreLocation
 
 struct ServiceResponse {
     let response: String
@@ -122,11 +123,26 @@ struct Notification: Codable {
 
 // Messages
 
+struct GroupMessages: Codable {
+    let messages: [GroupMessage]
+}
+
+struct GroupMessage: Codable {
+    let senderId: String
+    let senderName: String
+    let messageId: String
+    let sentDate: String
+    let messageType: String
+    let content: String
+    let sendDateTimestamp: String
+}
+
 struct Message: MessageType {
     var sender: SenderType
     var messageId: String
     var sentDate: Date
     var kind: MessageKind
+    var sentDateTimestamp: String
 }
 
 struct Sender: SenderType {
@@ -135,3 +151,20 @@ struct Sender: SenderType {
     var displayName: String
 }
 
+struct Media: MediaItem {
+    var url: URL?
+    var image: UIImage?
+    var placeholderImage: UIImage
+    var size: CGSize
+}
+
+struct Audio: AudioItem {
+    var url: URL
+    var duration: Float
+    var size: CGSize
+}
+
+struct Location: LocationItem {
+    var location: CLLocation
+    var size: CGSize
+}

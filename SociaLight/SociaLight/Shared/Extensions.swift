@@ -12,7 +12,7 @@ extension UIViewController {
     
     public static let dateFormatter: DateFormatter = {
         let formattre = DateFormatter()
-        formattre.dateStyle = .medium
+        formattre.dateStyle = .short
         formattre.timeStyle = .long
         formattre.locale = .current
         return formattre
@@ -79,7 +79,6 @@ extension UIViewController {
     func checkGroup(group: Group?) {
         guard let _ = group else {
             fatalError(Constants.unspecifiedErrorText)
-            return //maybe only back button has to be active (need to add global error views)
         }
     }
     
@@ -149,6 +148,13 @@ extension UIViewController {
         let addGroupMembersPageController = storyBoard.instantiateViewController(withIdentifier: "AddGroupMembersPageVC") as! AddGroupMembersPageVC
         addGroupMembersPageController.group = group
         self.navigationController?.pushViewController(addGroupMembersPageController, animated: true)
+    }
+    
+    func navigateToImagePage(url: URL) {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "ImagePageStoryboard", bundle: nil)
+        let imagePageController = storyBoard.instantiateViewController(withIdentifier: "ImagePageVC") as! ImagePageVC
+        imagePageController.url = url
+        self.navigationController?.pushViewController(imagePageController, animated: true)
     }
     
     // ----------------Constants--------------

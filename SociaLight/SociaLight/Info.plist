@@ -21,6 +21,10 @@
 			</array>
 		</dict>
 	</dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Please allow access to microfon to record audio</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Please allow access to camera to take photo</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Please allow access to photos to select Profile and Group images</string>
 </dict>

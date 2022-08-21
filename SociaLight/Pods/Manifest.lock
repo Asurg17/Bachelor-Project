@@ -2,6 +2,7 @@ PODS:
   - InputBarAccessoryView (5.5.0):
     - InputBarAccessoryView/Core (= 5.5.0)
   - InputBarAccessoryView/Core (5.5.0)
+  - IQKeyboardManagerSwift (6.5.10)
   - JGProgressHUD (2.2)
   - KeychainSwift (20.0.0)
   - MessageKit (3.8.0):
@@ -11,6 +12,7 @@ PODS:
   - SDWebImage/Core (5.12.3)
 
 DEPENDENCIES:
+  - IQKeyboardManagerSwift
   - JGProgressHUD
   - KeychainSwift
   - MessageKit
@@ -19,6 +21,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - InputBarAccessoryView
+    - IQKeyboardManagerSwift
     - JGProgressHUD
     - KeychainSwift
     - MessageKit
@@ -26,11 +29,12 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   InputBarAccessoryView: 1d7b0a672b36e370f01f264b3907ef39d03328e3
+  IQKeyboardManagerSwift: 52962c76ab33532f15ad9f3ff4e5715eda5335bb
   JGProgressHUD: d83d7a981b85d11205e19ff8ad5bb9c40571c847
   KeychainSwift: 0ce6a4d13f7228054d1a71bb1b500448fb2ab837
   MessageKit: a1ba0c69ebead94029867853eb44dd05b9b3f453
   SDWebImage: 53179a2dba77246efa8a9b85f5c5b21f8f43e38f
 
-PODFILE CHECKSUM: bc598865913c595af9d58ea1813a33338b2a69d5
+PODFILE CHECKSUM: b51ee9d6634f4ec2f2fb729f576bc304229e1c43
 
 COCOAPODS: 1.11.2

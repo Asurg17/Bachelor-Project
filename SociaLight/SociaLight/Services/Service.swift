@@ -15,7 +15,7 @@ class Service {
     
     init() {
         components.scheme = "http"
-        components.host = "localhost"
+        components.host = "192.168.0.100"
         components.port = 9000
     }
     
@@ -1243,9 +1243,9 @@ class Service {
             completion(.failure(ServiceError.invalidParameters))
         }
     }
+   
     
-    
-    // Messages
+// Messages
     
     func sendMessage(message: [String:String],  completion: @escaping (Result<String, Error>) -> ()) {
         
@@ -1271,6 +1271,112 @@ class Service {
                     if let httpUrlResponse = response as? HTTPURLResponse {
                         if httpUrlResponse.statusCode == 200 {
                             completion(.success(""))
+                        } else {
+                            completion(.failure(NSError(domain: "",
+                                                        code: 400,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                       )))
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    }
+    
+    func getAllGroupMessages(parameters: [String:String],  completion: @escaping (Result<GroupMessages, Error>) -> ()) {
+        
+        components.path = "/getAllGroupMessages"
+        
+        if let url = components.url {
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            if let data = data {
+                                let decoder = JSONDecoder()
+                                do {
+                                    let resp = try decoder.decode(GroupMessages.self, from: data)
+                                    completion(.success(resp))
+                                } catch {
+                                    completion(.failure(error))
+                                }
+                            } else {
+                                completion(.failure(ServiceError.noData))
+                            }
+                        } else {
+                            completion(.failure(NSError(domain: "",
+                                                        code: 400,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                       )))
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    }
+    
+    func getNewMessages(parameters: [String:String],  completion: @escaping (Result<GroupMessages, Error>) -> ()) {
+        
+        components.path = "/getNewMessages"
+        
+        if let url = components.url {
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            if let data = data {
+                                let decoder = JSONDecoder()
+                                do {
+                                    let resp = try decoder.decode(GroupMessages.self, from: data)
+                                    completion(.success(resp))
+                                } catch {
+                                    completion(.failure(error))
+                                }
+                            } else {
+                                completion(.failure(ServiceError.noData))
+                            }
                         } else {
                             completion(.failure(NSError(domain: "",
                                                         code: 400,

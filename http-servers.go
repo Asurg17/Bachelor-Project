@@ -1,18 +1,14 @@
 package main
 
 import (
-	"bytes"
 	"crypto/sha256"
 	"database/sql"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"image"
-	"image/png"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gorilla/websocket"
 	_ "github.com/lib/pq"
@@ -52,6 +48,12 @@ type UserIdentifier struct {
 type GroupIdentifier struct {
 	UserId  string
 	GroupId string
+}
+
+type GroupIdentifielWithMessage struct {
+	UserId                       string
+	GroupId                      string
+	LastMessageSentDateTimestamp string
 }
 
 type SearchGroupIdentifier struct {
@@ -125,12 +127,13 @@ type InvitationRejectResponse struct {
 }
 
 type Message struct {
-	MessageId string
-	Type      string
-	SenderId  string
-	GroupId   string
-	Content   string
-	SendDate  string
+	MessageId         string
+	Type              string
+	SenderId          string
+	GroupId           string
+	Content           string
+	SendDate          string
+	SendDateTimestamp string
 }
 
 //  ################################################################################################################
@@ -939,34 +942,46 @@ func uploadImage(w http.ResponseWriter, req *http.Request) {
 
 	defer db.Close()
 
-	imageFolderPath := "./images"
 	imageKey := req.URL.Query().Get("imageKey")
+	imgBytes, _ := ioutil.ReadAll(req.Body)
 
-	if _, err := os.Stat(imageFolderPath); os.IsNotExist(err) {
-		err := os.Mkdir(imageFolderPath, os.ModePerm)
-		if err != nil {
+	var isAlreadyExists bool
+
+	getQuery := `select true
+				from media_files
+				where file_key = $1;`
+
+	if err := db.QueryRow(getQuery, imageKey).Scan(&isAlreadyExists); err != nil {
+		if err == sql.ErrNoRows {
+			isAlreadyExists = false
+		} else {
 			w.Header().Set("Error", err.Error())
 			w.WriteHeader(500)
 			return
 		}
 	}
 
-	imgBytes, _ := ioutil.ReadAll(req.Body)
-	img, _, _ := image.Decode(bytes.NewReader(imgBytes))
-	out, err := os.Create(imageFolderPath + "/" + imageKey + ".png")
+	if isAlreadyExists {
+		updateQuery := `update media_files
+						set file = $1
+						where file_key = $2;`
 
-	if err != nil {
-		w.Header().Set("Error", err.Error())
-		w.WriteHeader(500)
-		return
-	}
+		_, e := db.Exec(updateQuery, imgBytes, imageKey)
+		if e != nil {
+			w.Header().Set("Error", "Can't save Changes!")
+			w.WriteHeader(500)
+			return
+		}
+	} else {
+		insertQuery := `insert into media_files(file_key, file)
+						values($1, $2);`
 
-	err = png.Encode(out, img)
-
-	if err != nil {
-		w.Header().Set("Error", err.Error())
-		w.WriteHeader(500)
-		return
+		_, e := db.Exec(insertQuery, imageKey, imgBytes)
+		if e != nil {
+			w.Header().Set("Error", "Can't save Changes!")
+			w.WriteHeader(500)
+			return
+		}
 	}
 }
 
@@ -981,10 +996,26 @@ func getImage(w http.ResponseWriter, req *http.Request) {
 
 	defer db.Close()
 
-	imageFolderPath := "./images"
 	imageKey := req.URL.Query().Get("imageKey")
-	dat, _ := os.ReadFile(imageFolderPath + "/" + imageKey + ".png")
-	w.Write(dat)
+
+	var imageBytes []byte
+
+	query := `select file
+	        from media_files f
+			where f.file_key = $1;`
+
+	if err := db.QueryRow(query, imageKey).Scan(&imageBytes); err != nil {
+		if err == sql.ErrNoRows {
+			w.Header().Set("Error", "No user were found!")
+			w.WriteHeader(400)
+			return
+		}
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	w.Write(imageBytes)
 }
 
 func createGroup(w http.ResponseWriter, req *http.Request) {
@@ -1555,15 +1586,192 @@ func sendMessage(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	query := `insert into messages(message_id, type, sender_id, group_id, content, send_date)
-				values ($1, $2, $3, $4, $5, $6);`
+	query := `insert into messages(message_id, type, sender_id, group_id, content, send_date, send_date_timestamp)
+				values ($1, $2, $3, $4, $5, $6, $7);`
 
-	_, err = db.Exec(query, message.MessageId, message.Type, message.SenderId, message.GroupId, message.Content, message.SendDate)
+	_, err = db.Exec(query, message.MessageId, message.Type, message.SenderId, message.GroupId, message.Content, message.SendDate, message.SendDateTimestamp)
 	if err != nil {
 		w.Header().Set("Error", "Can't save Changes!")
 		w.WriteHeader(500)
 		return
 	}
+}
+
+func getAllGroupMessages(w http.ResponseWriter, req *http.Request) {
+
+	db, err := openConnection()
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	defer db.Close()
+
+	var groupIdentifier GroupIdentifier
+
+	err = json.NewDecoder(req.Body).Decode(&groupIdentifier)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	if groupIdentifier.UserId == "" || !isUserValid(groupIdentifier.UserId, db) {
+		w.Header().Set("Error", "Can't get group messages!")
+		w.WriteHeader(400)
+		return
+	}
+
+	getQuery := `select m.sender_id,
+						(select s.first_name
+						from users s
+						where s.user_id = m.sender_id) name,
+						m.message_id,
+						m.send_date,
+						m.type,
+						m.content,
+						m.send_date_timestamp
+					from messages m
+					where m.group_id = $1
+					order by m.send_date_timestamp;`
+
+	rows, err := db.Query(getQuery, groupIdentifier.GroupId)
+	if err != nil && err != sql.ErrNoRows {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+	defer rows.Close()
+
+	messages := make([]map[string]string, 0)
+
+	for rows.Next() {
+		var senderId string
+		var senderName string
+		var messageId string
+		var sentDate string
+		var messageType string
+		var content string
+		var sendDateTimestamp string
+		err = rows.Scan(&senderId, &senderName, &messageId, &sentDate, &messageType, &content, &sendDateTimestamp)
+		if err != nil {
+			w.Header().Set("Error", err.Error())
+			w.WriteHeader(500)
+			return
+		}
+		message := make(map[string]string)
+		message["senderId"] = senderId
+		message["senderName"] = senderName
+		message["messageId"] = messageId
+		message["sentDate"] = sentDate
+		message["messageType"] = messageType
+		message["content"] = content
+		message["sendDateTimestamp"] = sendDateTimestamp
+
+		messages = append(messages, message)
+	}
+
+	response := make(map[string][]map[string]string)
+	response["messages"] = messages
+
+	w.Header().Set("Content-Type", "application/json")
+	jsonResp, err := json.Marshal(response)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+	w.Write(jsonResp)
+}
+
+func getNewMessages(w http.ResponseWriter, req *http.Request) {
+
+	db, err := openConnection()
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	defer db.Close()
+
+	var groupIdentifielWithMessage GroupIdentifielWithMessage
+
+	err = json.NewDecoder(req.Body).Decode(&groupIdentifielWithMessage)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	if groupIdentifielWithMessage.UserId == "" || !isUserValid(groupIdentifielWithMessage.UserId, db) {
+		w.Header().Set("Error", "Can't get group messages!")
+		w.WriteHeader(400)
+		return
+	}
+
+	getQuery := `select m.sender_id,
+						(select s.first_name
+						from users s
+						where s.user_id = m.sender_id) name,
+						m.message_id,
+						m.send_date,
+						m.type,
+						m.content,
+						m.send_date_timestamp
+					from messages m
+					where m.group_id = $1
+					and m.send_date_timestamp > $2
+					order by m.send_date;`
+
+	rows, err := db.Query(getQuery, groupIdentifielWithMessage.GroupId, groupIdentifielWithMessage.LastMessageSentDateTimestamp)
+	if err != nil && err != sql.ErrNoRows {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+	defer rows.Close()
+
+	messages := make([]map[string]string, 0)
+
+	for rows.Next() {
+		var senderId string
+		var senderName string
+		var messageId string
+		var sentDate string
+		var messageType string
+		var content string
+		var sendDateTimestamp string
+		err = rows.Scan(&senderId, &senderName, &messageId, &sentDate, &messageType, &content, &sendDateTimestamp)
+		if err != nil {
+			w.Header().Set("Error", err.Error())
+			w.WriteHeader(500)
+			return
+		}
+		message := make(map[string]string)
+		message["senderId"] = senderId
+		message["senderName"] = senderName
+		message["messageId"] = messageId
+		message["sentDate"] = sentDate
+		message["messageType"] = messageType
+		message["content"] = content
+		message["sendDateTimestamp"] = sendDateTimestamp
+
+		messages = append(messages, message)
+	}
+
+	response := make(map[string][]map[string]string)
+	response["messages"] = messages
+
+	w.Header().Set("Content-Type", "application/json")
+	jsonResp, err := json.Marshal(response)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+	w.Write(jsonResp)
 }
 
 var upgrader = websocket.Upgrader{
@@ -1634,7 +1842,10 @@ func setupRoutes() {
 	http.HandleFunc("/acceptInvitation", acceptInvitation)
 	http.HandleFunc("/rejectInvitation", rejectInvitation)
 
+	// Messages
 	http.HandleFunc("/sendMessage", sendMessage)
+	http.HandleFunc("/getAllGroupMessages", getAllGroupMessages)
+	http.HandleFunc("/getNewMessages", getNewMessages)
 
 	http.ListenAndServe(":9000", nil)
 }
