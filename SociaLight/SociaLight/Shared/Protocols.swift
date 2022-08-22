@@ -38,6 +38,10 @@ protocol GroupMemberCellDelegate: AnyObject {
     func userIsClicked(_ member: GroupMemberCell)
 }
 
+protocol MediaFileCellDelegate: AnyObject {
+    func cellDidClick(_ media: MediaFileCell)
+}
+
 protocol GroupInfoActionViewDelegate: AnyObject {
     func actionDidInitiated(_ sender: GroupInfoActionView)
 }
@@ -45,3 +49,4 @@ protocol GroupInfoActionViewDelegate: AnyObject {
 protocol ErrorViewDelegate:AnyObject {
     func reload(_ sender: ErrorView)
 }
+

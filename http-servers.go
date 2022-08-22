@@ -385,7 +385,8 @@ func getUserGroups(w http.ResponseWriter, req *http.Request) {
 				from groups s
 					,group_members m
 				where s.group_id = m.group_id
-				and m.user_id = $1;`
+				and m.user_id = $1
+				order by s.create_date desc;`
 
 	rows, err := db.Query(getQuery, user.UserId)
 	if err != nil && err != sql.ErrNoRows {
@@ -1603,6 +1604,75 @@ func unfriend(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func getGroupMediaFiles(w http.ResponseWriter, req *http.Request) {
+
+	db, err := openConnection()
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+	defer db.Close()
+
+	var groupIdentifier GroupIdentifier
+
+	err = json.NewDecoder(req.Body).Decode(&groupIdentifier)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	if groupIdentifier.UserId == "" || !isUserValid(groupIdentifier.UserId, db) {
+		w.Header().Set("Error", "Can't get user Groups!")
+		w.WriteHeader(400)
+		return
+	}
+
+	getQuery := `select s.content
+				from messages s
+				where s.group_id = $1
+				and type = 'photo'
+				order by s.send_date_timestamp;`
+
+	rows, err := db.Query(getQuery, groupIdentifier.GroupId)
+	if err != nil && err != sql.ErrNoRows {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	defer rows.Close()
+
+	mediaFiles := make([]map[string]string, 0)
+
+	for rows.Next() {
+		var imageURL string
+		err = rows.Scan(&imageURL)
+		if err != nil {
+			w.Header().Set("Error", err.Error())
+			w.WriteHeader(500)
+			return
+		}
+		mediaFile := make(map[string]string)
+		mediaFile["imageURL"] = imageURL
+
+		mediaFiles = append(mediaFiles, mediaFile)
+	}
+
+	response := make(map[string][]map[string]string)
+	response["mediaFiles"] = mediaFiles
+
+	w.Header().Set("Content-Type", "application/json")
+	jsonResp, err := json.Marshal(response)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+	w.Write(jsonResp)
+}
+
 func sendMessage(w http.ResponseWriter, req *http.Request) {
 
 	db, err := openConnection()
@@ -1886,6 +1956,7 @@ func setupRoutes() {
 	http.HandleFunc("/rejectInvitation", rejectInvitation)
 
 	http.HandleFunc("/unfriend", unfriend)
+	http.HandleFunc("/getGroupMediaFiles", getGroupMediaFiles)
 
 	// Messages
 	http.HandleFunc("/sendMessage", sendMessage)

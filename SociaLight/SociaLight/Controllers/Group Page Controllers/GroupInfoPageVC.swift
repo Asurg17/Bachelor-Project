@@ -130,16 +130,18 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
         }
     }
     
-    func uploadGroupImage() {
+    func uploadGroupImage(image: UIImage) {
         let _ = getUserId()
             
         loader.startAnimating()
-        service.uploadImage(imageKey: Constants.groupImagePrefix + group!.groupId, image: groupImageView.image!) { [weak self] result in
+        service.uploadImage(imageKey: Constants.groupImagePrefix + group!.groupId, image: image) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
                 switch result {
                 case .success(_):
+                    self.groupImageView.image = image
+                    self.group!.groupImage = image
                     self.groupHasUpdated = true
                 case .failure(let error):
                     self.showWarningAlert(warningText: error.localizedDescription.description)
@@ -253,14 +255,22 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
         }
     }
     
+    
     @objc func groupNameChanged(textField: UITextField) {
-        groupName = textField.text
+        if let text = textField.text {
+            group!.groupName = text
+            groupHasUpdated = true
+            groupName = text
+        }
     }
     
     @objc func groupDescriptionChanged(textField: UITextField) {
-        groupDescription = textField.text
+        if let text = textField.text {
+            group!.groupDescription = text
+            groupHasUpdated = true
+            groupDescription = text
+        }
     }
-        
     
     @objc func imageViewTapped(_ sender:AnyObject){
         if UserDefaults.standard.bool(forKey: "isUserGroupMember") {
@@ -278,9 +288,7 @@ extension GroupInfoPageVC: UIImagePickerControllerDelegate, UINavigationControll
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
         if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
-            groupImageView.image = image
-            group!.groupImage = image
-            uploadGroupImage()
+            uploadGroupImage(image: image)
         }
         
         picker.dismiss(animated: true)

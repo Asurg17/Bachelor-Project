@@ -10,6 +10,7 @@ import SDWebImage
 
 class ImagePageVC: UIViewController {
     
+    @IBOutlet var scrollView: UIScrollView!
     @IBOutlet var imageView: UIImageView!
     
     var url: URL?
@@ -18,7 +19,13 @@ class ImagePageVC: UIViewController {
         super.viewDidLoad()
         self.title = "Photo"
         
+        setupScrollView()
         downloadImage()
+    }
+    
+    func setupScrollView() {
+        scrollView.minimumZoomScale = 1.0
+        scrollView.maximumZoomScale = 10.0
     }
     
     func downloadImage() {
@@ -30,6 +37,14 @@ class ImagePageVC: UIViewController {
                 }
             }
         )
+    }
+    
+}
+
+extension ImagePageVC: UIScrollViewDelegate {
+    
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return imageView
     }
     
 }

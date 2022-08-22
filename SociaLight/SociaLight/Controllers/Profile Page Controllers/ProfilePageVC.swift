@@ -9,7 +9,7 @@ import UIKit
 import KeychainSwift
 import SDWebImage
 
-class ProfilePageVC: UIViewController, DismissProtocol {
+class ProfilePageVC: UIViewController {
     
     @IBOutlet var profileImage: UIImageView!
     @IBOutlet var usernameLabel: UILabel!
@@ -38,6 +38,7 @@ class ProfilePageVC: UIViewController, DismissProtocol {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        print("EFwefew")
         if let destination = segue.destination as? PersonalInfoPopupVC {
             destination.delegate = self
         }
@@ -51,10 +52,6 @@ class ProfilePageVC: UIViewController, DismissProtocol {
                 action: #selector(imageViewTapped(_:))
             )
         )
-    }
-    
-    func refresh() {
-        loadUserInfo()
     }
     
     func loadUserInfo() {
@@ -125,6 +122,14 @@ class ProfilePageVC: UIViewController, DismissProtocol {
     }
     
     
+    @IBAction func showPersonalInfoPopup() {
+        navigateToPersonalInfoPopupPage(vc: self)
+    }
+    
+    @IBAction func changePasswordPopup() {
+        navigateToChangePasswordPopupPage()
+    }
+    
     @IBAction func signOut() {
         let keychain = KeychainSwift()
         keychain.delete(Constants.userIdKey)
@@ -139,6 +144,14 @@ class ProfilePageVC: UIViewController, DismissProtocol {
         present(imagePicker, animated: true)
     }
     
+}
+
+extension ProfilePageVC: DismissProtocol {
+   
+    func refresh() {
+        loadUserInfo()
+    }
+
 }
 
 extension ProfilePageVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {

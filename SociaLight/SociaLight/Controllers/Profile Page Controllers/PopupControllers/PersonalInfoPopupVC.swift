@@ -98,25 +98,6 @@ class PersonalInfoPopupVC: UIViewController {
         return dateComponents.year?.description ?? ""
     }
     
-//    func handleSuccess(response: String) {
-//        let alert = UIAlertController(
-//            title: "Success",
-//            message: response,
-//            preferredStyle: .alert
-//        )
-//        alert.addAction(
-//            UIAlertAction(
-//                title: "Ok",
-//                style: .default,
-//                handler: { [unowned self] _ in
-//                    delegate?.refresh()
-//                    self.dismissPopup()
-//                }
-//            )
-//        )
-//        present(alert, animated: true, completion: nil)
-//    }
-    
     @IBAction func saveMadeChanges() {
         saveChanges()
     }

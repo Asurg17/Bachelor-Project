@@ -390,16 +390,8 @@ class GroupPageVC: MessagesViewController {
         return CGSize(width: screenSize.width*0.7, height: screenSize.height*0.35)
     }
     
-    func navigateToGrouInfoPage(group: Group) {
-        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let groupInfoPagePageController = storyBoard.instantiateViewController(withIdentifier: "GroupInfoPageVC") as! GroupInfoPageVC
-        groupInfoPagePageController.delegate = self
-        groupInfoPagePageController.group = group
-        self.navigationController?.pushViewController(groupInfoPagePageController, animated: true)
-    }
-    
     @IBAction func showGroupInfo() {
-        navigateToGrouInfoPage(group: group!)
+        navigateToGrouInfoPage(group: group!, vc: self)
     }
     
     @IBAction func back() {
@@ -430,6 +422,7 @@ extension GroupPageVC: UpdateGroup {
     
     func update(updatedGroup: Group) {
         self.group = updatedGroup
+        self.title = self.group?.groupName
     }
     
 }
@@ -507,9 +500,6 @@ extension GroupPageVC: UIImagePickerControllerDelegate, UINavigationControllerDe
 extension GroupPageVC: InputBarAccessoryViewDelegate {
     
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
-        
-        print("wefwefwe")
-        
         guard !text.replacingOccurrences(of: " ", with: "").isEmpty,
         let sender  = self.selfSender,
         let messageId = createMessageId()

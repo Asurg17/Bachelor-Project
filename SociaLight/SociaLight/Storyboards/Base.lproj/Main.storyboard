@@ -765,8 +765,40 @@
                     <view key="view" contentMode="scaleToFill" id="i5G-re-TA5">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="lPO-d9-E1m">
+                                <rect key="frame" x="0.0" y="44" width="414" height="852"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="5Q2-V1-VZf">
+                                    <size key="itemSize" width="128" height="128"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells/>
+                            </collectionView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Media Files To Show" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7J1-6E-a8b">
+                                <rect key="frame" x="116.5" y="438" width="181" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="uNn-dd-brx">
+                                <rect key="frame" x="197" y="438" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </activityIndicatorView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="dqi-sA-kBW"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="lPO-d9-E1m" secondAttribute="trailing" id="JX3-gp-ZaW"/>
+                            <constraint firstItem="lPO-d9-E1m" firstAttribute="leading" secondItem="i5G-re-TA5" secondAttribute="leading" id="Mi1-jB-FwJ"/>
+                            <constraint firstItem="lPO-d9-E1m" firstAttribute="top" secondItem="dqi-sA-kBW" secondAttribute="top" id="Qqb-Lc-bcS"/>
+                            <constraint firstItem="7J1-6E-a8b" firstAttribute="centerY" secondItem="i5G-re-TA5" secondAttribute="centerY" id="jri-dM-Nsb"/>
+                            <constraint firstAttribute="bottom" secondItem="lPO-d9-E1m" secondAttribute="bottom" id="kT4-66-CQJ"/>
+                            <constraint firstItem="7J1-6E-a8b" firstAttribute="centerX" secondItem="i5G-re-TA5" secondAttribute="centerX" id="sMV-Mw-EVd"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Title" id="P6o-UC-mqy">
                         <barButtonItem key="leftBarButtonItem" title="Item" image="chevron.backward" catalog="system" id="mzI-v2-ObD">
@@ -776,6 +808,11 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="collectionView" destination="lPO-d9-E1m" id="JYn-iP-LBD"/>
+                        <outlet property="loader" destination="uNn-dd-brx" id="4X6-KM-eoa"/>
+                        <outlet property="warningLabel" destination="7J1-6E-a8b" id="1qS-KB-3dj"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AC0-a5-oLo" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1191,7 +1228,7 @@
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <connections>
-                                            <segue destination="zr0-Qn-yxT" kind="presentation" modalPresentationStyle="overFullScreen" modalTransitionStyle="crossDissolve" id="mB3-oX-Rs1"/>
+                                            <action selector="showPersonalInfoPopup" destination="gSM-Ws-pOo" eventType="touchUpInside" id="0ur-ZK-TeU"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="z0C-3Y-uWm" customClass="RoundCornerButton" customModule="SociaLight" customModuleProvider="target">
@@ -1203,7 +1240,7 @@
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <connections>
-                                            <segue destination="DZ3-hw-yMu" kind="presentation" modalPresentationStyle="overFullScreen" modalTransitionStyle="crossDissolve" id="cd5-6g-O1Y"/>
+                                            <action selector="changePasswordPopup" destination="gSM-Ws-pOo" eventType="touchUpInside" id="px8-X2-iZ0"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -1258,7 +1295,7 @@
         <!--Change Password PopupVC-->
         <scene sceneID="QxA-3h-SA8">
             <objects>
-                <viewController modalPresentationStyle="overFullScreen" id="DZ3-hw-yMu" customClass="ChangePasswordPopupVC" customModule="SociaLight" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ChangePasswordPopupVC" modalPresentationStyle="overFullScreen" id="DZ3-hw-yMu" customClass="ChangePasswordPopupVC" customModule="SociaLight" customModuleProvider="target" sceneMemberID="viewController">
                     <visualEffectView key="view" opaque="NO" contentMode="scaleToFill" id="QTx-v3-sxG">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1439,7 +1476,7 @@
         <!--Personal Info PopupVC-->
         <scene sceneID="cgD-oy-pbt">
             <objects>
-                <viewController modalPresentationStyle="overFullScreen" id="zr0-Qn-yxT" customClass="PersonalInfoPopupVC" customModule="SociaLight" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PersonalInfoPopupVC" modalPresentationStyle="overFullScreen" id="zr0-Qn-yxT" customClass="PersonalInfoPopupVC" customModule="SociaLight" customModuleProvider="target" sceneMemberID="viewController">
                     <visualEffectView key="view" opaque="NO" contentMode="scaleToFill" id="UHG-5W-G72">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -2282,7 +2319,7 @@
             <size key="intrinsicContentSize" width="100" height="100"/>
         </designable>
         <designable name="1nf-3O-zvb">
-            <size key="intrinsicContentSize" width="163" height="18"/>
+            <size key="intrinsicContentSize" width="145" height="18"/>
         </designable>
         <designable name="6ae-VL-KCI">
             <size key="intrinsicContentSize" width="115" height="33"/>
@@ -2294,7 +2331,7 @@
             <size key="intrinsicContentSize" width="45.5" height="31"/>
         </designable>
         <designable name="Bla-5R-cOB">
-            <size key="intrinsicContentSize" width="165" height="18"/>
+            <size key="intrinsicContentSize" width="145" height="18"/>
         </designable>
         <designable name="CWZ-yd-qpi">
             <size key="intrinsicContentSize" width="173" height="23"/>
@@ -2303,10 +2340,10 @@
             <size key="intrinsicContentSize" width="66" height="33"/>
         </designable>
         <designable name="UtA-Pp-i6r">
-            <size key="intrinsicContentSize" width="107.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="88.5" height="19.5"/>
         </designable>
         <designable name="Xyd-x5-ey8">
-            <size key="intrinsicContentSize" width="138.5" height="18"/>
+            <size key="intrinsicContentSize" width="120.5" height="18"/>
         </designable>
         <designable name="ZIq-23-Uxr">
             <size key="intrinsicContentSize" width="146" height="33"/>
@@ -2315,7 +2352,7 @@
             <size key="intrinsicContentSize" width="63" height="33"/>
         </designable>
         <designable name="cLO-ue-g6S">
-            <size key="intrinsicContentSize" width="109.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="90.5" height="19.5"/>
         </designable>
         <designable name="cmk-O4-5Tc">
             <size key="intrinsicContentSize" width="156.5" height="23"/>
@@ -2324,7 +2361,7 @@
             <size key="intrinsicContentSize" width="173" height="23"/>
         </designable>
         <designable name="fIj-Bk-OXc">
-            <size key="intrinsicContentSize" width="110.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="90.5" height="19.5"/>
         </designable>
         <designable name="h7D-Q5-Gbx">
             <size key="intrinsicContentSize" width="156.5" height="23"/>
@@ -2336,28 +2373,28 @@
             <size key="intrinsicContentSize" width="107" height="33"/>
         </designable>
         <designable name="lx3-sJ-7TZ">
-            <size key="intrinsicContentSize" width="102" height="18"/>
+            <size key="intrinsicContentSize" width="86" height="18"/>
         </designable>
         <designable name="mBI-QS-r4u">
-            <size key="intrinsicContentSize" width="139.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="122.5" height="19.5"/>
         </designable>
         <designable name="nmL-vF-l85">
             <size key="intrinsicContentSize" width="100" height="100"/>
         </designable>
         <designable name="oHy-lM-yhv">
-            <size key="intrinsicContentSize" width="110" height="19.5"/>
+            <size key="intrinsicContentSize" width="89" height="19.5"/>
         </designable>
         <designable name="ohr-2W-PJK">
             <size key="intrinsicContentSize" width="106" height="29"/>
         </designable>
         <designable name="pAR-c0-5gQ">
-            <size key="intrinsicContentSize" width="139.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="122.5" height="19.5"/>
         </designable>
         <designable name="q8O-sX-dcy">
-            <size key="intrinsicContentSize" width="132" height="18"/>
+            <size key="intrinsicContentSize" width="114" height="18"/>
         </designable>
         <designable name="sAv-1g-3C5">
-            <size key="intrinsicContentSize" width="106" height="18"/>
+            <size key="intrinsicContentSize" width="86" height="18"/>
         </designable>
         <designable name="wDT-Gh-g4k">
             <size key="intrinsicContentSize" width="46.5" height="31"/>

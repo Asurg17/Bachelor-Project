@@ -121,6 +121,16 @@ struct Notification: Codable {
     let membersCount: String
 }
 
+// Medial Files
+
+struct MediaFiles: Codable {
+    let mediaFiles: [MediaFile]
+}
+
+struct MediaFile: Codable {
+    let imageURL: String
+}
+
 // Messages
 
 struct GroupMessages: Codable {

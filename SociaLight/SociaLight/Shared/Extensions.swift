@@ -139,6 +139,14 @@ extension UIViewController {
         self.navigationController?.pushViewController(groupPageController, animated: true)
     }
     
+    func navigateToGrouInfoPage(group: Group, vc: GroupPageVC) {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let groupInfoPagePageController = storyBoard.instantiateViewController(withIdentifier: "GroupInfoPageVC") as! GroupInfoPageVC
+        groupInfoPagePageController.delegate = vc
+        groupInfoPagePageController.group = group
+        self.navigationController?.pushViewController(groupInfoPagePageController, animated: true)
+    }
+    
     func navigateToGroupMembersPage(group: Group) {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let groupMembersPageController = storyBoard.instantiateViewController(withIdentifier: "GroupMembersPageVC") as! GroupMembersPageVC
@@ -172,6 +180,27 @@ extension UIViewController {
         let groupMemberProfilePageController = storyBoard.instantiateViewController(withIdentifier: "GroupMemberProfilePageVC") as! GroupMemberProfilePageVC
         groupMemberProfilePageController.currUserId = memberId
         self.navigationController?.pushViewController(groupMemberProfilePageController, animated: true)
+    }
+    
+    func navigateToPersonalInfoPopupPage(vc: ProfilePageVC) {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let personalInfoPopupPageController = storyBoard.instantiateViewController(withIdentifier: "PersonalInfoPopupVC") as! PersonalInfoPopupVC
+        personalInfoPopupPageController.providesPresentationContextTransitionStyle = true
+        personalInfoPopupPageController.definesPresentationContext = true
+        personalInfoPopupPageController.modalPresentationStyle = .overCurrentContext
+        personalInfoPopupPageController.modalTransitionStyle = .crossDissolve
+        personalInfoPopupPageController.delegate = vc
+        self.navigationController?.present(personalInfoPopupPageController, animated: true)
+    }
+
+    func navigateToChangePasswordPopupPage() {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let changePasswordPopupPageController = storyBoard.instantiateViewController(withIdentifier: "ChangePasswordPopupVC") as! ChangePasswordPopupVC
+        changePasswordPopupPageController.providesPresentationContextTransitionStyle = true
+        changePasswordPopupPageController.definesPresentationContext = true
+        changePasswordPopupPageController.modalPresentationStyle = .overCurrentContext
+        changePasswordPopupPageController.modalTransitionStyle = .crossDissolve
+        self.navigationController?.present(changePasswordPopupPageController, animated: true)
     }
     
     // ----------------Constants--------------
@@ -215,6 +244,7 @@ extension UIViewController {
         static let tableHeaderHeight = 44.0
         static let tableViewOffset = 32.0
         static let itemCount: CGFloat = 4
+        static let mediaFileCellOffset = 3.0
         
         // Get image variables
         static let getImageURLPrefix: String = "http://localhost:9000/getImage?imageKey="

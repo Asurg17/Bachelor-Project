@@ -11,9 +11,7 @@ class MainPageVC: UIViewController, GroupCellDelegate {
 
     @IBOutlet var loader: UIActivityIndicatorView!
     @IBOutlet var collectionView: UICollectionView!
-    
     @IBOutlet var filterTextField: RoundCornerTextField!
-    
     @IBOutlet var warningLabel: UILabel!
     
     private let service = Service()
