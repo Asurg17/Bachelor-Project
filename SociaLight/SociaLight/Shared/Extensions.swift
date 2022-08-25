@@ -244,10 +244,19 @@ extension UIViewController {
         static let tableHeaderHeight = 44.0
         static let tableViewOffset = 32.0
         static let itemCount: CGFloat = 4
-        static let mediaFileCellOffset = 3.0
         
-        // Get image variables
-        static let getImageURLPrefix: String = "http://localhost:9000/getImage?imageKey="
+        // Messages
+        static let maimumRecordTime = 29.0
+        static let mediaFileCellOffset = 3.0
+        static let messageMaxPartNum = 10.0
+        static let audioMessageMinWidth = 100.0
+        static let audioMessageHeight = 40.0
+        static let messageWidthMultiplier = 0.7
+        static let messageHeightMultiplier = 0.35
+        
+        //
+        static let getImageURLPrefix: String = "http://192.168.100.3:9000/getImage?imageKey=" //localhost > 192.168.100.3
+        static let getAudioURLPrefix: String = "http://192.168.100.3:9000/getAudio?audioKey="
         static let userImagePrefix: String = "userImage"
         static let groupImagePrefix: String = "groupImage"
     }

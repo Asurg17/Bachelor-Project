@@ -94,6 +94,10 @@ type Image struct {
 	Image    string
 }
 
+type Audio struct {
+	AudioKey string
+}
+
 type ImageIdentifier struct {
 	ImageKey string
 }
@@ -134,6 +138,7 @@ type Message struct {
 	Content           string
 	SendDate          string
 	SendDateTimestamp string
+	Duration          string
 }
 
 type Friendship struct {
@@ -991,6 +996,32 @@ func uploadImage(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func uploadAudio(w http.ResponseWriter, req *http.Request) {
+
+	db, err := openConnection()
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	defer db.Close()
+
+	audioKey := req.URL.Query().Get("audioKey")
+	duration := req.URL.Query().Get("duration")
+	audioBytes, _ := ioutil.ReadAll(req.Body)
+
+	insertQuery := `insert into audio_files(audio_key, audio, duration)
+					values($1, $2, $3);`
+
+	_, e := db.Exec(insertQuery, audioKey, audioBytes, duration)
+	if e != nil {
+		w.Header().Set("Error", "Can't save Changes!")
+		w.WriteHeader(500)
+		return
+	}
+}
+
 func getImage(w http.ResponseWriter, req *http.Request) {
 
 	db, err := openConnection()
@@ -1022,6 +1053,39 @@ func getImage(w http.ResponseWriter, req *http.Request) {
 	}
 
 	w.Write(imageBytes)
+}
+
+func getAudio(w http.ResponseWriter, req *http.Request) {
+
+	db, err := openConnection()
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	defer db.Close()
+
+	audioKey := req.URL.Query().Get("audioKey")
+
+	var audioBytes []byte
+
+	query := `select f.audio
+	        from audio_files f
+			where f.audio_key = $1;`
+
+	if err := db.QueryRow(query, audioKey).Scan(&audioBytes); err != nil {
+		if err == sql.ErrNoRows {
+			w.Header().Set("Error", "No audio were found!")
+			w.WriteHeader(400)
+			return
+		}
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	w.Write(audioBytes)
 }
 
 func createGroup(w http.ResponseWriter, req *http.Request) {
@@ -1629,7 +1693,8 @@ func getGroupMediaFiles(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	getQuery := `select s.content
+	getQuery := `select s.content,
+						s.message_id
 				from messages s
 				where s.group_id = $1
 				and type = 'photo'
@@ -1648,7 +1713,8 @@ func getGroupMediaFiles(w http.ResponseWriter, req *http.Request) {
 
 	for rows.Next() {
 		var imageURL string
-		err = rows.Scan(&imageURL)
+		var messageId string
+		err = rows.Scan(&imageURL, &messageId)
 		if err != nil {
 			w.Header().Set("Error", err.Error())
 			w.WriteHeader(500)
@@ -1656,6 +1722,7 @@ func getGroupMediaFiles(w http.ResponseWriter, req *http.Request) {
 		}
 		mediaFile := make(map[string]string)
 		mediaFile["imageURL"] = imageURL
+		mediaFile["messageId"] = messageId
 
 		mediaFiles = append(mediaFiles, mediaFile)
 	}
@@ -1699,10 +1766,10 @@ func sendMessage(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	query := `insert into messages(message_id, type, sender_id, group_id, content, send_date, send_date_timestamp)
-				values ($1, $2, $3, $4, $5, $6, $7);`
+	query := `insert into messages(message_id, type, sender_id, group_id, content, send_date, send_date_timestamp, duration)
+				values ($1, $2, $3, $4, $5, $6, $7, $8);`
 
-	_, err = db.Exec(query, message.MessageId, message.Type, message.SenderId, message.GroupId, message.Content, message.SendDate, message.SendDateTimestamp)
+	_, err = db.Exec(query, message.MessageId, message.Type, message.SenderId, message.GroupId, message.Content, message.SendDate, message.SendDateTimestamp, message.Duration)
 	if err != nil {
 		w.Header().Set("Error", "Can't save Changes!")
 		w.WriteHeader(500)
@@ -1744,7 +1811,8 @@ func getAllGroupMessages(w http.ResponseWriter, req *http.Request) {
 						m.send_date,
 						m.type,
 						m.content,
-						m.send_date_timestamp
+						m.send_date_timestamp,
+						m.duration
 					from messages m
 					where m.group_id = $1
 					order by m.send_date_timestamp;`
@@ -1767,7 +1835,8 @@ func getAllGroupMessages(w http.ResponseWriter, req *http.Request) {
 		var messageType string
 		var content string
 		var sendDateTimestamp string
-		err = rows.Scan(&senderId, &senderName, &messageId, &sentDate, &messageType, &content, &sendDateTimestamp)
+		var duration string
+		err = rows.Scan(&senderId, &senderName, &messageId, &sentDate, &messageType, &content, &sendDateTimestamp, &duration)
 		if err != nil {
 			w.Header().Set("Error", err.Error())
 			w.WriteHeader(500)
@@ -1781,6 +1850,7 @@ func getAllGroupMessages(w http.ResponseWriter, req *http.Request) {
 		message["messageType"] = messageType
 		message["content"] = content
 		message["sendDateTimestamp"] = sendDateTimestamp
+		message["duration"] = duration
 
 		messages = append(messages, message)
 	}
@@ -1832,11 +1902,12 @@ func getNewMessages(w http.ResponseWriter, req *http.Request) {
 						m.send_date,
 						m.type,
 						m.content,
-						m.send_date_timestamp
+						m.send_date_timestamp,
+						m.duration
 					from messages m
 					where m.group_id = $1
 					and m.send_date_timestamp > $2
-					order by m.send_date;`
+					order by m.send_date_timestamp;`
 
 	rows, err := db.Query(getQuery, groupIdentifielWithMessage.GroupId, groupIdentifielWithMessage.LastMessageSentDateTimestamp)
 	if err != nil && err != sql.ErrNoRows {
@@ -1856,7 +1927,8 @@ func getNewMessages(w http.ResponseWriter, req *http.Request) {
 		var messageType string
 		var content string
 		var sendDateTimestamp string
-		err = rows.Scan(&senderId, &senderName, &messageId, &sentDate, &messageType, &content, &sendDateTimestamp)
+		var duration string
+		err = rows.Scan(&senderId, &senderName, &messageId, &sentDate, &messageType, &content, &sendDateTimestamp, &duration)
 		if err != nil {
 			w.Header().Set("Error", err.Error())
 			w.WriteHeader(500)
@@ -1870,6 +1942,7 @@ func getNewMessages(w http.ResponseWriter, req *http.Request) {
 		message["messageType"] = messageType
 		message["content"] = content
 		message["sendDateTimestamp"] = sendDateTimestamp
+		message["duration"] = duration
 
 		messages = append(messages, message)
 	}
@@ -1932,9 +2005,11 @@ func setupRoutes() {
 	http.HandleFunc("/ws", notificationsWsEndpoint)
 
 	http.HandleFunc("/getImage", getImage)
+	http.HandleFunc("/getAudio", getAudio)
 	http.HandleFunc("/leaveGroup", leaveGroup)
 	http.HandleFunc("/getUserInfo", getUserInfo)
 	http.HandleFunc("/uploadImage", uploadImage)
+	http.HandleFunc("/uploadAudio", uploadAudio)
 	http.HandleFunc("/createGroup", createGroup)
 	http.HandleFunc("/validateUser", validateUser)
 	http.HandleFunc("/getUserGroups", getUserGroups)

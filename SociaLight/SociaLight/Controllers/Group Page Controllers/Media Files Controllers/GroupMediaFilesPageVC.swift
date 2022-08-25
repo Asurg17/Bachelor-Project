@@ -88,7 +88,8 @@ class GroupMediaFilesPageVC: UIViewController {
     func handleSuccess(mediaFiles: [MediaFile]) {
         var files = [MediaFileCellModel]()
         for mediaFile in mediaFiles {
-            if let imageURL = URL(string: mediaFile.imageURL) {
+            if let imageURL = //URL(string: mediaFile.imageURL) {
+                URL(string: Constants.getImageURLPrefix + "in_group_image_" + mediaFile.messageId.replacingOccurrences(of: " ", with: "-")) {
                 files.append(
                     MediaFileCellModel(
                         imageURL: imageURL,

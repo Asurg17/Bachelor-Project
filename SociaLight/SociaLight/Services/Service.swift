@@ -15,7 +15,7 @@ class Service {
     
     init() {
         components.scheme = "http"
-        components.host = "192.168.0.100"
+        components.host = "192.168.100.3" //localhost
         components.port = 9000
     }
     
@@ -1340,6 +1340,97 @@ class Service {
         }
     }
    
+    func uploadAudio(audioKey: String, audioData: Data, duration: Double, completion: @escaping (Result<String, Error>) -> ()) {
+        
+        components.path = "/uploadAudio"
+        
+        let parameters = [
+            "audioKey": audioKey,
+            "duration": duration.description
+        ]
+        
+        components.queryItems = parameters.map { key, value in
+           return URLQueryItem(name: key, value: value)
+        }
+        
+        if let url = components.url {
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.httpBody = audioData
+            
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            completion(.success(""))
+                        } else {
+                            completion(.failure(NSError(domain: "",
+                                                        code: 400,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                       )))
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    }
+    
+    func getAudio(parameters: [String:String], completion: @escaping (Result<Data, Error>) -> ()) {
+        
+        components.path = "/getAudio"
+        
+        components.queryItems = parameters.map { key, value in
+           return URLQueryItem(name: key, value: value)
+        }
+        
+        if let url = components.url {
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            if let data = data {
+                                completion(.success(data))
+                            } else {
+                                completion(.failure(ServiceError.noData))
+                            }
+                        } else {
+                            completion(.failure(NSError(domain: "",
+                                                        code: 400,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                       )))
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    }
     
 // Messages
     

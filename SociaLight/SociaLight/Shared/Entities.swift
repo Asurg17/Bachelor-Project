@@ -129,6 +129,7 @@ struct MediaFiles: Codable {
 
 struct MediaFile: Codable {
     let imageURL: String
+    let messageId: String
 }
 
 // Messages
@@ -145,6 +146,7 @@ struct GroupMessage: Codable {
     let messageType: String
     let content: String
     let sendDateTimestamp: String
+    let duration: String
 }
 
 struct Message: MessageType {
@@ -153,6 +155,7 @@ struct Message: MessageType {
     var sentDate: Date
     var kind: MessageKind
     var sentDateTimestamp: String
+    var duration: Double
 }
 
 struct Sender: SenderType {

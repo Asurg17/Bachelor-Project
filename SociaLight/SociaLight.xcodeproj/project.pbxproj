@@ -162,9 +162,8 @@
 			children = (
 				EA086E272886DE3600055825 /* GroupPageVC.swift */,
 				EAF6CF16288F2C96005E0AEE /* GroupInfoPageVC.swift */,
-				EADF48C928983648001C4692 /* GroupMembersPageVC.swift */,
-				EADF48D22899A205001C4692 /* AddGroupMembersPageVC.swift */,
-				EA7C698E28B28CD80030E755 /* GroupMemberProfilePageVC.swift */,
+				EA7C699A28B3BA660030E755 /* Group Members Page Controllers */,
+				EA7C698928B1717B0030E755 /* Media Files Controllers */,
 			);
 			path = "Group Page Controllers";
 			sourceTree = "<group>";
@@ -286,6 +285,16 @@
 			path = MediaFileCell;
 			sourceTree = "<group>";
 		};
+		EA7C699A28B3BA660030E755 /* Group Members Page Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				EADF48C928983648001C4692 /* GroupMembersPageVC.swift */,
+				EADF48D22899A205001C4692 /* AddGroupMembersPageVC.swift */,
+				EA7C698E28B28CD80030E755 /* GroupMemberProfilePageVC.swift */,
+			);
+			path = "Group Members Page Controllers";
+			sourceTree = "<group>";
+		};
 		EA7D0E312871C8F500579619 /* Main Page Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -313,7 +322,6 @@
 				EA7D0E322871C93B00579619 /* Profile Page Controllers */,
 				EA7C699028B2AD110030E755 /* Friends Page Controllers */,
 				EA086E262886DDED00055825 /* Group Page Controllers */,
-				EA7C698928B1717B0030E755 /* Media Files Controllers */,
 				EA481B332836A32C00719282 /* Additional Controllers */,
 			);
 			path = Controllers;
