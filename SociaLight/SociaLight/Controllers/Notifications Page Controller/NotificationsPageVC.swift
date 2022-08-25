@@ -1,5 +1,5 @@
 //
-//  NotificationPageVC.swift
+//  NotificationsPageVC.swift
 //  SociaLight
 //
 //  Created by Sandro Surguladze on 08.08.22.
@@ -25,7 +25,7 @@ class NotificationsSection {
     
 }
 
-class NotificationPageVC: UIViewController {
+class NotificationsPageVC: UIViewController {
     
     @IBOutlet var loader: UIActivityIndicatorView!
     @IBOutlet var tableView: UITableView!
@@ -202,7 +202,7 @@ class NotificationPageVC: UIViewController {
 
 }
 
-extension NotificationPageVC: NotificationCellDelegate {
+extension NotificationsPageVC: NotificationCellDelegate {
 
     func friendshipAccepted(_ notification: NotificationCell) {
         let userId = getUserId()
@@ -276,6 +276,10 @@ extension NotificationPageVC: NotificationCellDelegate {
         }
     }
     
+    func navigateToUserPage(_ notification: NotificationCell) {
+        navigateToGroupMemberProfilePage(memberId: notification.model.fromUserId)
+    }
+    
     func navigateToGroupPage(_ notification: NotificationCell) {
         navigateToGroupPage(
             group: Group(
@@ -294,7 +298,7 @@ extension NotificationPageVC: NotificationCellDelegate {
 }
 
 
-extension NotificationPageVC: UITableViewDelegate, UITableViewDataSource {
+extension NotificationsPageVC: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         if tableData.isEmpty { warningText.isHidden = false } else { warningText.isHidden = true }
@@ -333,7 +337,11 @@ extension NotificationPageVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
+        if tableData[indexPath.section].notifications[indexPath.row].isFriendshipRequest {
+            return 100
+        } else {
+            return 120
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

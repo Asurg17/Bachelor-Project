@@ -47,27 +47,24 @@ class NotificationCell: UITableViewCell {
     @IBOutlet private var notificationHeaderLabel: UILabel!
     @IBOutlet private var notificationDescriptionLabel: UILabel!
     @IBOutlet private var friendshipButtonsStackView: UIStackView!
-    @IBOutlet private var navigationButton: UIButton!
     @IBOutlet private var acceptButton: UIButton!
     @IBOutlet private var rejectButton: UIButton!
 
     var model: NotificationCellModel!
     
-    func configure(with model: NotificationCellModel){
+    func configure(with model: NotificationCellModel) {
         self.model = model
     
         var imageURL = ""
         if model.isFriendshipRequest {
-            navigationButton.isHidden = true
             imageURL = model.fromUserImageURL
             notificationHeaderLabel.text = model.fromUserWholeName
             notificationDescriptionLabel.text = "Wants to be your friend"
             acceptButton.setTitle("Accept", for: .normal)
         } else {
-            navigationButton.isHidden = false
             imageURL = model.groupImageURL
             notificationHeaderLabel.text = model.fromUserWholeName
-            notificationDescriptionLabel.text = "Invited you to join: " + model.groupTitle
+            notificationDescriptionLabel.text = "Invited you to joing group: " + model.groupTitle
             acceptButton.setTitle("Join", for: .normal)
         }
         
@@ -100,8 +97,12 @@ class NotificationCell: UITableViewCell {
         }
     }
     
-    @IBAction func navigateToGroupPage() {
-        model.delegate?.navigateToGroupPage(self)
+    @IBAction func navigate() {
+        if model.isFriendshipRequest {
+            model.delegate?.navigateToUserPage(self)
+        } else {
+            model.delegate?.navigateToGroupPage(self)
+        }
     }
     
     @IBAction func acceptFriendship() {

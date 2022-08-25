@@ -169,6 +169,21 @@ extension NewGroupFirstPageVC: UIPickerViewDataSource {
 
 extension NewGroupFirstPageVC: UITextFieldDelegate {
     
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField == groupName {
+            if ((textField.text?.count ?? 0) + string.count) > Constants.groupNameCharactersMaxNum {
+                showWarningAlert(warningText: Constants.groupNameCharactersMaxNumWarning)
+                return false
+            }
+        } else if textField == groupDescription {
+            if ((textField.text?.count ?? 0) + string.count) > Constants.groupDescriptionCharactersMaxNum {
+                showWarningAlert(warningText: Constants.groupDescriptionCharactersMaxNumWarning)
+                return false
+            }
+        }
+        return true
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         switch textField {
         case groupName:

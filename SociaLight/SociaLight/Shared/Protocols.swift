@@ -23,6 +23,12 @@ protocol NotificationCellDelegate: AnyObject {
     func acceptInvitation(_ notification: NotificationCell)
     func rejectInvitation(_ notification: NotificationCell)
     func navigateToGroupPage(_ notification: NotificationCell)
+    func navigateToUserPage(_ notification: NotificationCell)
+}
+
+protocol EventCellDelegate: AnyObject {
+    func navigateToGroupPage(_ event: EventCell)
+    func navigateToUserPage(_ event: EventCell)
 }
 
 protocol FriendCellDelegate: AnyObject {

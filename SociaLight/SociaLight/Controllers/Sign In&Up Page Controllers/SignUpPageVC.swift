@@ -132,16 +132,59 @@ extension SignUpPageVC: UITextFieldDelegate {
         }
     }
     
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if textField == usernameTextField && string.contains(" ") { return false }
-        if textField == phoneNumberTextField && !checkIfContainsOnlyNumbers(str: string) { return false }
-        return true
-    }
+//    return fullNameTextField.text!.components(separatedBy: " ")[0]
+//}
+//
+//func getLastName() -> String {
+//    let words = fullNameTextField.text!.components(separatedBy: " ")
+//    return words[1..<words.count].joined(separator: " ")
     
-    func checkIfContainsOnlyNumbers(str: String) -> Bool {
-        if (str == "") { return true }
-        let digitCharacters = CharacterSet.decimalDigits
-        return str.rangeOfCharacter(from: digitCharacters) != nil
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        if let text = textField.text,
+           let textRange = Range(range, in: text) {
+            let updatedText = text.replacingCharacters(in: textRange, with: string)
+            
+            if textField == fullNameTextField {
+                if updatedText.prefix(1) == " " {
+                    return false
+                }
+            
+                let components = updatedText.components(separatedBy: " ")
+
+                let firstName = components[0]
+                let lastName = components[1..<components.count].joined(separator: " ")
+                
+                if firstName.count > Constants.firstNameCharactersMaxNum {
+                    showWarningAlert(warningText: Constants.firstNameCharactersMaxNumWarning)
+                    return false
+                }
+                
+                if lastName.count > Constants.lastNameCharactersMaxNum {
+                    showWarningAlert(warningText: Constants.lastNameCharactersMaxNumWarning)
+                    return false
+                }
+            }
+            
+            if textField == usernameTextField {
+                if updatedText.contains(" ") { return false }
+                if updatedText.count > Constants.usernameCharactersMaxNum {
+                    showWarningAlert(warningText: Constants.usernameCharactersMaxNumWarning)
+                    return false
+                }
+            }
+            
+            if textField == phoneNumberTextField {
+                if !checkIfContainsOnlyNumbers(str: updatedText) { return false }
+                if updatedText.count > Constants.phoneCharactersMaxNum {
+                    showWarningAlert(warningText: Constants.phoneCharactersMaxNumWarning)
+                    return false
+                }
+            }
+        
+        }
+        
+        return true
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

@@ -116,6 +116,23 @@ class PersonalInfoPopupVC: UIViewController {
 
 extension PersonalInfoPopupVC: UITextFieldDelegate {
     
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        if let text = textField.text,
+           let textRange = Range(range, in: text) {
+            let updatedText = text.replacingCharacters(in: textRange, with: string)
+            
+            if textField == phoneTextField {
+                if !checkIfContainsOnlyNumbers(str: updatedText) { return false }
+                if updatedText.count > Constants.phoneCharactersMaxNum {
+                    showWarningAlert(warningText: Constants.phoneCharactersMaxNumWarning)
+                    return false
+                }
+            }
+        }
+        return true
+    }
+    
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if let field = textField as? DesignableUITextField {
             field.textColor = UIColor.FlatColor.Blue.Mariner

@@ -92,6 +92,12 @@ extension UIViewController {
         }
     }
     
+    func checkIfContainsOnlyNumbers(str: String) -> Bool {
+        if (str == "") { return true }
+        let digitCharacters = CharacterSet.decimalDigits
+        return str.rangeOfCharacter(from: digitCharacters) != nil
+    }
+    
     func formatDate(date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM dd yyyy"
@@ -233,6 +239,20 @@ extension UIViewController {
         
         // Picker Data
         static let pickerData: [Int] = [2, 3, 4, 5, 10, 20, 25, 50]
+        
+        // Characters Max Number
+        static let usernameCharactersMaxNum = 25
+        static let phoneCharactersMaxNum = 15
+        static let firstNameCharactersMaxNum = 15
+        static let lastNameCharactersMaxNum = 15
+        static let groupNameCharactersMaxNum = 35
+        static let groupDescriptionCharactersMaxNum = 100
+        static let usernameCharactersMaxNumWarning = "Maximum length of Username is: \(usernameCharactersMaxNum) characters"
+        static let phoneCharactersMaxNumWarning = "Maximum length of Phone Number is: \(phoneCharactersMaxNum) characters"
+        static let firstNameCharactersMaxNumWarning = "Maximum length of First Name is: \(firstNameCharactersMaxNum) characters"
+        static let lastNameCharactersMaxNumWarning = "Maximum length of Last Name is: \(lastNameCharactersMaxNum) characters"
+        static let groupNameCharactersMaxNumWarning = "Maximum length of Group Name is: \(groupNameCharactersMaxNum) characters"
+        static let groupDescriptionCharactersMaxNumWarning = "Maximum length of Group Desctiption is: \(groupDescriptionCharactersMaxNum) characters"
         
         // Table&Collection View Parameters
         static let itemCountInLine: CGFloat = 3

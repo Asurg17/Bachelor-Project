@@ -29,6 +29,11 @@
 		EA7C699428B2CF860030E755 /* ImageOuterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7C699328B2CF860030E755 /* ImageOuterView.swift */; };
 		EA7C699828B359670030E755 /* MediaFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7C699628B359660030E755 /* MediaFileCell.swift */; };
 		EA7C699928B359670030E755 /* MediaFileCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA7C699728B359670030E755 /* MediaFileCell.xib */; };
+		EA7C699D28B7A7F80030E755 /* EventsPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7C699C28B7A7F70030E755 /* EventsPageVC.swift */; };
+		EA7C69A028B7B32E0030E755 /* EventHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7C699F28B7B32E0030E755 /* EventHeader.swift */; };
+		EA7C69A228B7B3450030E755 /* EventHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA7C69A128B7B3450030E755 /* EventHeader.xib */; };
+		EA7C69A628B7B4DC0030E755 /* EventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7C69A428B7B4DC0030E755 /* EventCell.swift */; };
+		EA7C69A728B7B4DC0030E755 /* EventCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA7C69A528B7B4DC0030E755 /* EventCell.xib */; };
 		EA9A47A628159280006F8409 /* SignUpPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47A528159280006F8409 /* SignUpPageVC.swift */; };
 		EA9A47B22815A391006F8409 /* DesignableUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47B12815A391006F8409 /* DesignableUITextField.swift */; };
 		EA9A47C42817295C006F8409 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9A47C32817295B006F8409 /* Extensions.swift */; };
@@ -53,7 +58,7 @@
 		EADF48D32899A205001C4692 /* AddGroupMembersPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF48D22899A205001C4692 /* AddGroupMembersPageVC.swift */; };
 		EADF48D728A00C75001C4692 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF48D528A00C75001C4692 /* NotificationCell.swift */; };
 		EADF48D828A00C75001C4692 /* NotificationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EADF48D628A00C75001C4692 /* NotificationCell.xib */; };
-		EADF48DB28A17B9E001C4692 /* NotificationPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF48DA28A17B9E001C4692 /* NotificationPageVC.swift */; };
+		EADF48DB28A17B9E001C4692 /* NotificationsPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF48DA28A17B9E001C4692 /* NotificationsPageVC.swift */; };
 		EADFCF6F283115D50025EEA6 /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADFCF6E283115D50025EEA6 /* Entities.swift */; };
 		EAE7D22228A2BB4D0034552F /* NotificationHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE7D22128A2BB4D0034552F /* NotificationHeader.swift */; };
 		EAE7D22428A2BB5A0034552F /* NotificationHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = EAE7D22328A2BB5A0034552F /* NotificationHeader.xib */; };
@@ -89,6 +94,11 @@
 		EA7C699328B2CF860030E755 /* ImageOuterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageOuterView.swift; sourceTree = "<group>"; };
 		EA7C699628B359660030E755 /* MediaFileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaFileCell.swift; sourceTree = "<group>"; };
 		EA7C699728B359670030E755 /* MediaFileCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MediaFileCell.xib; sourceTree = "<group>"; };
+		EA7C699C28B7A7F70030E755 /* EventsPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsPageVC.swift; sourceTree = "<group>"; };
+		EA7C699F28B7B32E0030E755 /* EventHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventHeader.swift; sourceTree = "<group>"; };
+		EA7C69A128B7B3450030E755 /* EventHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EventHeader.xib; sourceTree = "<group>"; };
+		EA7C69A428B7B4DC0030E755 /* EventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCell.swift; sourceTree = "<group>"; };
+		EA7C69A528B7B4DC0030E755 /* EventCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EventCell.xib; sourceTree = "<group>"; };
 		EA9A47A528159280006F8409 /* SignUpPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPageVC.swift; sourceTree = "<group>"; };
 		EA9A47B12815A391006F8409 /* DesignableUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignableUITextField.swift; sourceTree = "<group>"; };
 		EA9A47C32817295B006F8409 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -115,7 +125,7 @@
 		EADF48D22899A205001C4692 /* AddGroupMembersPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGroupMembersPageVC.swift; sourceTree = "<group>"; };
 		EADF48D528A00C75001C4692 /* NotificationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
 		EADF48D628A00C75001C4692 /* NotificationCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotificationCell.xib; sourceTree = "<group>"; };
-		EADF48DA28A17B9E001C4692 /* NotificationPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPageVC.swift; sourceTree = "<group>"; };
+		EADF48DA28A17B9E001C4692 /* NotificationsPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsPageVC.swift; sourceTree = "<group>"; };
 		EADFCF6E283115D50025EEA6 /* Entities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entities.swift; sourceTree = "<group>"; };
 		EAE7D22128A2BB4D0034552F /* NotificationHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHeader.swift; sourceTree = "<group>"; };
 		EAE7D22328A2BB5A0034552F /* NotificationHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotificationHeader.xib; sourceTree = "<group>"; };
@@ -211,8 +221,9 @@
 				EACA50F82864EA6500149482 /* SelectedFriendCell */,
 				EA485DD9284CC5F800077373 /* GroupCell */,
 				EADF48CD28998B66001C4692 /* GroupMemberCell */,
-				EADF48D428A00C41001C4692 /* NotificationCell */,
 				EA7C699528B3591E0030E755 /* MediaFileCell */,
+				EADF48D428A00C41001C4692 /* NotificationCell */,
+				EA7C69A328B7B4AC0030E755 /* EventCell */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -295,6 +306,32 @@
 			path = "Group Members Page Controllers";
 			sourceTree = "<group>";
 		};
+		EA7C699B28B7A7030030E755 /* Events Page Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				EA7C699C28B7A7F70030E755 /* EventsPageVC.swift */,
+			);
+			path = "Events Page Controllers";
+			sourceTree = "<group>";
+		};
+		EA7C699E28B7B2910030E755 /* EventHeader */ = {
+			isa = PBXGroup;
+			children = (
+				EA7C699F28B7B32E0030E755 /* EventHeader.swift */,
+				EA7C69A128B7B3450030E755 /* EventHeader.xib */,
+			);
+			path = EventHeader;
+			sourceTree = "<group>";
+		};
+		EA7C69A328B7B4AC0030E755 /* EventCell */ = {
+			isa = PBXGroup;
+			children = (
+				EA7C69A428B7B4DC0030E755 /* EventCell.swift */,
+				EA7C69A528B7B4DC0030E755 /* EventCell.xib */,
+			);
+			path = EventCell;
+			sourceTree = "<group>";
+		};
 		EA7D0E312871C8F500579619 /* Main Page Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -319,6 +356,7 @@
 				EA481B322836A08500719282 /* Sign In&Up Page Controllers */,
 				EA7D0E312871C8F500579619 /* Main Page Controllers */,
 				EADF48D928A17B6F001C4692 /* Notifications Page Controller */,
+				EA7C699B28B7A7030030E755 /* Events Page Controllers */,
 				EA7D0E322871C93B00579619 /* Profile Page Controllers */,
 				EA7C699028B2AD110030E755 /* Friends Page Controllers */,
 				EA086E262886DDED00055825 /* Group Page Controllers */,
@@ -438,7 +476,7 @@
 		EADF48D928A17B6F001C4692 /* Notifications Page Controller */ = {
 			isa = PBXGroup;
 			children = (
-				EADF48DA28A17B9E001C4692 /* NotificationPageVC.swift */,
+				EADF48DA28A17B9E001C4692 /* NotificationsPageVC.swift */,
 			);
 			path = "Notifications Page Controller";
 			sourceTree = "<group>";
@@ -446,6 +484,7 @@
 		EAE7D21F28A2BAD00034552F /* Headers */ = {
 			isa = PBXGroup;
 			children = (
+				EA7C699E28B7B2910030E755 /* EventHeader */,
 				EAE7D22028A2BAE00034552F /* NotificationHeader */,
 			);
 			path = Headers;
@@ -545,11 +584,13 @@
 				EA7C699928B359670030E755 /* MediaFileCell.xib in Resources */,
 				EADF48D828A00C75001C4692 /* NotificationCell.xib in Resources */,
 				EACA50F72864C89500149482 /* FriendCell.xib in Resources */,
+				EA7C69A228B7B3450030E755 /* EventHeader.xib in Resources */,
 				EA7C698D28B17D510030E755 /* ImagePageStoryboard.storyboard in Resources */,
 				EA9E6BD527FCB94100101170 /* LaunchScreen.storyboard in Resources */,
 				EAF6CF1E288FE210005E0AEE /* GroupInfoActionView.xib in Resources */,
 				EA9E6BD227FCB94100101170 /* Assets.xcassets in Resources */,
 				EA9E6BCD27FCB93E00101170 /* Main.storyboard in Resources */,
+				EA7C69A728B7B4DC0030E755 /* EventCell.xib in Resources */,
 				EA485DDD284CC7FA00077373 /* GroupCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -604,7 +645,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA071DD1285648AA008CC78C /* FindGroupPageVC.swift in Sources */,
-				EADF48DB28A17B9E001C4692 /* NotificationPageVC.swift in Sources */,
+				EADF48DB28A17B9E001C4692 /* NotificationsPageVC.swift in Sources */,
 				EAE7D22728A55E810034552F /* ErrorView.swift in Sources */,
 				EA481B312836778300719282 /* RoundCornerButton.swift in Sources */,
 				EA9E6BCA27FCB93E00101170 /* SignInPageVC.swift in Sources */,
@@ -637,14 +678,17 @@
 				EA7C699428B2CF860030E755 /* ImageOuterView.swift in Sources */,
 				EA7C699228B2AD400030E755 /* FriendsPageVC.swift in Sources */,
 				EACA50EC285F31D200149482 /* RoundButton.swift in Sources */,
+				EA7C699D28B7A7F80030E755 /* EventsPageVC.swift in Sources */,
 				EABCC6622826A4410098EDCA /* TabBarVC.swift in Sources */,
 				EA06AE7C282D56B200D84D7A /* RoundUIImageView.swift in Sources */,
+				EA7C69A628B7B4DC0030E755 /* EventCell.swift in Sources */,
 				EA9E6BD027FCB93E00101170 /* SociaLight.xcdatamodeld in Sources */,
 				EA7C698F28B28CD80030E755 /* GroupMemberProfilePageVC.swift in Sources */,
 				EA7C699828B359670030E755 /* MediaFileCell.swift in Sources */,
 				EADF48D32899A205001C4692 /* AddGroupMembersPageVC.swift in Sources */,
 				EA9E6BC827FCB93E00101170 /* SceneDelegate.swift in Sources */,
 				EA2D13AC2857C15B0052E9BC /* NewGroupFirstPageVC.swift in Sources */,
+				EA7C69A028B7B32E0030E755 /* EventHeader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

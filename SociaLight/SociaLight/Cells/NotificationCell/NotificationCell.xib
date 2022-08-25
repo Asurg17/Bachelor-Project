@@ -32,7 +32,7 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title=""/>
                                 <connections>
-                                    <action selector="navigateToGroupPage" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Kjn-cx-3OB"/>
+                                    <action selector="navigate" destination="KGk-i7-Jjw" eventType="touchUpInside" id="7sh-cc-1qd"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -46,26 +46,26 @@
                             <constraint firstItem="M0w-Hg-cG6" firstAttribute="width" secondItem="KFY-3C-9hJ" secondAttribute="width" id="dgX-Pw-ifu"/>
                         </constraints>
                     </view>
-                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="kel-s9-3tH">
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="kel-s9-3tH">
                         <rect key="frame" x="120" y="12" width="357" height="96"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zcr-Nf-KL4">
-                                <rect key="frame" x="0.0" y="0.0" width="357" height="28.5"/>
+                                <rect key="frame" x="0.0" y="0.0" width="357" height="24"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Invited you to join: " lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pS7-jo-CPX">
-                                <rect key="frame" x="0.0" y="33.5" width="357" height="29"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pS7-jo-CPX">
+                                <rect key="frame" x="0.0" y="24" width="357" height="48"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="kw5-5y-7Q8">
-                                <rect key="frame" x="0.0" y="67.5" width="357" height="28.5"/>
+                                <rect key="frame" x="0.0" y="72" width="357" height="24"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oVF-xv-SGM" customClass="RoundCornerButton" customModule="SociaLight" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="173.5" height="28.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="173.5" height="24"/>
                                         <color key="backgroundColor" red="0.12774153839999999" green="0.29815587240000002" blue="0.61682558239999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -77,7 +77,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KZ0-gW-M6q" customClass="RoundCornerButton" customModule="SociaLight" customModuleProvider="target">
-                                        <rect key="frame" x="183.5" y="0.0" width="173.5" height="28.5"/>
+                                        <rect key="frame" x="183.5" y="0.0" width="173.5" height="24"/>
                                         <color key="backgroundColor" systemColor="systemGray4Color"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -91,6 +91,11 @@
                                 </subviews>
                             </stackView>
                         </subviews>
+                        <constraints>
+                            <constraint firstItem="pS7-jo-CPX" firstAttribute="height" secondItem="kel-s9-3tH" secondAttribute="height" multiplier="0.5" id="RtC-wF-PyB"/>
+                            <constraint firstItem="kw5-5y-7Q8" firstAttribute="height" secondItem="kel-s9-3tH" secondAttribute="height" multiplier="0.25" id="bW3-4f-lKV"/>
+                            <constraint firstItem="Zcr-Nf-KL4" firstAttribute="height" secondItem="kel-s9-3tH" secondAttribute="height" multiplier="0.25" id="t5b-rh-SKB"/>
+                        </constraints>
                     </stackView>
                 </subviews>
                 <constraints>
@@ -108,7 +113,6 @@
             <connections>
                 <outlet property="acceptButton" destination="oVF-xv-SGM" id="jcb-gE-9xA"/>
                 <outlet property="friendshipButtonsStackView" destination="kw5-5y-7Q8" id="66h-52-w14"/>
-                <outlet property="navigationButton" destination="M0w-Hg-cG6" id="7IO-J3-mPr"/>
                 <outlet property="notificationDescriptionLabel" destination="pS7-jo-CPX" id="KtK-f0-8vi"/>
                 <outlet property="notificationHeaderLabel" destination="Zcr-Nf-KL4" id="vWG-Ud-Pif"/>
                 <outlet property="notificationImageView" destination="KvW-w5-UF0" id="7Hj-6r-PxK"/>

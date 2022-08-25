@@ -158,8 +158,8 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
             service.saveGroupUpdates(
                 userId: userId,
                 groupId: group!.groupId,
-                groupName: groupName!,
-                groupDescription: groupDescription!
+                groupName: (groupName ?? groupNameLabel.text)!,
+                groupDescription: (groupDescription ?? groupDescriptionLabel.text) ?? ""
             ) { [weak self] result in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
@@ -186,7 +186,7 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     
     func hasLabelsChaned() -> Bool {
         if groupName == nil || groupName == "" { groupName = groupNameLabel.text }
-        if groupDescription == nil || groupDescription == "" { groupDescription = groupDescriptionLabel.text }
+        if groupDescription == nil { groupDescription = groupDescriptionLabel.text }
         
         if groupName != groupNameLabel.text || groupDescription != groupDescriptionLabel.text {
             return true
@@ -217,6 +217,7 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
                 textField.placeholder = "Group Name"
                 textField.text = group!.groupName
                 textField.keyboardType = .default
+                textField.delegate = self
                 textField.addTarget(
                     self,
                     action: #selector(self.groupNameChanged(textField:)),
@@ -227,6 +228,7 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
                 textField.placeholder = "Group Description"
                 textField.text = group!.groupDescription
                 textField.keyboardType = .default
+                textField.delegate = self
                 textField.addTarget(
                     self,
                     action: #selector(self.groupDescriptionChanged(textField:)),
@@ -258,7 +260,6 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     
     @objc func groupNameChanged(textField: UITextField) {
         if let text = textField.text {
-            group!.groupName = text
             groupHasUpdated = true
             groupName = text
         }
@@ -266,7 +267,6 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     
     @objc func groupDescriptionChanged(textField: UITextField) {
         if let text = textField.text {
-            group!.groupDescription = text
             groupHasUpdated = true
             groupDescription = text
         }
@@ -282,6 +282,22 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     }
     
 }
+
+extension GroupInfoPageVC: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField.placeholder == "Group Name" {
+            if ((textField.text?.count ?? 0) + string.count) > Constants.groupNameCharactersMaxNum {
+                return false
+            }
+        } else if textField.placeholder == "Group Description" {
+            if ((textField.text?.count ?? 0) + string.count) > Constants.groupDescriptionCharactersMaxNum {
+                return false
+            }
+        }
+        return true
+    }
+}
+
 
 extension GroupInfoPageVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
