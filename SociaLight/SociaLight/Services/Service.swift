@@ -14,9 +14,9 @@ class Service {
     private var components = URLComponents()
     
     init() {
-        components.scheme = "http"
-        components.host = "192.168.100.3" //localhost
-        components.port = 9000
+        components.scheme = serverStruct.serverScheme
+        components.host = serverStruct.serverHost
+        components.port = serverStruct.serverPort
     }
     
     func registerNewUser(
@@ -710,13 +710,13 @@ class Service {
         }
     }
     
-    func addGroupMembers(userId: String,
-                         groupId: String,
-                         addSelfToGroup: String,
-                         members: Array<String>,
-                         completion: @escaping (Result<String, Error>) -> ()) {
+    func sendGroupInvitations(userId: String,
+                              groupId: String,
+                              addSelfToGroup: String,
+                              members: Array<String>,
+                              completion: @escaping (Result<String, Error>) -> ()) {
         
-        components.path = "/addGroupMembers"
+        components.path = "/sendGroupInvitations"
         
         let parameters = [
             "userId": userId,

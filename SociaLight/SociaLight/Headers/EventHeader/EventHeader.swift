@@ -7,11 +7,19 @@
 
 import UIKit
 
+class EventHeaderModel {
+    var title: String
+    
+    init(title: String){
+        self.title = title
+    }
+}
+
 class EventHeader: UITableViewHeaderFooterView {
 
     @IBOutlet var headerTitleLabel: UILabel!
      
-    func configure(with model: NotificationHeaderModel){
+    func configure(with model: EventHeaderModel){
         headerTitleLabel.text = model.title
     }
 }

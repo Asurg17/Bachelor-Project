@@ -59,7 +59,7 @@ class NotificationCell: UITableViewCell {
         if model.isFriendshipRequest {
             imageURL = model.fromUserImageURL
             notificationHeaderLabel.text = model.fromUserWholeName
-            notificationDescriptionLabel.text = "Wants to be your friend"
+            notificationDescriptionLabel.text = "Sent you a friendship request"
             acceptButton.setTitle("Accept", for: .normal)
         } else {
             imageURL = model.groupImageURL

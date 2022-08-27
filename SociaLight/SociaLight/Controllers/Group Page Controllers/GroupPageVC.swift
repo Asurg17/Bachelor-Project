@@ -470,7 +470,7 @@ class GroupPageVC: MessagesViewController {
     @IBAction func setupRecorder() {
         if soundRecorder == nil {
             let recordSettings = [AVFormatIDKey: kAudioFormatMPEG4AAC,
-                       //AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue,
+                       AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue,
                             //AVEncoderBitRateKey: 320000,
                           AVNumberOfChannelsKey: 1,
                                 AVSampleRateKey: 44100.0 ] as [String : Any]
@@ -503,7 +503,11 @@ class GroupPageVC: MessagesViewController {
     }
     
     @IBAction func back() {
-        navigationController?.popToRootViewController(animated: true)
+        if UserDefaults.standard.bool(forKey: "isUserGroupMember") {
+            navigationController?.popToRootViewController(animated: true)
+        } else {
+            navigationController?.popViewController(animated: true)
+        }
     }
     
     
@@ -789,8 +793,7 @@ extension GroupPageVC: MessagesDataSource, MessagesLayoutDelegate, MessagesDispl
         
         switch message.kind {
         case .photo(_):
-            guard //let imageURL = media.url,
-                  let imageURL = URL(string: Constants.getImageURLPrefix + "in_group_image_" + message.messageId.replacingOccurrences(of: " ", with: "-"))
+            guard let imageURL = URL(string: Constants.getImageURLPrefix + "in_group_image_" + message.messageId.replacingOccurrences(of: " ", with: "-"))
             else { return }
             imageView.sd_setImage(with: imageURL)
         default:
@@ -812,6 +815,7 @@ extension GroupPageVC: MessagesDataSource, MessagesLayoutDelegate, MessagesDispl
                 }
             )
         }
+        
     }
     
     func configureAudioCell(_ cell: AudioMessageCell, message: MessageType) {
@@ -831,6 +835,42 @@ extension GroupPageVC: MessagesDataSource, MessagesLayoutDelegate, MessagesDispl
         }
     }
     
+//    func messageHeaderView(for indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageReusableView {
+//        let message = messages[indexPath.section]
+//
+//        let view = messagesCollectionView.dequeueReusableHeaderView(MessageReusableView.self, for: indexPath)
+//        view.backgroundColor = UIColor.black
+//
+//        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 50, height: 30))
+//        label.text = message.sender.displayName
+//        label.tintColor = UIColor.gray
+//        label.textColor = UIColor.gray
+//        label.backgroundColor = UIColor.gray
+//
+//        view.addSubview(label)
+//        return view
+//    }
+//
+//    func headerViewSize(for section: Int, in messagesCollectionView: MessagesCollectionView) -> CGSize {
+//        return CGSize(width: 100, height: 30)
+//    }
+    
+//    func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
+//        let name = message.sender.displayName
+//        //let paragraph = NSMutableParagraphStyle()
+//        return NSAttributedString(
+//          string: name,
+//          attributes: [
+//            .font: UIFont.preferredFont(forTextStyle: .caption1),
+//            .foregroundColor: UIColor.gray,
+//          ]
+//        )
+//    }
+    
+//    func cellTopLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+//        return 30
+//    }
+    
 }
 
 extension GroupPageVC: MessageCellDelegate, AVAudioPlayerDelegate {
@@ -847,11 +887,9 @@ extension GroupPageVC: MessageCellDelegate, AVAudioPlayerDelegate {
         guard let indexPath = messagesCollectionView.indexPath(for: cell) else { return }
         let message = messages[indexPath.section]
         switch message.kind {
-        case .photo(let media):
-            guard let imageUrl = media.url else {
-                return
-            }
-            navigateToImagePage(url: imageUrl)
+        case .photo(_):
+            guard let imageURL = URL(string: Constants.getImageURLPrefix + "in_group_image_" +  messages[indexPath.section].messageId.replacingOccurrences(of: " ", with: "-")) else { return }
+            navigateToImagePage(url: imageURL)
         default:
             break
         }
@@ -919,7 +957,6 @@ extension GroupPageVC: MessageCellDelegate, AVAudioPlayerDelegate {
                         }
                         cell.playButton.isSelected = true
                         self.startProgressTimer()
-//                        cell.delegate?.didStartAudio(in: cell)
                     } catch {
                         print(error)
                     }

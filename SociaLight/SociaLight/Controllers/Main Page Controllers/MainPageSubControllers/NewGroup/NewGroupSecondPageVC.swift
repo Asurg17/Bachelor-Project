@@ -218,7 +218,7 @@ class NewGroupSecondPageVC: UIViewController {
         let userId = getUserId()
         
         let members = getMembers()
-        service.addGroupMembers(userId: userId, groupId: groupId, addSelfToGroup: "Y", members: members) { [weak self] result in
+        service.sendGroupInvitations(userId: userId, groupId: groupId, addSelfToGroup: "Y", members: members) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()

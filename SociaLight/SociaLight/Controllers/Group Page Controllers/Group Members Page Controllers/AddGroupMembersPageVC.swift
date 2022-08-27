@@ -174,7 +174,7 @@ class AddGroupMembersPageVC: UIViewController {
         
         let members = getMembers()
         if members.count > 0 {
-            service.addGroupMembers(userId: userId, groupId: group!.groupId, addSelfToGroup: "N", members: members) { [weak self] result in
+            service.sendGroupInvitations(userId: userId, groupId: group!.groupId, addSelfToGroup: "N", members: members) { [weak self] result in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     self.loader.stopAnimating()

@@ -8,12 +8,11 @@
 import UIKit
 
 class MediaFileCellModel {
-    var imageURL: URL
-
+    var imageKey: String
     weak var delegate: MediaFileCellDelegate?
     
-    init(imageURL: URL, delegate: MediaFileCellDelegate?) {
-        self.imageURL = imageURL
+    init(imageKey: String, delegate: MediaFileCellDelegate?) {
+        self.imageKey = imageKey
         self.delegate = delegate
     }
 }
@@ -33,7 +32,7 @@ class MediaFileCell: UICollectionViewCell {
         self.model = model
         
         image.sd_setImage(
-            with: model.imageURL,
+            with: URL(string: Constants.getImageURLPrefix + model.imageKey),
             completed: { (image, error, cacheType, imageURL) in
                 if image == nil {
                     self.image.image = UIImage(named: "empty_image")

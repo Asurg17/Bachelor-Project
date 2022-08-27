@@ -1965,19 +1965,35 @@
                                 <rect key="frame" x="0.0" y="44" width="375" height="574"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Events To Show" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ngx-RL-SPR">
+                                <rect key="frame" x="114.5" y="323" width="146.5" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="n3d-yB-xXP">
+                                <rect key="frame" x="169" y="315" width="37" height="37"/>
+                                <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="h7U-TV-PEG"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="h7U-TV-PEG" firstAttribute="bottom" secondItem="OJH-fJ-653" secondAttribute="bottom" id="Ee2-gM-MQw"/>
+                            <constraint firstItem="n3d-yB-xXP" firstAttribute="centerX" secondItem="tJw-ik-eMd" secondAttribute="centerX" id="KZG-q9-6t7"/>
+                            <constraint firstItem="n3d-yB-xXP" firstAttribute="centerY" secondItem="tJw-ik-eMd" secondAttribute="centerY" id="No0-FC-FVb"/>
+                            <constraint firstItem="ngx-RL-SPR" firstAttribute="centerY" secondItem="tJw-ik-eMd" secondAttribute="centerY" id="mEO-nM-k9L"/>
                             <constraint firstItem="OJH-fJ-653" firstAttribute="top" secondItem="h7U-TV-PEG" secondAttribute="top" id="pBF-1V-nAb"/>
+                            <constraint firstItem="ngx-RL-SPR" firstAttribute="centerX" secondItem="tJw-ik-eMd" secondAttribute="centerX" id="pab-CQ-bH1"/>
                             <constraint firstItem="OJH-fJ-653" firstAttribute="leading" secondItem="h7U-TV-PEG" secondAttribute="leading" id="t4U-he-LC0"/>
                             <constraint firstItem="h7U-TV-PEG" firstAttribute="trailing" secondItem="OJH-fJ-653" secondAttribute="trailing" id="tBN-o7-zx6"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="pHZ-sE-tkg"/>
                     <connections>
+                        <outlet property="loader" destination="n3d-yB-xXP" id="6zg-SU-FFJ"/>
                         <outlet property="tableView" destination="OJH-fJ-653" id="buo-cn-5CY"/>
+                        <outlet property="warningText" destination="ngx-RL-SPR" id="iB1-kT-ogQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="o2R-Hw-R0n" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

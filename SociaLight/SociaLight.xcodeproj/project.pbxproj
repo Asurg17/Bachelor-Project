@@ -51,6 +51,7 @@
 		EACA50F72864C89500149482 /* FriendCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EACA50F52864C89400149482 /* FriendCell.xib */; };
 		EACA50FB2864EAB600149482 /* SelectedFriendCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACA50F92864EAB500149482 /* SelectedFriendCell.swift */; };
 		EACA50FC2864EAB600149482 /* SelectedFriendCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EACA50FA2864EAB500149482 /* SelectedFriendCell.xib */; };
+		EADEE11B28B90C8A00823ACA /* Global Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADEE11A28B90C8A00823ACA /* Global Constants.swift */; };
 		EADF48CA28983649001C4692 /* GroupMembersPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF48C928983648001C4692 /* GroupMembersPageVC.swift */; };
 		EADF48CC28983BAE001C4692 /* GroupMediaFilesPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF48CB28983BAE001C4692 /* GroupMediaFilesPageVC.swift */; };
 		EADF48D028998B9E001C4692 /* GroupMemberCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF48CE28998B9E001C4692 /* GroupMemberCell.swift */; };
@@ -118,6 +119,7 @@
 		EACA50F52864C89400149482 /* FriendCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FriendCell.xib; sourceTree = "<group>"; };
 		EACA50F92864EAB500149482 /* SelectedFriendCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedFriendCell.swift; sourceTree = "<group>"; };
 		EACA50FA2864EAB500149482 /* SelectedFriendCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectedFriendCell.xib; sourceTree = "<group>"; };
+		EADEE11A28B90C8A00823ACA /* Global Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Global Constants.swift"; sourceTree = "<group>"; };
 		EADF48C928983648001C4692 /* GroupMembersPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupMembersPageVC.swift; sourceTree = "<group>"; };
 		EADF48CB28983BAE001C4692 /* GroupMediaFilesPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupMediaFilesPageVC.swift; sourceTree = "<group>"; };
 		EADF48CE28998B9E001C4692 /* GroupMemberCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupMemberCell.swift; sourceTree = "<group>"; };
@@ -210,6 +212,7 @@
 				EADFCF6E283115D50025EEA6 /* Entities.swift */,
 				EA481B342836BA2E00719282 /* Protocols.swift */,
 				EA9A47C32817295B006F8409 /* Extensions.swift */,
+				EADEE11A28B90C8A00823ACA /* Global Constants.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -653,6 +656,7 @@
 				EA481B2F283676AE00719282 /* PopUpView.swift in Sources */,
 				EACA50F62864C89500149482 /* FriendCell.swift in Sources */,
 				EA481B352836BA2F00719282 /* Protocols.swift in Sources */,
+				EADEE11B28B90C8A00823ACA /* Global Constants.swift in Sources */,
 				EACA50FB2864EAB600149482 /* SelectedFriendCell.swift in Sources */,
 				EA9A47A628159280006F8409 /* SignUpPageVC.swift in Sources */,
 				EA6B195E2831789A0042B65B /* PersonalInfoPopupVC.swift in Sources */,

@@ -32,7 +32,6 @@ class NotificationsPageVC: UIViewController {
     @IBOutlet var warningText: UILabel!
     
     private let service = Service()
-    
     private var tableData = [NotificationsSection]()
 
     override func viewDidLoad() {
@@ -114,23 +113,23 @@ class NotificationsPageVC: UIViewController {
                 id = "Invitations"
             }
             
+            let notificationCellModel =  NotificationCellModel(
+                requestUniqueKey: notification.requestUniqueKey,
+                fromUserId: notification.fromUserId,
+                fromUserWholeName: notification.fromUserWholeName,
+                fromUserImageURL: Constants.getImageURLPrefix + Constants.userImagePrefix + notification.fromUserId,
+                isFriendshipRequest: notification.isFriendshipRequest.boolValue,
+                groupId: notification.groupId,
+                groupImageURL: Constants.getImageURLPrefix + Constants.groupImagePrefix + notification.groupId,
+                groupTitle: notification.groupTitle,
+                groupDescription: notification.groupDescription,
+                groupCapacity: notification.groupCapacity,
+                membersCount: notification.membersCount,
+                delegate: self
+            )
+            
             if let sectionIndex = tableData.firstIndex(where: { $0.id == id }) {
-                tableData[sectionIndex].notifications.append(
-                    NotificationCellModel(
-                        requestUniqueKey: notification.requestUniqueKey,
-                        fromUserId: notification.fromUserId,
-                        fromUserWholeName: notification.fromUserWholeName,
-                        fromUserImageURL: Constants.getImageURLPrefix + Constants.userImagePrefix + notification.fromUserId,
-                        isFriendshipRequest: notification.isFriendshipRequest.boolValue,
-                        groupId: notification.groupId,
-                        groupImageURL: Constants.getImageURLPrefix + Constants.groupImagePrefix + notification.groupId,
-                        groupTitle: notification.groupTitle,
-                        groupDescription: notification.groupDescription,
-                        groupCapacity: notification.groupCapacity,
-                        membersCount: notification.membersCount,
-                        delegate: self
-                    )
-                )
+                tableData[sectionIndex].notifications.append(notificationCellModel)
                 
                 tableView.beginUpdates()
                 tableView.reloadSections(IndexSet(integer: sectionIndex), with: .fade)
@@ -141,22 +140,7 @@ class NotificationsPageVC: UIViewController {
                 let section = NotificationsSection(
                     id: id,
                     header: NotificationHeaderModel(title: id),
-                    notifications: [
-                        NotificationCellModel(
-                            requestUniqueKey: notification.requestUniqueKey,
-                            fromUserId: notification.fromUserId,
-                            fromUserWholeName: notification.fromUserWholeName,
-                            fromUserImageURL: Constants.getImageURLPrefix + Constants.userImagePrefix + notification.fromUserId,
-                            isFriendshipRequest: notification.isFriendshipRequest.boolValue,
-                            groupId: notification.groupId,
-                            groupImageURL: Constants.getImageURLPrefix + Constants.groupImagePrefix + notification.groupId,
-                            groupTitle: notification.groupTitle,
-                            groupDescription: notification.groupDescription,
-                            groupCapacity: notification.groupCapacity,
-                            membersCount: notification.membersCount,
-                            delegate: self
-                        )
-                    ]
+                    notifications: [notificationCellModel]
                 )
                 
                 tableData.append(section)
@@ -188,6 +172,8 @@ class NotificationsPageVC: UIViewController {
                     tableView.deleteRows(at: [indexPath], with: .automatic)
                     tableView.endUpdates()
                 }
+                
+                return
             }
         }
     }
@@ -289,7 +275,8 @@ extension NotificationsPageVC: NotificationCellDelegate {
                 membersMaxNumber: Int(notification.model.groupCapacity) ?? 0,
                 groupName: notification.model.groupTitle,
                 groupDescription: notification.model.groupDescription,
-                isPrivate: false
+                isPrivate: false,
+                userRole: "M"
             ),
             isUserGroupMember: false
         )
@@ -336,13 +323,13 @@ extension NotificationsPageVC: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if tableData[indexPath.section].notifications[indexPath.row].isFriendshipRequest {
-            return 100
-        } else {
-            return 120
-        }
-    }
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        if tableData[indexPath.section].notifications[indexPath.row].isFriendshipRequest {
+//            return 100
+//        } else {
+//            return 120
+//        }
+//    }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return Constants.tableHeaderHeight

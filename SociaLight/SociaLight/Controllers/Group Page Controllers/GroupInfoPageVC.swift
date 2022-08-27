@@ -207,7 +207,7 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
 
             
     @objc func showAlert(_ sender:AnyObject){
-        if UserDefaults.standard.bool(forKey: "isUserGroupMember") {
+        if UserDefaults.standard.bool(forKey: "isUserGroupMember") && group!.userRole == "A" {
             let alert = UIAlertController(
                 title: "Group Name & Description",
                 message: "",
@@ -273,7 +273,7 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     }
     
     @objc func imageViewTapped(_ sender:AnyObject){
-        if UserDefaults.standard.bool(forKey: "isUserGroupMember") {
+        if UserDefaults.standard.bool(forKey: "isUserGroupMember") && group!.userRole == "A" {
             imagePicker.sourceType = .photoLibrary
             imagePicker.delegate = self
             imagePicker.allowsEditing = true

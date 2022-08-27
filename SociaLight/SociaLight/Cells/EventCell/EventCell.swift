@@ -12,6 +12,7 @@ class EventCellModel {
     var fromUserId: String
     var fromUserWholeName: String
     var fromUserImageURL: String
+    var userRole: String
     var eventType: String
     var groupId: String
     var groupImageURL: String
@@ -23,11 +24,12 @@ class EventCellModel {
     
     weak var delegate: EventCellDelegate?
 
-    init(eventUniqueKey: String, fromUserId: String, fromUserWholeName: String, fromUserImageURL: String, eventType: String, groupId: String, groupImageURL: String, groupTitle: String, groupDescription: String, groupCapacity: String, membersCount: String, delegate: EventCellDelegate?) {
+    init(eventUniqueKey: String, fromUserId: String, fromUserWholeName: String, fromUserImageURL: String, userRole: String, eventType: String, groupId: String, groupImageURL: String, groupTitle: String, groupDescription: String, groupCapacity: String, membersCount: String, delegate: EventCellDelegate?) {
         self.eventUniqueKey = eventUniqueKey
         self.fromUserId = fromUserId
         self.fromUserWholeName = fromUserWholeName
         self.fromUserImageURL = fromUserImageURL
+        self.userRole = userRole
         self.eventType = eventType
         self.groupId = groupId
         self.groupImageURL = groupImageURL
@@ -41,16 +43,18 @@ class EventCellModel {
 }
 
 class EventCell: UITableViewCell {
-    
-    var model: EventCellModel!
 
     @IBOutlet private var eventImageView: UIImageView!
     @IBOutlet private var eventHeaderLabel: UILabel!
     @IBOutlet private var eventDescriptionLabel: UILabel!
     @IBOutlet private var timeLabel: UILabel!
     
-    func configure(with text: String) {
-        eventDescriptionLabel.text = text
+    var model: EventCellModel!
+    
+    func configure(with model: EventCellModel) {
+        self.model = model
+        
+        
     }
         
     @IBAction func navigate() {

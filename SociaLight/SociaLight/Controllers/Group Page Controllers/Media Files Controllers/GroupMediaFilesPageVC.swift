@@ -88,15 +88,13 @@ class GroupMediaFilesPageVC: UIViewController {
     func handleSuccess(mediaFiles: [MediaFile]) {
         var files = [MediaFileCellModel]()
         for mediaFile in mediaFiles {
-            if let imageURL = //URL(string: mediaFile.imageURL) {
-                URL(string: Constants.getImageURLPrefix + "in_group_image_" + mediaFile.messageId.replacingOccurrences(of: " ", with: "-")) {
-                files.append(
-                    MediaFileCellModel(
-                        imageURL: imageURL,
-                        delegate: self
-                    )
+            let imageKey = "in_group_image_" + mediaFile.messageId.replacingOccurrences(of: " ", with: "-")
+            files.append(
+                MediaFileCellModel(
+                    imageKey: imageKey,
+                    delegate: self
                 )
-            }
+            )
         }
         
         collectionData = files
@@ -126,7 +124,9 @@ class GroupMediaFilesPageVC: UIViewController {
 extension GroupMediaFilesPageVC: MediaFileCellDelegate {
     
     func cellDidClick(_ media: MediaFileCell) {
-        navigateToImagePage(url: media.model.imageURL)
+        if let imageURL = URL(string: Constants.getImageURLPrefix + media.model.imageKey) {
+            navigateToImagePage(url: imageURL)
+        }
     }
     
 }
