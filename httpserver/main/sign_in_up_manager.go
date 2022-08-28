@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"errors"
+	"strings"
 )
 
 type SignInUpManager struct {
@@ -25,12 +26,15 @@ func (m *SignInUpManager) registerNewUser(username string, password string, firs
 	passwordMd := passwordHash.Sum(nil)
 	passwordMdStr := hex.EncodeToString(passwordMd)
 
-	userId := username + passwordMdStr
+	userId := randomString(10) + username + passwordMdStr
 
 	insertQuery := `insert into "users" ("username", "password", "first_name", "last_name", "user_id", "phone")
 					values ($1, $2, $3, $4, $5, $6)`
 	_, err := m.connectionPool.db.Exec(insertQuery, username, passwordMdStr, firstName, lastName, userId, phoneNumber)
 	if err != nil {
+		if strings.Contains(err.Error(), "users_uk") {
+			return nil, errors.New("such username already exists")
+		}
 		return nil, err
 	}
 

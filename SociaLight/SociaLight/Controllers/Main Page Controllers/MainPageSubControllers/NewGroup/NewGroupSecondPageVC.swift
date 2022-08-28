@@ -185,7 +185,7 @@ class NewGroupSecondPageVC: UIViewController {
                 case .success(let response):
                     self.group?.groupId = response.groupId
                     self.group?.membersCurrentNumber += self.collectionData.count
-                    self.uploadGroupImage(groupId: response.groupId)
+                    self.uploadGroupImage(userId: userId, groupId: response.groupId)
                 case .failure(let error):
                     self.loader.stopAnimating()
                     self.showWarningAlert(warningText: error.localizedDescription.description)
@@ -194,9 +194,7 @@ class NewGroupSecondPageVC: UIViewController {
         }
     }
     
-    func uploadGroupImage(groupId: String) {
-        let _ = getUserId()
-       
+    func uploadGroupImage(userId: String, groupId: String) {
         service.uploadImage(
             imageKey: Constants.groupImagePrefix + groupId,
             image: (group?.groupImage ?? UIImage(named: "Groupicon"))!
@@ -205,7 +203,7 @@ class NewGroupSecondPageVC: UIViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(_):
-                    self.addGroupMembers(groupId: groupId)
+                    self.addSelfToGroup(userId: userId, groupId: groupId)
                 case .failure(let error):
                     self.loader.stopAnimating()
                     self.showWarningAlert(warningText: error.localizedDescription.description)
@@ -214,21 +212,38 @@ class NewGroupSecondPageVC: UIViewController {
         }
     }
     
-    func addGroupMembers(groupId: String) {
-        let userId = getUserId()
-        
-        let members = getMembers()
-        service.sendGroupInvitations(userId: userId, groupId: groupId, addSelfToGroup: "Y", members: members) { [weak self] result in
+    func addSelfToGroup(userId: String, groupId: String)  {
+        service.addUserToGroup(userId: userId, groupId: groupId, userRole: Constants.admin) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
-                self.loader.stopAnimating()
                 switch result {
                 case .success(_):
-                    self.navigateToGroupPage(group: self.group!, isUserGroupMember: true)
+                    self.sendGroupInvitations(userId: userId, groupId: groupId)
                 case .failure(let error):
                     self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
             }
+        }
+    }
+    
+    func sendGroupInvitations(userId: String, groupId: String) {
+        let members = getMembers()
+        if members.count > 0 {
+            service.sendGroupInvitations(userId: userId, groupId: groupId, members: members) { [weak self] result in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.loader.stopAnimating()
+                    switch result {
+                    case .success(_):
+                        self.navigateToGroupPage(group: self.group!, isUserGroupMember: true)
+                    case .failure(let error):
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
+                    }
+                }
+            }
+        } else {
+            self.loader.stopAnimating()
+            self.navigateToGroupPage(group: self.group!, isUserGroupMember: true)
         }
     }
     

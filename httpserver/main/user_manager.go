@@ -217,23 +217,37 @@ func (m *UserManager) getUserFriendsForGroup(userId string, groupId string) (map
 	return response, nil
 }
 
-func (m *UserManager) addUserToGroup(userId string, groupId string) error {
+func (m *UserManager) addUserToGroup(userId string, groupId string, userRole string) error {
 	if !isUserValid(userId, m.connectionPool.db) {
 		return errors.New("can't add user to group. user not valid")
 	}
 
 	query := `create or replace procedure addUserToGroup(groupId character varying
-														,userId  character varying)
+														,userId  character varying
+														,user_role character varying)
 				language plpgsql
 				as $$
 				begin 
-				insert into group_members (group_id, user_id)
-				values (groupId, userId);
-
+				--
+				insert into group_members (group_id, user_id, user_role)
+				values (groupId, userId, user_role);
+				--
+				insert into notifications(from_user_id, to_user_id, notification_text, group_id)
+				select s.to_user_id, s.from_user_id, 'Accepted your invitation to ', s.group_id
+				from invitations s
+				where s.group_id = groupId
+				and s.to_user_id = userId
+				and s.status = 'N'
+				fetch first 1 row only;
+				--
 				update invitations
 			 	set status = 'A'
 				where group_id = groupId
-				and to_user_id = userId; 
+				and to_user_id = userId
+				and status = 'N';
+				--
+				commit;
+				--
 				end;$$`
 
 	_, err := m.connectionPool.db.Exec(query)
@@ -241,9 +255,9 @@ func (m *UserManager) addUserToGroup(userId string, groupId string) error {
 		return err
 	}
 
-	exequteQuery := `call addUserToGroup($1, $2);`
+	exequteQuery := `call addUserToGroup($1, $2, $3);`
 
-	_, err = m.connectionPool.db.Exec(exequteQuery, groupId, userId)
+	_, err = m.connectionPool.db.Exec(exequteQuery, groupId, userId, userRole)
 	if err != nil {
 		return err
 	}

@@ -181,11 +181,21 @@ extension UIViewController {
         self.navigationController?.pushViewController(imagePageController, animated: true)
     }
     
-    func navigateToGroupMemberProfilePage(memberId: String) {
+    func navigateToUserProfilePage(memberId: String) {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let groupMemberProfilePageController = storyBoard.instantiateViewController(withIdentifier: "GroupMemberProfilePageVC") as! GroupMemberProfilePageVC
-        groupMemberProfilePageController.currUserId = memberId
-        self.navigationController?.pushViewController(groupMemberProfilePageController, animated: true)
+        let userProfilePageController = storyBoard.instantiateViewController(withIdentifier: "ProfilePageVC") as! ProfilePageVC
+        userProfilePageController.currUserId = memberId
+        self.navigationController?.pushViewController(userProfilePageController, animated: true)
+    }
+    
+    func navigateToSendMeetingInvitationPopupPage() {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let sendMeetingInvitatioPopupPageController = storyBoard.instantiateViewController(withIdentifier: "SendMeetingInvitationPopupVC") as! SendMeetingInvitationPopupVC
+        sendMeetingInvitatioPopupPageController.providesPresentationContextTransitionStyle = true
+        sendMeetingInvitatioPopupPageController.definesPresentationContext = true
+        sendMeetingInvitatioPopupPageController.modalPresentationStyle = .overCurrentContext
+        sendMeetingInvitatioPopupPageController.modalTransitionStyle = .crossDissolve
+        self.navigationController?.present(sendMeetingInvitatioPopupPageController, animated: true)
     }
     
     func navigateToPersonalInfoPopupPage(vc: ProfilePageVC) {

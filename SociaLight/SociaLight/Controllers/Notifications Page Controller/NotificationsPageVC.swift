@@ -59,13 +59,16 @@ class NotificationsPageVC: UIViewController {
         tableView.dataSource = self
         
         tableView.keyboardDismissMode = .interactive
-        tableView.allowsSelection = true
+        tableView.allowsSelection = false
+        
+        tableView.layoutMargins.left = 0.1
+        tableView.layoutMargins.right = 0.1
         
         tableView.refreshControl = UIRefreshControl()
         tableView.refreshControl?.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
         
         tableView.separatorInset = UIEdgeInsets(top: 0, left: Constants.tableRowHeight + Constants.tableViewOffset, bottom: 0, right: Constants.tableViewOffset)
-        
+
         tableView.register(
             UINib(nibName: "NotificationCell", bundle: nil),
             forCellReuseIdentifier: "NotificationCell"
@@ -105,26 +108,21 @@ class NotificationsPageVC: UIViewController {
     func handleSuccess(response: Notifications) {
         for notification in response.notifications {
             
-            var id = ""
-            
-            if notification.isFriendshipRequest.boolValue {
-                id = "Friendship Requests"
-            } else {
-                id = "Invitations"
-            }
+            let id = notification.sendDate
             
             let notificationCellModel =  NotificationCellModel(
                 requestUniqueKey: notification.requestUniqueKey,
                 fromUserId: notification.fromUserId,
-                fromUserWholeName: notification.fromUserWholeName,
-                fromUserImageURL: Constants.getImageURLPrefix + Constants.userImagePrefix + notification.fromUserId,
-                isFriendshipRequest: notification.isFriendshipRequest.boolValue,
+                notificationTitle: notification.notificationTitle,
+                notificationText: notification.notificationText,
+                notificationType: notification.notificationType,
                 groupId: notification.groupId,
-                groupImageURL: Constants.getImageURLPrefix + Constants.groupImagePrefix + notification.groupId,
                 groupTitle: notification.groupTitle,
                 groupDescription: notification.groupDescription,
                 groupCapacity: notification.groupCapacity,
                 membersCount: notification.membersCount,
+                sendDate: notification.sendDate,
+                sendTime: notification.sendTime,
                 delegate: self
             )
             
@@ -230,7 +228,7 @@ extension NotificationsPageVC: NotificationCellDelegate {
         let userId = getUserId()
         
         loader.startAnimating()
-        service.addUserToGroup(userId: userId, groupId: notification.model.groupId) { [weak self] result in
+        service.acceptInvitation(userId: userId, fromUserId: notification.model.fromUserId, groupId: notification.model.groupId, requestUniqueKey: notification.model.requestUniqueKey) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
@@ -263,7 +261,7 @@ extension NotificationsPageVC: NotificationCellDelegate {
     }
     
     func navigateToUserPage(_ notification: NotificationCell) {
-        navigateToGroupMemberProfilePage(memberId: notification.model.fromUserId)
+        navigateToUserProfilePage(memberId: notification.model.fromUserId)
     }
     
     func navigateToGroupPage(_ notification: NotificationCell) {
@@ -310,7 +308,6 @@ extension NotificationsPageVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
         let cell = tableView.dequeueReusableCell(
             withIdentifier: "NotificationCell",
             for: indexPath
@@ -323,19 +320,8 @@ extension NotificationsPageVC: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        if tableData[indexPath.section].notifications[indexPath.row].isFriendshipRequest {
-//            return 100
-//        } else {
-//            return 120
-//        }
-//    }
-    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return Constants.tableHeaderHeight
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        return 50
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {

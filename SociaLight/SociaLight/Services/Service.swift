@@ -69,17 +69,10 @@ class Service {
                                 completion(.failure(ServiceError.noData))
                             }
                         } else {
-                            if (httpUrlResponse.value(forHTTPHeaderField: "Error") ?? "").contains("duplicate key") {
-                                completion(.failure(NSError(domain: "",
-                                                            code: 400,
-                                                            userInfo: [NSLocalizedDescriptionKey: "Such username already exists!"]
-                                                           )))
-                            } else {
-                                completion(.failure(NSError(domain: "",
-                                                            code: 400,
-                                                            userInfo: [NSLocalizedDescriptionKey: "Can't register new user!"]
-                                                           )))
-                            }
+                            completion(.failure(NSError(domain: "",
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
+                                                       )))
                         }
                     } else {
                        completion(.failure(NSError(domain: "",
@@ -136,8 +129,8 @@ class Service {
                             }
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -194,8 +187,8 @@ class Service {
                             }
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -251,8 +244,8 @@ class Service {
                             }
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -308,8 +301,8 @@ class Service {
                             }
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -366,8 +359,8 @@ class Service {
                             }
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -424,8 +417,8 @@ class Service {
                             }
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -441,7 +434,7 @@ class Service {
         }
     }
     
-    func addUserToGroup(userId: String, groupId: String, completion: @escaping (Result<String, Error>) -> ()) {
+    func addUserToGroup(userId: String, groupId: String, userRole: String, completion: @escaping (Result<String, Error>) -> ()) {
         
         components.path = "/addUserToGroup"
         
@@ -451,7 +444,8 @@ class Service {
             
             let parameters = [
                 "userId": userId,
-                "groupId": groupId
+                "groupId": groupId,
+                "userRole": userRole
             ]
             
             do {
@@ -472,8 +466,8 @@ class Service {
                             completion(.success(""))
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -524,8 +518,8 @@ class Service {
                             completion(.success("Password was changed successfully!"))
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -578,8 +572,8 @@ class Service {
                             completion(.success("Changes saved successfully!"))
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -624,8 +618,8 @@ class Service {
                             completion(.success("Image changed successfully!"))
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -685,17 +679,10 @@ class Service {
                                 completion(.failure(ServiceError.noData))
                             }
                         } else {
-                            if (httpUrlResponse.value(forHTTPHeaderField: "Error") ?? "").contains("duplicate key") {
-                                completion(.failure(NSError(domain: "",
-                                                            code: 400,
-                                                            userInfo: [NSLocalizedDescriptionKey: "You have already created group with such name. Please choose another name and try again!"]
-                                                           )))
-                            } else {
-                                completion(.failure(NSError(domain: "",
-                                                            code: 400,
-                                                            userInfo: [NSLocalizedDescriptionKey: "Can't create new Group!"]
-                                                           )))
-                            }
+                            completion(.failure(NSError(domain: "",
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
+                                                       )))
                         }
                     } else {
                        completion(.failure(NSError(domain: "",
@@ -712,7 +699,6 @@ class Service {
     
     func sendGroupInvitations(userId: String,
                               groupId: String,
-                              addSelfToGroup: String,
                               members: Array<String>,
                               completion: @escaping (Result<String, Error>) -> ()) {
         
@@ -720,8 +706,7 @@ class Service {
         
         let parameters = [
             "userId": userId,
-            "groupId": groupId,
-            "addSelfToGroup": addSelfToGroup
+            "groupId": groupId
         ]
         
         components.queryItems = parameters.map { key, value in
@@ -758,8 +743,8 @@ class Service {
                             completion(.success("OK!"))
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -811,17 +796,10 @@ class Service {
                         if httpUrlResponse.statusCode == 200 {
                             completion(.success("Changes saved successfully!"))
                         } else {
-                            if (httpUrlResponse.value(forHTTPHeaderField: "Error") ?? "").contains("duplicate key") {
-                                completion(.failure(NSError(domain: "",
-                                                            code: 400,
-                                                            userInfo: [NSLocalizedDescriptionKey: "You already have group with such name. Please choose another name and try again!"]
-                                                           )))
-                            } else {
-                                completion(.failure(NSError(domain: "",
-                                                            code: 400,
-                                                            userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
-                                                           )))
-                            }
+                            completion(.failure(NSError(domain: "",
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
+                                                       )))
                         }
                     } else {
                        completion(.failure(NSError(domain: "",
@@ -869,9 +847,9 @@ class Service {
                             completion(.success("Group leaved :("))
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                         code: 400,
-                                                         userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
-                                                        )))
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
+                                                       )))
                         }
                     } else {
                        completion(.failure(NSError(domain: "",
@@ -927,8 +905,8 @@ class Service {
                             }
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -975,8 +953,8 @@ class Service {
                             completion(.success("Send"))
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -1032,8 +1010,8 @@ class Service {
                             }
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -1081,8 +1059,8 @@ class Service {
                             completion(.success(""))
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -1129,8 +1107,8 @@ class Service {
                             completion(.success(""))
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -1179,8 +1157,8 @@ class Service {
                             completion(.success(""))
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -1227,8 +1205,8 @@ class Service {
                             completion(.success(""))
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -1270,8 +1248,8 @@ class Service {
                             completion(.success(""))
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -1323,8 +1301,8 @@ class Service {
                             }
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -1370,8 +1348,8 @@ class Service {
                             completion(.success(""))
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -1415,8 +1393,8 @@ class Service {
                             }
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -1460,8 +1438,8 @@ class Service {
                             completion(.success(""))
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -1513,8 +1491,8 @@ class Service {
                             }
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {
@@ -1566,8 +1544,8 @@ class Service {
                             }
                         } else {
                             completion(.failure(NSError(domain: "",
-                                                        code: 400,
-                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? ""]
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
                                                        )))
                         }
                     } else {

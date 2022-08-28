@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"errors"
+	"strings"
 )
 
 type GroupManager struct {
@@ -149,6 +150,9 @@ func (m *GroupManager) createGroup(userId string, groupName string, groupDescrip
 					values ($1, $2, $3, $4, $5, $6)`
 	_, err := m.connectionPool.db.Exec(insertQuery, groupId, groupName, groupDescription, membersCount, userId, isPrivate)
 	if err != nil {
+		if strings.Contains(err.Error(), "groups_uk") {
+			return nil, errors.New("you have already created group with such name. please choose another name and try again")
+		}
 		return nil, err
 	}
 
@@ -167,6 +171,9 @@ func (m *GroupManager) saveGroupUpdates(userId string, groupId string, groupName
 
 	_, err := m.connectionPool.db.Exec(updateQuery, groupName, groupDescription, groupId, userId)
 	if err != nil {
+		if strings.Contains(err.Error(), "groups_uk") {
+			return errors.New("you have already created group with such name. please choose another name and try again")
+		}
 		return err
 	}
 

@@ -22,9 +22,9 @@
 		EA6C5A80281D724F00721D7F /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6C5A7F281D724F00721D7F /* Service.swift */; };
 		EA6C5A82281FD13500721D7F /* MainPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6C5A81281FD13400721D7F /* MainPageVC.swift */; };
 		EA6C5A85281FD19000721D7F /* ProfilePageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6C5A84281FD19000721D7F /* ProfilePageVC.swift */; };
+		EA78ECB828BB973F004A297F /* SendMeetingInvitationPopupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78ECB728BB973F004A297F /* SendMeetingInvitationPopupVC.swift */; };
 		EA7C698B28B171C30030E755 /* ImagePageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7C698A28B171C30030E755 /* ImagePageVC.swift */; };
 		EA7C698D28B17D510030E755 /* ImagePageStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EA7C698C28B17D510030E755 /* ImagePageStoryboard.storyboard */; };
-		EA7C698F28B28CD80030E755 /* GroupMemberProfilePageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7C698E28B28CD80030E755 /* GroupMemberProfilePageVC.swift */; };
 		EA7C699228B2AD400030E755 /* FriendsPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7C699128B2AD3F0030E755 /* FriendsPageVC.swift */; };
 		EA7C699428B2CF860030E755 /* ImageOuterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7C699328B2CF860030E755 /* ImageOuterView.swift */; };
 		EA7C699828B359670030E755 /* MediaFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7C699628B359660030E755 /* MediaFileCell.swift */; };
@@ -88,9 +88,9 @@
 		EA6C5A7F281D724F00721D7F /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		EA6C5A81281FD13400721D7F /* MainPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPageVC.swift; sourceTree = "<group>"; };
 		EA6C5A84281FD19000721D7F /* ProfilePageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePageVC.swift; sourceTree = "<group>"; };
+		EA78ECB728BB973F004A297F /* SendMeetingInvitationPopupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMeetingInvitationPopupVC.swift; sourceTree = "<group>"; };
 		EA7C698A28B171C30030E755 /* ImagePageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePageVC.swift; sourceTree = "<group>"; };
 		EA7C698C28B17D510030E755 /* ImagePageStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ImagePageStoryboard.storyboard; sourceTree = "<group>"; };
-		EA7C698E28B28CD80030E755 /* GroupMemberProfilePageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupMemberProfilePageVC.swift; sourceTree = "<group>"; };
 		EA7C699128B2AD3F0030E755 /* FriendsPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsPageVC.swift; sourceTree = "<group>"; };
 		EA7C699328B2CF860030E755 /* ImageOuterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageOuterView.swift; sourceTree = "<group>"; };
 		EA7C699628B359660030E755 /* MediaFileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaFileCell.swift; sourceTree = "<group>"; };
@@ -245,6 +245,7 @@
 			children = (
 				EA6B195D2831789A0042B65B /* PersonalInfoPopupVC.swift */,
 				EA6B195A283163670042B65B /* ChangePasswordPopupVC.swift */,
+				EA78ECB728BB973F004A297F /* SendMeetingInvitationPopupVC.swift */,
 			);
 			path = PopupControllers;
 			sourceTree = "<group>";
@@ -304,7 +305,6 @@
 			children = (
 				EADF48C928983648001C4692 /* GroupMembersPageVC.swift */,
 				EADF48D22899A205001C4692 /* AddGroupMembersPageVC.swift */,
-				EA7C698E28B28CD80030E755 /* GroupMemberProfilePageVC.swift */,
 			);
 			path = "Group Members Page Controllers";
 			sourceTree = "<group>";
@@ -662,6 +662,7 @@
 				EA6B195E2831789A0042B65B /* PersonalInfoPopupVC.swift in Sources */,
 				EADF48CA28983649001C4692 /* GroupMembersPageVC.swift in Sources */,
 				EA9A47C42817295C006F8409 /* Extensions.swift in Sources */,
+				EA78ECB828BB973F004A297F /* SendMeetingInvitationPopupVC.swift in Sources */,
 				EADFCF6F283115D50025EEA6 /* Entities.swift in Sources */,
 				EA485DD7284BC1FF00077373 /* RoundCornerTextField.swift in Sources */,
 				EA6B195B283163670042B65B /* ChangePasswordPopupVC.swift in Sources */,
@@ -687,7 +688,6 @@
 				EA06AE7C282D56B200D84D7A /* RoundUIImageView.swift in Sources */,
 				EA7C69A628B7B4DC0030E755 /* EventCell.swift in Sources */,
 				EA9E6BD027FCB93E00101170 /* SociaLight.xcdatamodeld in Sources */,
-				EA7C698F28B28CD80030E755 /* GroupMemberProfilePageVC.swift in Sources */,
 				EA7C699828B359670030E755 /* MediaFileCell.swift in Sources */,
 				EADF48D32899A205001C4692 /* AddGroupMembersPageVC.swift in Sources */,
 				EA9E6BC827FCB93E00101170 /* SceneDelegate.swift in Sources */,

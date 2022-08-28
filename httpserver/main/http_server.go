@@ -3,9 +3,12 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
+	"time"
 )
 
 // SignIn-SignUp structs
@@ -49,8 +52,9 @@ type GetUserFriendsForGroupParams struct {
 }
 
 type AddUserToGroupParams struct {
-	UserId  string
-	GroupId string
+	UserId   string
+	GroupId  string
+	UserRole string
 }
 
 type LeaveGroupParams struct {
@@ -183,6 +187,13 @@ func isUserValid(userId string, db *sql.DB) bool {
 	}
 
 	return !(userId == "")
+}
+
+func randomString(length int) string {
+	rand.Seed(time.Now().UnixNano())
+	b := make([]byte, length)
+	rand.Read(b)
+	return fmt.Sprintf("%x", b)[:length]
 }
 
 //  ################################################################################################################
@@ -362,7 +373,7 @@ func (s *Server) addUserToGroup(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = s.userManager.addUserToGroup(params.UserId, params.GroupId)
+	err = s.userManager.addUserToGroup(params.UserId, params.GroupId, params.UserRole)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
@@ -664,7 +675,6 @@ func (s *Server) getUserNotifications(w http.ResponseWriter, req *http.Request) 
 func (s *Server) sendGroupInvitations(w http.ResponseWriter, req *http.Request) {
 	userId := req.URL.Query().Get("userId")
 	groupId := req.URL.Query().Get("groupId")
-	addSelfToGroup := req.URL.Query().Get("addSelfToGroup")
 
 	var groupMembers GroupMembers
 	dataBytes, err := ioutil.ReadAll(req.Body)
@@ -681,7 +691,7 @@ func (s *Server) sendGroupInvitations(w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	err = s.notificationManager.sendGroupInvitations(userId, groupId, addSelfToGroup, groupMembers.Members)
+	err = s.notificationManager.sendGroupInvitations(userId, groupId, groupMembers.Members)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)

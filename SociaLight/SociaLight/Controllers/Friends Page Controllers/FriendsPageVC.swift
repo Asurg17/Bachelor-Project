@@ -23,6 +23,7 @@ class FriendsPageVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "Friends"
         setupViews()
     }
     
@@ -180,7 +181,7 @@ class FriendsPageVC: UIViewController {
 extension FriendsPageVC: FriendCellDelegate {
     
     func cellDidClick(_ friend: FriendCell) {
-        navigateToGroupMemberProfilePage(memberId: friend.model.friendId)
+        navigateToUserProfilePage(memberId: friend.model.friendId)
     }
     
 }

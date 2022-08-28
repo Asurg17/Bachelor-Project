@@ -514,7 +514,7 @@ class GroupPageVC: MessagesViewController {
     @objc func joinGroup() {
         let userId = getUserId()
         
-        service.addUserToGroup(userId: userId, groupId: group!.groupId) { [weak self] result in
+        service.addUserToGroup(userId: userId, groupId: group!.groupId, userRole: Constants.member) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 switch result {

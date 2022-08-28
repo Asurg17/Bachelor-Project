@@ -183,7 +183,7 @@ extension GroupMembersPageVC: GroupMemberCellDelegate {
     
     func userIsClicked(_ member: GroupMemberCell) {
         if member.model.memberId != getUserId() {
-            navigateToGroupMemberProfilePage(memberId: member.model.memberId)
+            navigateToUserProfilePage(memberId: member.model.memberId)
         }
     }
     

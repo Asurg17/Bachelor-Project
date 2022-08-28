@@ -19,6 +19,8 @@ struct serverStruct {
 struct Constants {
     // Keys
     static let userIdKey: String = "userId"
+    static let admin: String = "A"
+    static let member: String = "M"
     
     // Warning textst
     static let unspecifiedWarningText: String = "Something went wrong!"
@@ -85,6 +87,12 @@ struct Constants {
     
     static let userImagePrefix: String = "userImage"
     static let groupImagePrefix: String = "groupImage"
+    
+    
+    // Notification keys
+    static let friendshipRequestNotificationKey = "friendship_request"
+    static let groupInvitationNotificationKey = "group_invitation"
+    static let defaultNotificationKey = "default"
 }
 
 

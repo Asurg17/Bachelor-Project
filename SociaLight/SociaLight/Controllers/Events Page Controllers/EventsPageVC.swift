@@ -36,7 +36,11 @@ class EventsPageVC: UIViewController {
  
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.title = "Events"
+        getEvents()
+    }
+    
+    func setupViews() {
         setupTableView()
     }
     
@@ -79,7 +83,7 @@ class EventsPageVC: UIViewController {
 extension EventsPageVC: EventCellDelegate {
     
     func navigateToGroupPage(_ event: EventCell) {
-        navigateToGroupMemberProfilePage(memberId: event.model.fromUserId)
+        navigateToUserProfilePage(memberId: event.model.fromUserId)
     }
     
     func navigateToUserPage(_ event: EventCell) {

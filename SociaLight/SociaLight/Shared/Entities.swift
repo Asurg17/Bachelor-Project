@@ -112,15 +112,18 @@ struct Notifications: Codable {
 }
 
 struct Notification: Codable {
-    let requestUniqueKey: String
-    let fromUserId: String
-    let fromUserWholeName: String
-    let isFriendshipRequest: String
-    let groupId: String
-    let groupTitle: String
-    let groupDescription: String
-    let groupCapacity: String
-    let membersCount: String
+    var requestUniqueKey: String
+    var fromUserId: String
+    var notificationTitle: String
+    var notificationText: String
+    var notificationType: String
+    var groupId: String
+    var groupTitle: String
+    var groupDescription: String
+    var groupCapacity: String
+    var membersCount: String
+    var sendDate: String
+    var sendTime: String
 }
 
 // Medial Files

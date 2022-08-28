@@ -18,12 +18,17 @@ class ProfilePageVC: UIViewController {
     @IBOutlet var ageLabel: UILabel!
     @IBOutlet var birthDateLabel: UILabel!
     @IBOutlet var phoneLabel: UILabel!
+    @IBOutlet var popupButtonsStackView: UIStackView!
+    @IBOutlet var sendMeetingInvitation: UIButton!
+    @IBOutlet var signOutBarButton: UIBarButtonItem!
     
     @IBOutlet var loader: UIActivityIndicatorView!
     
     private let service = Service()
     
     private let imagePicker = UIImagePickerController()
+    
+    var currUserId: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,26 +41,28 @@ class ProfilePageVC: UIViewController {
         
         loadUserInfo()
     }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        print("EFwefew")
-        if let destination = segue.destination as? PersonalInfoPopupVC {
-            destination.delegate = self
-        }
-    }
    
     func setupViews() {
-        profileImage.isUserInteractionEnabled = true
-        profileImage.addGestureRecognizer(
-            UITapGestureRecognizer(
-                target: self,
-                action: #selector(imageViewTapped(_:))
+        let isMyProfile = (currUserId == nil)
+        popupButtonsStackView.isHidden = !isMyProfile
+        //sendMeetingInvitation.isHidden = isMyProfile
+        usernameLabel.isHidden = !isMyProfile
+        
+        if isMyProfile {
+            profileImage.isUserInteractionEnabled = true
+            profileImage.addGestureRecognizer(
+                UITapGestureRecognizer(
+                    target: self,
+                    action: #selector(imageViewTapped(_:))
+                )
             )
-        )
+        } else {
+            self.navigationItem.rightBarButtonItem = nil
+        }
     }
     
     func loadUserInfo() {
-        let userId = getUserId()
+        let userId = currUserId ?? getUserId()
         
         loader.startAnimating()
         service.getUserInfo(userId: userId) { [weak self] result in
@@ -73,7 +80,7 @@ class ProfilePageVC: UIViewController {
     }
 
     func uploadUserImage(userImage: UIImage) {
-        let userId = getUserId()
+        let userId = currUserId ?? getUserId()
         
         loader.startAnimating()
         service.uploadImage(imageKey: Constants.userImagePrefix + userId, image: userImage) { [weak self] result in
@@ -121,6 +128,9 @@ class ProfilePageVC: UIViewController {
         UserDefaults.standard.set(userInfo.birthDate, forKey: "user.birthDate")
     }
     
+    @IBAction func sendMeetingInvitationButtonTouchedUpInside() {
+        navigateToSendMeetingInvitationPopupPage()
+    }
     
     @IBAction func showPersonalInfoPopup() {
         navigateToPersonalInfoPopupPage(vc: self)
