@@ -74,6 +74,12 @@ type UnfriendParams struct {
 	FriendId string
 }
 
+type AssignAdminRoleParams struct {
+	UserId   string
+	MemberId string
+	GroupId  string
+}
+
 // Group structs
 
 type SearchNewGroupsParams struct {
@@ -92,6 +98,16 @@ type CreateGroupParams struct {
 	GroupDescription string
 	MembersCount     string
 	IsPrivate        string
+}
+
+type GetGroupTitleParams struct {
+	UserId  string
+	GroupId string
+}
+
+type GetGroupTitleAndDescriptionParams struct {
+	UserId  string
+	GroupId string
 }
 
 type SaveGroupUpdatesParams struct {
@@ -115,6 +131,7 @@ type GetUserNotificationsParams struct {
 type SendFriendshipRequestParams struct {
 	FromUserId string
 	ToUserId   string
+	GroupId    string
 }
 
 type AcceptFriendshipRequestParams struct {
@@ -181,12 +198,22 @@ func isUserValid(userId string, db *sql.DB) bool {
 				from users s
 				where s.user_id = $1;`
 
-	_, err := db.Exec(getQuery, userId)
-	if err != nil {
+	var id string
+	return db.QueryRow(getQuery, userId).Scan(&id) == nil
+}
+
+func isUserGroupMember(userId string, groupId string, db *sql.DB) bool {
+	if userId == "" {
 		return false
 	}
 
-	return !(userId == "")
+	getQuery := `select s.user_id
+				from group_members s
+				where s.user_id = $1
+				and s.group_id = $2;`
+
+	var id string
+	return db.QueryRow(getQuery, userId, groupId).Scan(&id) == nil
 }
 
 func randomString(length int) string {
@@ -453,6 +480,24 @@ func (s *Server) unfriend(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func (s *Server) assignAdminRole(w http.ResponseWriter, req *http.Request) {
+	var params AssignAdminRoleParams
+
+	err := json.NewDecoder(req.Body).Decode(&params)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	err = s.userManager.assignAdminRole(params.UserId, params.MemberId, params.GroupId)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+}
+
 // Group
 
 func (s *Server) searchNewGroups(w http.ResponseWriter, req *http.Request) {
@@ -520,6 +565,60 @@ func (s *Server) createGroup(w http.ResponseWriter, req *http.Request) {
 	}
 
 	response, err := s.groupManager.createGroup(params.UserId, params.GroupName, params.GroupDescription, params.MembersCount, params.IsPrivate)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	jsonResp, err := json.Marshal(response)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+	w.Write(jsonResp)
+}
+
+func (s *Server) getGroupTitle(w http.ResponseWriter, req *http.Request) {
+	var params GetGroupTitleParams
+
+	err := json.NewDecoder(req.Body).Decode(&params)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	response, err := s.groupManager.getGroupTitle(params.UserId, params.GroupId)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	jsonResp, err := json.Marshal(response)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+	w.Write(jsonResp)
+}
+
+func (s *Server) getGroupTitleAndDescription(w http.ResponseWriter, req *http.Request) {
+	var params GetGroupTitleAndDescriptionParams
+
+	err := json.NewDecoder(req.Body).Decode(&params)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	response, err := s.groupManager.getGroupTitleAndDescription(params.UserId, params.GroupId)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
@@ -709,7 +808,7 @@ func (s *Server) sendFriendshipRequest(w http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	err = s.notificationManager.sendFriendshipRequest(params.FromUserId, params.ToUserId)
+	err = s.notificationManager.sendFriendshipRequest(params.FromUserId, params.ToUserId, params.GroupId)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
@@ -903,10 +1002,13 @@ func (s *Server) Start() {
 	http.HandleFunc("/changePassword", s.changePassword)
 	http.HandleFunc("/changePersonalInfo", s.changePersonalInfo)
 	http.HandleFunc("/unfriend", s.unfriend)
+	http.HandleFunc("/assignAdminRole", s.assignAdminRole)
 
 	// Group
 	http.HandleFunc("/leaveGroup", s.leaveGroup)
 	http.HandleFunc("/createGroup", s.createGroup)
+	http.HandleFunc("/getGroupTitle", s.getGroupTitle)
+	http.HandleFunc("/getGroupTitleAndDescription", s.getGroupTitleAndDescription)
 	http.HandleFunc("/getGroupMembers", s.getGroupMembers)
 	http.HandleFunc("/getGroupMediaFiles", s.getGroupMediaFiles)
 	http.HandleFunc("/saveGroupUpdates", s.saveGroupUpdates)

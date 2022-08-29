@@ -19,14 +19,12 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     @IBOutlet var groupMembersActionView: GroupInfoActionView!
     @IBOutlet var seeMediaActionView: GroupInfoActionView!
     @IBOutlet var leaveGroupActionView: GroupInfoActionView!
-//    @IBOutlet var joinGroupActionView: GroupInfoActionView!
     
     @IBOutlet var loader: UIActivityIndicatorView!
     
     private let service = Service()
     
     let imagePicker = UIImagePickerController()
-    var group: Group?
     
     var groupName: String?
     var groupDescription: String?
@@ -35,12 +33,18 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     
     var delegate: UpdateGroup?
     
+    var response: GetGroupTitleAndDescriptionResponse?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = ""
         
         setupViews()
-        checkGroup(group: group)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        getGroupTitleAndDescription()
     }
     
     func setupViews() {
@@ -54,16 +58,24 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
         groupMembersActionView.delegate = self
         seeMediaActionView.delegate = self
         leaveGroupActionView.delegate = self
-//        joinGroupActionView.delegate = self
         
         let isUserGroupMember = UserDefaults.standard.bool(forKey: "isUserGroupMember")
         groupMembersActionView.isHidden = !isUserGroupMember
         leaveGroupActionView.isHidden = !isUserGroupMember
-//        joinGroupActionView.isHidden = isUserGroupMember
     }
     
     func setupImageView() {
-        groupImageView.image = group!.groupImage
+        SDImageCache.shared.clearMemory()
+        SDImageCache.shared.clearDisk()
+
+        groupImageView.sd_setImage(
+            with: URL(string: (Constants.getImageURLPrefix + Constants.groupImagePrefix + getGroupId()).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!),
+            completed: { (image, error, cacheType, imageURL) in
+                if image == nil {
+                    self.groupImageView.image = UIImage(named: "GroupIcon")
+                }
+            }
+        )
         
         groupImageView.isUserInteractionEnabled = true
         groupImageView.addGestureRecognizer(
@@ -80,9 +92,7 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     }
     
     func setupLabels() {
-        groupNameLabel.text = group!.groupName
-        groupDescriptionLabel.text = group!.groupDescription
-        
+    
         groupNameLabel.isUserInteractionEnabled = true
         groupNameLabel.addGestureRecognizer(
             UITapGestureRecognizer(
@@ -99,12 +109,38 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
         )
     }
     
+    func getGroupTitleAndDescription() {
+        let userId = getUserId()
+        let groupId = getGroupId()
+        
+        let parameters = [
+            "userId": userId,
+            "groupId": groupId
+        ]
+        
+        loader.startAnimating()
+        service.getGroupTitleAndDescription(parameters: parameters) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.loader.stopAnimating()
+                switch result {
+                case .success(let response):
+                    self.response = response
+                    self.groupNameLabel.text = response.groupTitle
+                    self.groupDescriptionLabel.text = response.groupDescription
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
+                }
+            }
+        }
+    }
+    
     func actionDidInitiated(_ sender: GroupInfoActionView) {
         switch sender {
           case groupMembersActionView:
-            navigateToGroupMembersPage(group: group!)
+            navigateToGroupMembersPage()
           case seeMediaActionView:
-            navigateToGroupMediaFilesPage(group: group!)
+            navigateToGroupMediaFilesPage()
           case leaveGroupActionView:
             leaveGroup()
           default:
@@ -114,9 +150,10 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     
     func leaveGroup() {
         let userId = getUserId()
+        let groupId = getGroupId()
         
         loader.startAnimating()
-        service.leaveGroup(userId: userId, groupId: group!.groupId) { [weak self] result in
+        service.leaveGroup(userId: userId, groupId: groupId) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
@@ -134,14 +171,13 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
         let _ = getUserId()
             
         loader.startAnimating()
-        service.uploadImage(imageKey: Constants.groupImagePrefix + group!.groupId, image: image) { [weak self] result in
+        service.uploadImage(imageKey: Constants.groupImagePrefix + getGroupId(), image: image) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
                 switch result {
                 case .success(_):
                     self.groupImageView.image = image
-                    self.group!.groupImage = image
                     self.groupHasUpdated = true
                 case .failure(let error):
                     self.showWarningAlert(warningText: error.localizedDescription.description)
@@ -153,11 +189,12 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     func updateGroup() {
         if hasLabelsChaned() {
             let userId = getUserId()
+            let groupId = getGroupId()
                 
             loader.startAnimating()
             service.saveGroupUpdates(
                 userId: userId,
-                groupId: group!.groupId,
+                groupId: groupId,
                 groupName: (groupName ?? groupNameLabel.text)!,
                 groupDescription: (groupDescription ?? groupDescriptionLabel.text) ?? ""
             ) { [weak self] result in
@@ -167,9 +204,7 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
                     switch result {
                     case .success(_):
                         self.groupHasUpdated = true
-                        self.group!.groupName = self.groupName!
                         self.groupNameLabel.text = self.groupName
-                        self.group!.groupDescription = self.groupDescription!
                         self.groupDescriptionLabel.text = self.groupDescription
                     case .failure(let error):
                         self.showWarningAlert(warningText: error.localizedDescription.description)
@@ -198,16 +233,19 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     
     @IBAction func back() {
         if groupHasUpdated {
-            delegate?.update(
-                updatedGroup: group!
-            )
+            if let groupTitle = groupNameLabel.text {
+                delegate?.update(
+                    groupTitle: groupTitle
+                )
+            }
         }
         navigationController?.popViewController(animated: true)
     }
 
             
     @objc func showAlert(_ sender:AnyObject){
-        if UserDefaults.standard.bool(forKey: "isUserGroupMember") && group!.userRole == Constants.admin {
+        guard let userRole = response?.userRole else { return }
+        if UserDefaults.standard.bool(forKey: "isUserGroupMember") && userRole == Constants.admin {
             let alert = UIAlertController(
                 title: "Group Name & Description",
                 message: "",
@@ -215,7 +253,7 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
             )
             alert.addTextField(configurationHandler: { [unowned self] textField in
                 textField.placeholder = "Group Name"
-                textField.text = group!.groupName
+                textField.text = groupNameLabel.text
                 textField.keyboardType = .default
                 textField.delegate = self
                 textField.addTarget(
@@ -226,7 +264,7 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
             })
             alert.addTextField(configurationHandler: { [unowned self] textField in
                 textField.placeholder = "Group Description"
-                textField.text = group!.groupDescription
+                textField.text = groupDescriptionLabel.text
                 textField.keyboardType = .default
                 textField.delegate = self
                 textField.addTarget(
@@ -273,7 +311,8 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     }
     
     @objc func imageViewTapped(_ sender:AnyObject){
-        if UserDefaults.standard.bool(forKey: "isUserGroupMember") && group!.userRole == Constants.admin {
+        guard let userRole = response?.userRole else { return }
+        if UserDefaults.standard.bool(forKey: "isUserGroupMember") && userRole == Constants.admin {
             imagePicker.sourceType = .photoLibrary
             imagePicker.delegate = self
             imagePicker.allowsEditing = true

@@ -37,7 +37,7 @@ class NewGroupSecondPageVC: UIViewController {
         super.viewDidLoad()
         
         setupViews()
-        checkGroup(group: group)
+        hideKeyboardWhenTappedAround()
         getFiends()
     }
     
@@ -52,6 +52,7 @@ class NewGroupSecondPageVC: UIViewController {
     }
     
     func setupViews() {
+        friendNameTextField.delegate = self
         configureTableView()
         configureCollectionView()
     }
@@ -235,7 +236,7 @@ class NewGroupSecondPageVC: UIViewController {
                     self.loader.stopAnimating()
                     switch result {
                     case .success(_):
-                        self.navigateToGroupPage(group: self.group!, isUserGroupMember: true)
+                        self.navigateToGroupPage(groupId: self.group!.groupId, isUserGroupMember: true)
                     case .failure(let error):
                         self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
@@ -243,7 +244,7 @@ class NewGroupSecondPageVC: UIViewController {
             }
         } else {
             self.loader.stopAnimating()
-            self.navigateToGroupPage(group: self.group!, isUserGroupMember: true)
+            self.navigateToGroupPage(groupId: self.group!.groupId, isUserGroupMember: true)
         }
     }
     
@@ -288,20 +289,13 @@ extension NewGroupSecondPageVC: FriendCellDelegate {
     
     func cellDidClick(_ friend: FriendCell) {
         if(friend.model.isSelected) {
-            //if collectionData.count < (group?.membersMaxNumber ?? 0) - 1 {
-                collectionData.append(
-                    SelectedFriendCellModel(
-                        friendId: friend.model.friendId,
-                        friendFristName: friend.model.friendFristName,
-                        friendImage: friend.model.friendImage
-                    )
+            collectionData.append(
+                SelectedFriendCellModel(
+                    friendId: friend.model.friendId,
+                    friendFristName: friend.model.friendFristName,
+                    friendImage: friend.model.friendImage
                 )
-//            } else {
-//                friend.toggleSelection()
-//                showWarningAlert(
-//                    warningText: Constants.maximalGroupMembersNumberReachedWarningText
-//                )
-//            }
+            )
         } else {
             if let offset = collectionData.firstIndex(where: {$0.friendId == friend.model.friendId}) {
                 collectionData.remove(at: offset)
@@ -311,6 +305,14 @@ extension NewGroupSecondPageVC: FriendCellDelegate {
     }
     
 }
+
+extension NewGroupSecondPageVC: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+}
+
 
 extension NewGroupSecondPageVC: UITableViewDelegate, UITableViewDataSource {
     

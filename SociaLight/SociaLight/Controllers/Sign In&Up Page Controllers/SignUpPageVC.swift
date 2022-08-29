@@ -16,14 +16,30 @@ class SignUpPageVC: UIViewController {
     @IBOutlet var passwordTextField:        DesignableUITextField!
     @IBOutlet var confirmPasswordTextField: DesignableUITextField!
     
+    @IBOutlet var button: UIButton!
+    
     @IBOutlet var loader: UIActivityIndicatorView!
     
     private let service = Service()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         setupViews()
+        hideKeyboardWhenTappedAround()
+        registerForKeyboardNotifications()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+    }
+    
+    func registerForKeyboardNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange(notification:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     }
 
     func setupViews() {
@@ -112,6 +128,25 @@ class SignUpPageVC: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
+    
+    @objc func keyboardWillChange(notification: NSNotification) {
+        guard let keyboardRect = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else  {
+            return
+        }
+    
+        if notification.name == UIResponder.keyboardWillShowNotification
+            || notification.name == UIResponder.keyboardWillChangeFrameNotification {
+
+            let lastViewYCoordinate = button.frame.origin.y + button.frame.height
+            
+            if keyboardRect.origin.y < lastViewYCoordinate {
+                view.frame.origin.y = keyboardRect.origin.y - lastViewYCoordinate - Constants.bottomOffset
+            }
+        } else {
+            view.frame.origin.y = 0
+        }
+    }
+    
 }
 
 extension SignUpPageVC: UITextFieldDelegate {
@@ -131,13 +166,6 @@ extension SignUpPageVC: UITextFieldDelegate {
             field.borderColor = UIColor.gray.cgColor
         }
     }
-    
-//    return fullNameTextField.text!.components(separatedBy: " ")[0]
-//}
-//
-//func getLastName() -> String {
-//    let words = fullNameTextField.text!.components(separatedBy: " ")
-//    return words[1..<words.count].joined(separator: " ")
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         

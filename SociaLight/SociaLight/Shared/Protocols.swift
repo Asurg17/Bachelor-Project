@@ -12,7 +12,7 @@ protocol DismissProtocol {
 }
 
 protocol UpdateGroup {
-    func update(updatedGroup: Group)
+    func update(groupTitle: String)
 }
 
 // --------------Cells & Reusable Views Protocols------------------
@@ -22,8 +22,8 @@ protocol NotificationCellDelegate: AnyObject {
     func friendshipRejected(_ notification: NotificationCell)
     func acceptInvitation(_ notification: NotificationCell)
     func rejectInvitation(_ notification: NotificationCell)
-    func navigateToGroupPage(_ notification: NotificationCell)
-    func navigateToUserPage(_ notification: NotificationCell)
+    func navigateToGroupPage(groupId: String)
+    func navigateToUserPage(userId: String)
 }
 
 protocol EventCellDelegate: AnyObject {

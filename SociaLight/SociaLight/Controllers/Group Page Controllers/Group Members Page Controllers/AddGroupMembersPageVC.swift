@@ -26,8 +26,6 @@ class AddGroupMembersPageVC: UIViewController {
     private var tableData = [FriendCellModel]()
     private var collectionData = [SelectedFriendCellModel]()
     
-    var group: Group?
-    
     lazy var flowLayout: UICollectionViewFlowLayout = {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .horizontal
@@ -39,7 +37,7 @@ class AddGroupMembersPageVC: UIViewController {
         self.title = "Add Group Members"
         
         setupViews()
-        checkGroup(group: group)
+        hideKeyboardWhenTappedAround()
         getFiends()
     }
     
@@ -54,6 +52,7 @@ class AddGroupMembersPageVC: UIViewController {
     }
     
     func setupViews() {
+        friendNameTextField.delegate = self
         configureTableView()
         configureCollectionView()
     }
@@ -98,9 +97,10 @@ class AddGroupMembersPageVC: UIViewController {
     
     func getFiends() {
         let userId = getUserId()
-            
+        let groupId = getGroupId()
+        
         loader.startAnimating()
-        service.getUserFriends(userId: userId, groupId: group!.groupId) { [weak self] result in
+        service.getUserFriends(userId: userId, groupId: groupId) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
@@ -171,10 +171,11 @@ class AddGroupMembersPageVC: UIViewController {
     
     func addGroupMembers() {
         let userId = getUserId()
+        let groupId = getGroupId()
         
         let members = getMembers()
         if members.count > 0 {
-            service.sendGroupInvitations(userId: userId, groupId: group!.groupId, members: members) { [weak self] result in
+            service.sendGroupInvitations(userId: userId, groupId: groupId, members: members) { [weak self] result in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     self.loader.stopAnimating()
@@ -182,7 +183,11 @@ class AddGroupMembersPageVC: UIViewController {
                     case .success(_):
                         self.back()
                     case .failure(let error):
-                        self.showWarningAlert(warningText: error.localizedDescription.description)
+                        if error.localizedDescription.contains("removed") {
+                            self.showWarningAlertWithHandler(warningText: "You can't send group invitations cause " + error.localizedDescription)
+                        } else {
+                            self.showWarningAlert(warningText: error.localizedDescription.description)
+                        }
                     }
                 }
             }
@@ -229,20 +234,13 @@ extension AddGroupMembersPageVC: FriendCellDelegate {
     
     func cellDidClick(_ friend: FriendCell) {
         if(friend.model.isSelected) {
-            //if collectionData.count < (group!.membersMaxNumber - group!.membersCurrentNumber) {
-                collectionData.append(
-                    SelectedFriendCellModel(
-                        friendId: friend.model.friendId,
-                        friendFristName: friend.model.friendFristName,
-                        friendImage: friend.model.friendImage
-                    )
+            collectionData.append(
+                SelectedFriendCellModel(
+                    friendId: friend.model.friendId,
+                    friendFristName: friend.model.friendFristName,
+                    friendImage: friend.model.friendImage
                 )
-//            } else {
-//                friend.toggleSelection()
-//                showWarningAlert(
-//                    warningText: Constants.maximalGroupMembersNumberReachedWarningText
-//                )
-//            }
+            )
         } else {
             if let offset = collectionData.firstIndex(where: {$0.friendId == friend.model.friendId}) {
                 collectionData.remove(at: offset)
@@ -252,6 +250,16 @@ extension AddGroupMembersPageVC: FriendCellDelegate {
     }
     
 }
+
+extension AddGroupMembersPageVC: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+}
+
 
 extension AddGroupMembersPageVC: UITableViewDelegate, UITableViewDataSource {
     

@@ -33,6 +33,8 @@ func (m *GroupManager) searchNewGroups(userId string, groupIdentifier string) (m
 				from groups g
 				where (lower(g.group_title) like lower('%' || $2 || '%')
 				or lower(g.group_description) like lower('%' || $2 || '%'))
+				and g.is_private = false
+				and g.group_status = 'A'
 				and not exists(select * from group_members m where m.group_id = g.group_id and m.user_id = $1)
 				and exists (select * from users s where s.user_id = $1)
 				order by lower(g.group_title);`
@@ -93,6 +95,7 @@ func (m *GroupManager) getGroupMembers(userId string, groupId string) (map[strin
 						from friends f
 						where f.user_id = $1
 						and f.friend_id = s.user_id) are_already_friends
+				,m.user_role
 				from users s
 				,group_members m
 				where m.group_id = $2
@@ -118,7 +121,8 @@ func (m *GroupManager) getGroupMembers(userId string, groupId string) (map[strin
 		var memberPhone string
 		var isFriendRequestAlreadySent string
 		var areAlreadyFriends string
-		err = rows.Scan(&memberId, &memberFirstName, &memberLastName, &memberPhone, &isFriendRequestAlreadySent, &areAlreadyFriends)
+		var userRole string
+		err = rows.Scan(&memberId, &memberFirstName, &memberLastName, &memberPhone, &isFriendRequestAlreadySent, &areAlreadyFriends, &userRole)
 		if err != nil {
 			return nil, err
 		}
@@ -129,6 +133,7 @@ func (m *GroupManager) getGroupMembers(userId string, groupId string) (map[strin
 		member["memberPhone"] = memberPhone
 		member["isFriendRequestAlreadySent"] = isFriendRequestAlreadySent
 		member["areAlreadyFriends"] = areAlreadyFriends
+		member["userRole"] = userRole
 
 		members = append(members, member)
 	}
@@ -158,6 +163,57 @@ func (m *GroupManager) createGroup(userId string, groupName string, groupDescrip
 
 	response := make(map[string]string)
 	response["groupId"] = groupId
+
+	return response, nil
+}
+
+func (m *GroupManager) getGroupTitle(userId string, groupId string) (map[string]string, error) {
+	if !isUserValid(userId, m.connectionPool.db) {
+		return nil, errors.New("can't get group title. user not valid")
+	}
+
+	var groupTitle string
+
+	getQuery := `select s.group_title
+				from groups s
+				where s.group_id = $1;`
+
+	if err := m.connectionPool.db.QueryRow(getQuery, groupId).Scan(&groupTitle); err != nil {
+		return nil, err
+	}
+
+	response := make(map[string]string)
+	response["groupTitle"] = groupTitle
+
+	return response, nil
+}
+
+func (m *GroupManager) getGroupTitleAndDescription(userId string, groupId string) (map[string]string, error) {
+	if !isUserValid(userId, m.connectionPool.db) {
+		return nil, errors.New("can't get group title and description. user not valid")
+	}
+
+	var groupTitle string
+	var groupDescription string
+	var userRole string
+
+	getQuery := `select s.group_title,
+					    s.group_description,
+						coalesce((select m.user_role
+						from group_members m
+						where m.group_id = $1
+						and m.user_id = $2), 'M') user_role
+				from groups s
+				where s.group_id = $1;`
+
+	if err := m.connectionPool.db.QueryRow(getQuery, groupId, userId).Scan(&groupTitle, &groupDescription, &userRole); err != nil {
+		return nil, err
+	}
+
+	response := make(map[string]string)
+	response["groupTitle"] = groupTitle
+	response["groupDescription"] = groupDescription
+	response["userRole"] = userRole
 
 	return response, nil
 }

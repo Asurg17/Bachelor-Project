@@ -14,7 +14,7 @@ class NewGroupFirstPageVC: UIViewController {
     @IBOutlet var membersCount: UIButton!
     @IBOutlet var groupName: UITextField!
     @IBOutlet var groupDescription: UITextField!
-    
+
     var isGroupPrivate = false
     
     let imagePicker = UIImagePickerController()
@@ -25,6 +25,7 @@ class NewGroupFirstPageVC: UIViewController {
         super.viewDidLoad()
         
         setupViews()
+        hideKeyboardWhenTappedAround()
     }
     
     override func viewDidLayoutSubviews() {
@@ -63,10 +64,6 @@ class NewGroupFirstPageVC: UIViewController {
             showWarningAlert(warningText: Constants.groupNameWarningText)
             return false
         }
-//        if let _ = pickerValue {} else {
-//            showWarningAlert(warningText: Constants.membersCountNotChosenWarningText)
-//            return false
-//        }
         return true
     }
 
@@ -95,8 +92,7 @@ class NewGroupFirstPageVC: UIViewController {
         present(picker, animated: true)
     }
     
-    
-    @IBAction func changeGroupPrivacy() {
+    @IBAction func changeGroupPrivacy(_ sender: Any) {
         isGroupPrivate.toggle()
     }
     

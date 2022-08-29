@@ -22,8 +22,17 @@ func (m *MessageManager) sendMessage(messageId string, messageType string, sende
 		return errors.New("can't send message. user not valid")
 	}
 
+	if !isUserGroupMember(senderId, groupId, m.connectionPool.db) {
+		return errors.New("you have been removed from this group")
+	}
+
 	query := `insert into messages(message_id, type, sender_id, group_id, content, send_date, send_date_timestamp, duration)
-				values ($1, $2, $3, $4, $5, $6, $7, $8);`
+				select CAST($1 AS VARCHAR), CAST($2 AS VARCHAR), CAST($3 AS VARCHAR), CAST($4 AS VARCHAR),
+					CAST($5 AS VARCHAR), CAST($6 AS VARCHAR), CAST($7 AS VARCHAR), CAST($8 AS VARCHAR)
+				where exists (select s.user_id
+							from group_members s
+							where s.user_id = $3
+							and s.group_id = $4);`
 
 	_, err := m.connectionPool.db.Exec(query, messageId, messageType, senderId, groupId, content, sendDate, sendDateTimestamp, duration)
 	if err != nil {

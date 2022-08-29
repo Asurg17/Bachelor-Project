@@ -98,9 +98,11 @@ class NotificationCell: UITableViewCell {
     
     @IBAction func navigate() {
         if model.notificationType == Constants.friendshipRequestNotificationKey {
-            model.delegate?.navigateToUserPage(self)
+            model.delegate?.navigateToUserPage(userId: model.fromUserId)
         } else if model.notificationType == Constants.groupInvitationNotificationKey {
-            model.delegate?.navigateToGroupPage(self)
+            model.delegate?.navigateToGroupPage(groupId: model.groupId)
+        } else {
+            model.delegate?.navigateToUserPage(userId: model.fromUserId)
         }
     }
     

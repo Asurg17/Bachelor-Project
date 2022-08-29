@@ -16,10 +16,11 @@ class GroupMemberCellModel {
     var memberPhone: String
     var isFriendRequestAlreadySent: String
     var areAlreadyFriends: String
+    var userRole: String
     
     weak var delegate: GroupMemberCellDelegate?
 
-    init(memberId: String, memberFristName: String, memberLastName: String, memberImageURL: String, memberPhone: String, isFriendRequestAlreadySent: String, areAlreadyFriends: String, delegate: GroupMemberCellDelegate?) {
+    init(memberId: String, memberFristName: String, memberLastName: String, memberImageURL: String, memberPhone: String, isFriendRequestAlreadySent: String, areAlreadyFriends: String, userRole: String, delegate: GroupMemberCellDelegate?) {
         self.memberId = memberId
         self.memberFristName = memberFristName
         self.memberLastName = memberLastName
@@ -28,6 +29,7 @@ class GroupMemberCellModel {
         self.delegate = delegate
         self.isFriendRequestAlreadySent = isFriendRequestAlreadySent
         self.areAlreadyFriends = areAlreadyFriends
+        self.userRole = userRole
     }
 }
 
@@ -36,6 +38,7 @@ class GroupMemberCell: UITableViewCell {
     @IBOutlet private var memberImageView: UIImageView!
     @IBOutlet private var memberName: UILabel!
     @IBOutlet private var memberPhone: UILabel!
+    @IBOutlet private var adminLabel: UILabel!
     @IBOutlet private var actionButton: UIButton!
 
     var model: GroupMemberCellModel!
@@ -57,6 +60,7 @@ class GroupMemberCell: UITableViewCell {
             }
         )
         
+        adminLabel.isHidden = !(model.userRole == Constants.admin)
         memberName.text = model.memberFristName + " " + model.memberLastName
         memberPhone.text = model.memberPhone
     }

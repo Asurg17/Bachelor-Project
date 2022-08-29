@@ -31,6 +31,7 @@ class MainPageVC: UIViewController, GroupCellDelegate {
         super.viewDidLoad()
         
         setupViews()
+        hideKeyboardWhenTappedAround()
         configureCollectionView()
     }
     
@@ -139,27 +140,20 @@ class MainPageVC: UIViewController, GroupCellDelegate {
     }
     
     func cellDidClick(_ group: GroupCell) {
+        filterTextField.text = ""
         navigateToGroupPage(
-            group: Group(
-                groupId: group.model.groupId,
-                groupImage: (group.groupImage.image ?? UIImage(named: "Groupicon"))!,
-                membersCurrentNumber: Int(group.model.groupMembersNum) ?? 0,
-                membersMaxNumber: Int(group.model.groupCapacity) ?? 0,
-                groupName: group.model.groupTitle,
-                groupDescription: group.model.groupDescription,
-                isPrivate: false,
-                userRole: group.model.userRole
-            ),
+            groupId: group.model.groupId,
             isUserGroupMember: true
         )
     }
     
-    
     @IBAction func goToFindGroupVC() {
+        if filterTextField.isFirstResponder { filterTextField.resignFirstResponder() }
         navigateToFindGroupPage()
     }
     
     @IBAction func goToNewGroupVC() {
+        if filterTextField.isFirstResponder { filterTextField.resignFirstResponder() }
         navigateToNewGroupPage()
     }
     
@@ -177,7 +171,6 @@ class MainPageVC: UIViewController, GroupCellDelegate {
 }
 
 extension MainPageVC: UICollectionViewDelegate, UICollectionViewDataSource {
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if (collectionData.count == 0) { showWarningMessage() } else { hideWarningMessage() }
         return collectionData.count
@@ -191,7 +184,6 @@ extension MainPageVC: UICollectionViewDelegate, UICollectionViewDataSource {
         cell.layoutIfNeeded()
         return cell
     }
-    
 }
 
 extension MainPageVC: UICollectionViewDelegateFlowLayout {

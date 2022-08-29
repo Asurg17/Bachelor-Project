@@ -22,6 +22,18 @@ struct UserIdResponse: Codable {
     let userId: String
 }
 
+// -------------Group----------------
+
+struct GetGroupTitleResponse: Codable {
+    let groupTitle: String
+}
+
+struct GetGroupTitleAndDescriptionResponse: Codable {
+    let groupTitle: String
+    let groupDescription: String
+    let userRole: String
+}
+
 // -------------UserInfo--------------
 
 struct UserInfoResponse: Codable {
@@ -88,6 +100,7 @@ struct GroupMember: Codable {
     let memberPhone: String
     let isFriendRequestAlreadySent: String
     let areAlreadyFriends: String
+    let userRole: String
 }
 
 // -----------Create Group Request & Response-------------

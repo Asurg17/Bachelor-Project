@@ -35,6 +35,7 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
         super.viewDidLoad()
         
         setupViews()
+        hideKeyboardWhenTappedAround()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -110,16 +111,7 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
     
     func cellDidClick(_ group: GroupCell) {
         self.navigateToGroupPage(
-            group: Group(
-                groupId: group.model.groupId,
-                groupImage: (group.groupImage.image ?? UIImage(named: "Groupicon"))!,
-                membersCurrentNumber: (Int(group.model.groupMembersNum) ?? 0) + 1,
-                membersMaxNumber: Int(group.model.groupCapacity) ?? 0,
-                groupName: group.model.groupTitle,
-                groupDescription: group.model.groupDescription,
-                isPrivate: false,
-                userRole: group.model.userRole
-            ),
+            groupId: group.model.groupId,
             isUserGroupMember: false
         )
     }

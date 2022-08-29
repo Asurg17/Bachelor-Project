@@ -19,6 +19,7 @@ struct serverStruct {
 struct Constants {
     // Keys
     static let userIdKey: String = "userId"
+    static let groupIdKey: String = "groupId"
     static let admin: String = "A"
     static let member: String = "M"
     
@@ -42,8 +43,9 @@ struct Constants {
     static let saveChangesErrorText: String = "Can't save Changes"
     static let createGroupErrorText: String = "Can't create Group"
     static let sendFriendshipRequestErrorText: String = "Can't send friendship request"
-    static let fatalError: String = "Internal error! Please close app and then reopen it!"
+    static let fatalError: String = "Fatal Error!"
     
+    static let bottomOffset = 10.0
     // Picker Data
     static let pickerData: [Int] = [2, 3, 4, 5, 10, 20, 25, 50]
     

@@ -25,6 +25,7 @@ class FriendsPageVC: UIViewController {
         super.viewDidLoad()
         self.title = "Friends"
         setupViews()
+        hideKeyboardWhenTappedAround()
     }
     
     override func viewDidLayoutSubviews() {
@@ -43,6 +44,7 @@ class FriendsPageVC: UIViewController {
     }
     
     func setupViews() {
+        friendNameTextField.delegate = self
         setupTableView()
     }
     
@@ -181,7 +183,17 @@ class FriendsPageVC: UIViewController {
 extension FriendsPageVC: FriendCellDelegate {
     
     func cellDidClick(_ friend: FriendCell) {
+        if friendNameTextField.isFirstResponder { friendNameTextField.resignFirstResponder() }
         navigateToUserProfilePage(memberId: friend.model.friendId)
+    }
+    
+}
+
+extension FriendsPageVC: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
     
 }

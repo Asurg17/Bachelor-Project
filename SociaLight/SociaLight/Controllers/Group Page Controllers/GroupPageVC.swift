@@ -25,14 +25,7 @@ class GroupPageVC: MessagesViewController {
     private var didFinishLoadingMessages = false
     
     private var isInputBarButtonItemHidden = true
-    
-    var group: Group?
-    
-    // Action Buttons
-    let cameraButton = InputBarButtonItem()
-    let imageButton = InputBarButtonItem()
-    let microfonButton = InputBarButtonItem()
-    
+
     private var selfSender: Sender? {
         let userId = getUserId()
 
@@ -42,6 +35,13 @@ class GroupPageVC: MessagesViewController {
             displayName: "Me"
         )
     }
+    
+//  Action Buttons
+    
+    let cameraButton = InputBarButtonItem()
+    let imageButton = InputBarButtonItem()
+    let microfonButton = InputBarButtonItem()
+        
     
 //  Audio
     
@@ -64,18 +64,17 @@ class GroupPageVC: MessagesViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        checkGroup(group: group)
-        self.title = group!.groupName
-        
         setupViews()
-        getAllGroupMessages()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-                
         setupBottomViews()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        getGroupTitle()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -263,9 +262,28 @@ class GroupPageVC: MessagesViewController {
         }
     }
     
+    func getGroupTitle() {
+        let parameters = [
+            "userId": getUserId(),
+            "groupId": getGroupId()
+        ]
+        service.getGroupTitle(parameters: parameters) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.title = response
+                    self.getAllGroupMessages()
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
+                }
+            }
+        }
+    }
+    
     func getAllGroupMessages() {
         let parameters = [
-            "groupId": group!.groupId,
+            "groupId": getGroupId(),
             "userId": getUserId()
         ]
         
@@ -353,7 +371,7 @@ class GroupPageVC: MessagesViewController {
             }
             
             let parameters = [
-                "groupId": group!.groupId,
+                "groupId": getGroupId(),
                 "userId": getUserId(),
                 "lastMessageSentDateTimestamp": lastMessageSentDateTimestamp
             ]
@@ -436,7 +454,8 @@ class GroupPageVC: MessagesViewController {
                 messagesCollectionView.reloadData()
                 messagesCollectionView.scrollToLastItem()
             } else {
-                messagesCollectionView.reloadDataAndKeepOffset()
+//                messagesCollectionView.reloadDataAndKeepOffset()
+                messagesCollectionView.reloadData()
             }
         }
     }
@@ -499,7 +518,7 @@ class GroupPageVC: MessagesViewController {
     }
     
     @IBAction func showGroupInfo() {
-        navigateToGrouInfoPage(group: group!, vc: self)
+        navigateToGrouInfoPage(vc: self)
     }
     
     @IBAction func back() {
@@ -513,8 +532,9 @@ class GroupPageVC: MessagesViewController {
     
     @objc func joinGroup() {
         let userId = getUserId()
+        let groupId = getGroupId()
         
-        service.addUserToGroup(userId: userId, groupId: group!.groupId, userRole: Constants.member) { [weak self] result in
+        service.addUserToGroup(userId: userId, groupId: groupId, userRole: Constants.member) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 switch result {
@@ -531,9 +551,8 @@ class GroupPageVC: MessagesViewController {
 
 extension GroupPageVC: UpdateGroup {
     
-    func update(updatedGroup: Group) {
-        self.group = updatedGroup
-        self.title = self.group?.groupName
+    func update(groupTitle: String) {
+        self.title = groupTitle
     }
     
 }
@@ -706,7 +725,7 @@ extension GroupPageVC: InputBarAccessoryViewDelegate {
             "messageId": collectionMessage.messageId,
             "type": collectionMessage.kind.description,
             "senderId": collectionMessage.sender.senderId,
-            "groupId": group!.groupId,
+            "groupId": getGroupId(),
             "content": getMessageContent(message: collectionMessage),
             "sendDate": GroupPageVC.dateFormatter.string(from: collectionMessage.sentDate),
             "sendDateTimestamp": collectionMessage.sentDateTimestamp,
@@ -719,11 +738,13 @@ extension GroupPageVC: InputBarAccessoryViewDelegate {
                 switch result {
                 case .success(_):
                     self.messageInputBar.inputTextView.text = nil
-//                    self.messages.append(collectionMessage)
-//                    self.messagesCollectionView.reloadData()
-//                    self.messagesCollectionView.scrollToLastItem()
                 case .failure(let error):
-                    self.showWarningAlert(warningText: "Message send failed! Error: " + error.localizedDescription.description)
+                    if error.localizedDescription.contains("removed") {
+                        self.showWarningAlertWithHandler(warningText: "You can no longer send messages cause " + error.localizedDescription)
+                    } else {
+                        self.showWarningAlert(warningText: "Message send failed! Error: " + error.localizedDescription.description)
+                        
+                    }
                 }
             }
         }
@@ -763,7 +784,7 @@ extension GroupPageVC: InputBarAccessoryViewDelegate {
         let userId = getUserId()
 
         let dateString = GroupPageVC.dateFormatter.string(from: Date())
-        let newIdentifier = "\(group!.groupId)_\(userId)_\(dateString)"
+        let newIdentifier = "\(getGroupId())_\(userId)_\(dateString)"
 
         return newIdentifier
     }

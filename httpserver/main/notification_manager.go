@@ -150,14 +150,22 @@ func (m *NotificationManager) sendGroupInvitations(userId string, groupId string
 		return errors.New("can't send group invitations. user not valid")
 	}
 
+	if !isUserGroupMember(userId, groupId, m.connectionPool.db) {
+		return errors.New("you have been removed from this group")
+	}
+
 	for _, groupMemberId := range members {
 		query := `insert into invitations ("from_user_id", "to_user_id", "group_id") 
 					select  CAST($1 AS VARCHAR), CAST($2 AS VARCHAR), CAST($3 AS VARCHAR)
 					where not exists (select *
-									from invitations s
-									where s.to_user_id = $2
-									and s.group_id = $3
-									and s.status = 'N');`
+									from invitations i
+									where i.to_user_id = $2
+									and i.group_id = $3
+									and i.status = 'N')
+					and exists (select *
+								from friends s
+								where s.user_id = $1
+								and s.friend_id = $2);`
 		_, err := m.connectionPool.db.Exec(query, userId, groupMemberId, groupId)
 		if err != nil && !strings.Contains(err.Error(), "invitations_uk") { //invitations_uk means someone already has sent invitations to user
 			return err
@@ -167,15 +175,23 @@ func (m *NotificationManager) sendGroupInvitations(userId string, groupId string
 	return nil
 }
 
-func (m *NotificationManager) sendFriendshipRequest(fromUserId string, toUserId string) error {
+func (m *NotificationManager) sendFriendshipRequest(fromUserId string, toUserId string, groupId string) error {
 	if !isUserValid(fromUserId, m.connectionPool.db) || !isUserValid(toUserId, m.connectionPool.db) {
 		return errors.New("can't send friendship request. user not valid")
 	}
 
-	insertQuery := `insert into friendship_requests(from_user_id, to_user_id) 
-					values ($1, $2);`
+	if !isUserGroupMember(fromUserId, groupId, m.connectionPool.db) {
+		return errors.New("you have been removed from this group")
+	}
 
-	_, err := m.connectionPool.db.Exec(insertQuery, fromUserId, toUserId)
+	insertQuery := `insert into friendship_requests(from_user_id, to_user_id) 
+					select CAST($1 AS VARCHAR), CAST($2 AS VARCHAR)
+					where exists (select s.user_id
+								from group_members s
+								where s.user_id = $1
+								and s.group_id = $3);`
+
+	_, err := m.connectionPool.db.Exec(insertQuery, fromUserId, toUserId, groupId)
 	if err != nil {
 		return err
 	}
@@ -259,7 +275,11 @@ func (m *NotificationManager) acceptInvitation(fromUserId string, toUserId strin
 				begin
 				--
 				insert into group_members (group_id, user_id)
-				values (groupId, toUserId);
+				select groupId, toUserId
+				where not exists (select *
+					from group_members m
+					where m.group_id = groupId
+					and m.user_id = toUserId);
 				--
 				insert into notifications(from_user_id, to_user_id, notification_text, group_id)
 				values (toUserId, fromUserId, 'Accepted your invitation to ', groupId);

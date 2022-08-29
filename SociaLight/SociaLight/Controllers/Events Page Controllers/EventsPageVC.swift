@@ -88,16 +88,7 @@ extension EventsPageVC: EventCellDelegate {
     
     func navigateToUserPage(_ event: EventCell) {
         navigateToGroupPage(
-            group: Group(
-                groupId: event.model.groupId,
-                groupImage: event.model.image,
-                membersCurrentNumber: Int(event.model.membersCount) ?? 0,
-                membersMaxNumber: Int(event.model.groupCapacity) ?? 0,
-                groupName: event.model.groupTitle,
-                groupDescription: event.model.groupDescription,
-                isPrivate: false,
-                userRole: event.model.userRole
-            ),
+            groupId: event.model.groupId,
             isUserGroupMember: true //tu datova arc wamova eventi
         )
     }

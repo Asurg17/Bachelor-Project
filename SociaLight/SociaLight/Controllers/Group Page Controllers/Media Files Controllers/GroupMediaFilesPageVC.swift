@@ -26,13 +26,10 @@ class GroupMediaFilesPageVC: UIViewController {
         return flowLayout
     }()
     
-    var group: Group?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Group Media Files"
         
-        checkGroup(group: group)
         setupViews()
     }
     
@@ -69,7 +66,7 @@ class GroupMediaFilesPageVC: UIViewController {
     func getGroupMediaFiles() {
         let parameters = [
             "userId":  getUserId(),
-            "groupId": group!.groupId
+            "groupId": getGroupId()
         ]
         
         service.getGroupMediaFiles(parameters: parameters) { [weak self] result in

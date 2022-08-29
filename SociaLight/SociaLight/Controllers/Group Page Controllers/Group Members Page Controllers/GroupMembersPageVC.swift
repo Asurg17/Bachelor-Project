@@ -22,14 +22,12 @@ class GroupMembersPageVC: UIViewController {
     
     private let refreshControl = UIRefreshControl()
     
-    var group: Group?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Group Members"
         
         setupViews()
-        checkGroup(group: group)
+        hideKeyboardWhenTappedAround()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -45,12 +43,8 @@ class GroupMembersPageVC: UIViewController {
     }
 
     func setupViews() {
+        memberNameTextField.delegate = self
         configureTableView()
-    }
-    
-    func checkGroupMembersNum () {
-        group!.membersCurrentNumber = tableData.count
-        addNewMemberBarButton.isEnabled = !(group!.membersMaxNumber == group!.membersCurrentNumber)
     }
     
     func configureTableView() {
@@ -80,9 +74,10 @@ class GroupMembersPageVC: UIViewController {
     
     func getGroupMembers() {
         let userId = getUserId()
+        let groupId = getGroupId()
         
         loader.startAnimating()
-        service.getGroupMembers(userId: userId, groupId: group!.groupId) { [weak self] result in
+        service.getGroupMembers(userId: userId, groupId: groupId) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
@@ -108,13 +103,21 @@ class GroupMembersPageVC: UIViewController {
                     memberPhone: member.memberPhone,
                     isFriendRequestAlreadySent: member.isFriendRequestAlreadySent,
                     areAlreadyFriends: member.areAlreadyFriends,
+                    userRole: member.userRole,
                     delegate: self)
             )
         }
         members = groupMembers
         tableData = groupMembers
-        //checkGroupMembersNum()
         tableView.reloadData()
+    }
+    
+    func gerUserRole() -> String {
+        if let offset = members.firstIndex(where: {$0.memberId == getUserId()}) {
+            return members[offset].userRole
+        }
+        
+        return Constants.member
     }
     
     func filter(filterString: String) {
@@ -140,13 +143,62 @@ class GroupMembersPageVC: UIViewController {
         memberNameTextField.resignFirstResponder()
     }
     
+    func removeUserFromGroup(at indexPath: IndexPath, memberId: String) {
+        let groupId = getGroupId()
+        
+        loader.startAnimating()
+        service.leaveGroup(userId: memberId, groupId: groupId) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.loader.stopAnimating()
+                switch result {
+                case .success(_):
+                    if let offset = self.members.firstIndex(where: { $0.memberId ==  self.tableData[indexPath.row].memberId }) {
+                        self.members.remove(at: offset)
+                    
+                        self.tableData.remove(at: indexPath.row)
+                        self.tableView.beginUpdates()
+                        self.tableView.deleteRows(at: [indexPath], with: .automatic)
+                        self.tableView.endUpdates()
+                    }
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
+                }
+            }
+        }
+    }
+    
+    func assignAdminRole(at indexPath: IndexPath, memberId: String) {
+        let userId = getUserId()
+        
+        let parameters = [
+            "userId": userId,
+            "memberId": memberId,
+            "groupId": getGroupId()
+        ]
+        
+        service.assignAdminRole(parameters: parameters) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.loader.stopAnimating()
+                switch result {
+                case .success(_):
+                    self.getGroupMembers()
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
+                }
+            }
+        }
+    }
+    
     
     @IBAction func back() {
         navigationController?.popViewController(animated: true)
     }
     
     @IBAction func addNewMembers() {
-        navigateToAddGroupMembersPage(group: group!)
+        if memberNameTextField.isFirstResponder { memberNameTextField.resignFirstResponder() }
+        navigateToAddGroupMembersPage()
     }
     
     
@@ -166,8 +218,9 @@ extension GroupMembersPageVC: GroupMemberCellDelegate {
  
     func sendFriendshipRequest(_ member: GroupMemberCell) {
         let userId = getUserId()
+        let groupId = getGroupId()
         
-        service.sendFriendshipRequest(fromUserId: userId, toUserId: member.model.memberId) { [weak self] result in
+        service.sendFriendshipRequest(fromUserId: userId, toUserId: member.model.memberId, groupId: groupId) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
@@ -175,7 +228,11 @@ extension GroupMembersPageVC: GroupMemberCellDelegate {
                 case .success(_):
                     ()
                 case .failure(let error):
-                    self.showWarningAlert(warningText: error.localizedDescription.description)
+                    if error.localizedDescription.contains("removed") {
+                        self.showWarningAlertWithHandler(warningText: "You can no longer send group invitations " + error.localizedDescription)
+                    } else {
+                        self.showWarningAlert(warningText: error.localizedDescription.description)
+                    }
                 }
             }
         }
@@ -185,6 +242,15 @@ extension GroupMembersPageVC: GroupMemberCellDelegate {
         if member.model.memberId != getUserId() {
             navigateToUserProfilePage(memberId: member.model.memberId)
         }
+    }
+    
+}
+
+extension GroupMembersPageVC: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
     
 }
@@ -212,6 +278,32 @@ extension GroupMembersPageVC: UITableViewDelegate, UITableViewDataSource {
         }
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        if gerUserRole() == Constants.admin {
+            let memberId = tableData[indexPath.row].memberId
+            if memberId != getUserId() {
+                let removeUserAction = UIContextualAction(style: .destructive, title: "Remove", handler: { _,_,_ in
+                    self.removeUserFromGroup(at: indexPath, memberId: memberId)
+                })
+                removeUserAction.image = UIImage(systemName: "person.fill.xmark")
+                
+                let assignAdminRoleAction = UIContextualAction(style: .normal, title: "Assign Admin Role", handler: { _,_,_ in
+                    self.assignAdminRole(at: indexPath, memberId: memberId)
+                })
+                assignAdminRoleAction.backgroundColor = UIColor.FlatColor.Blue.Denim
+                
+                let actions = [
+                    removeUserAction,
+                    assignAdminRoleAction
+                ]
+                
+                let configuration = UISwipeActionsConfiguration(actions: actions)
+                return configuration
+            }
+        }
+        return nil
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

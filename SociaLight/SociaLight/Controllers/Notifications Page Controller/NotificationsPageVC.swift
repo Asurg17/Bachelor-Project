@@ -154,7 +154,7 @@ class NotificationsPageVC: UIViewController {
     
     func removeFromTable(elem: NotificationCellModel){
         for section in 0...tableData.count-1 {
-            if let row = tableData[section].notifications.firstIndex(where: { $0.requestUniqueKey == elem.requestUniqueKey }) {
+            if let row = tableData[section].notifications.firstIndex(where: { $0.requestUniqueKey == elem.requestUniqueKey && $0.notificationType == elem.notificationType }) {
                 let indexPath = IndexPath(row: row, section: section)
                 
                 if tableData[indexPath.section].notifications.count == 1 {
@@ -260,22 +260,13 @@ extension NotificationsPageVC: NotificationCellDelegate {
         }
     }
     
-    func navigateToUserPage(_ notification: NotificationCell) {
-        navigateToUserProfilePage(memberId: notification.model.fromUserId)
+    func navigateToUserPage(userId: String) {
+        navigateToUserProfilePage(memberId: userId)
     }
     
-    func navigateToGroupPage(_ notification: NotificationCell) {
+    func navigateToGroupPage(groupId: String) {
         navigateToGroupPage(
-            group: Group(
-                groupId: notification.model.groupId,
-                groupImage: notification.model.image,
-                membersCurrentNumber: Int(notification.model.membersCount) ?? 0,
-                membersMaxNumber: Int(notification.model.groupCapacity) ?? 0,
-                groupName: notification.model.groupTitle,
-                groupDescription: notification.model.groupDescription,
-                isPrivate: false,
-                userRole: "M"
-            ),
+            groupId: groupId,
             isUserGroupMember: false
         )
     }
@@ -321,7 +312,7 @@ extension NotificationsPageVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 50
+        return Constants.tableHeaderHeight
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {

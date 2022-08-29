@@ -77,6 +77,7 @@ func (m *UserManager) getUserGroups(userId string) (map[string][]map[string]stri
 				from groups s
 					,group_members m
 				where s.group_id = m.group_id
+				and s.group_status = 'A'
 				and m.user_id = $1
 				order by m.inp_date desc;`
 
@@ -230,7 +231,11 @@ func (m *UserManager) addUserToGroup(userId string, groupId string, userRole str
 				begin 
 				--
 				insert into group_members (group_id, user_id, user_role)
-				values (groupId, userId, user_role);
+				select groupId, userId, user_role
+				where not exists (select *
+					from group_members m
+					where m.group_id = groupId
+					and m.user_id = userId);
 				--
 				insert into notifications(from_user_id, to_user_id, notification_text, group_id)
 				select s.to_user_id, s.from_user_id, 'Accepted your invitation to ', s.group_id
@@ -345,6 +350,39 @@ func (m *UserManager) unfriend(userId string, friendId string) error {
 	if err != nil {
 		return err
 	}
+
+	return nil
+}
+
+func (m *UserManager) assignAdminRole(userId string, memberId string, groupId string) error {
+	if !isUserValid(userId, m.connectionPool.db) && !isUserValid(memberId, m.connectionPool.db) {
+		return errors.New("can't assign admin role. user not valid")
+	}
+
+	updateQuery := `update group_members set user_role = 
+					(case user_id
+					when $2 then 'M'
+					else 'A' end)
+					where group_id = $1
+					and user_id in ($2, $3)
+					and exists(select *
+						from group_members m
+						where m.user_id = $2
+						and group_id = $1)
+					and exists(select *
+						from group_members m
+						where m.user_id = $3
+						and group_id = $1);`
+
+	_, err := m.connectionPool.db.Exec(updateQuery, groupId, userId, memberId)
+	if err != nil {
+		return err
+	}
+
+	insertQuery := `insert into notifications(from_user_id, to_user_id, notification_text, group_id)
+					values ($1, $2, 'Granted you the Administrator rights of the ', $3);`
+
+	_, _ = m.connectionPool.db.Exec(insertQuery, userId, memberId, groupId)
 
 	return nil
 }

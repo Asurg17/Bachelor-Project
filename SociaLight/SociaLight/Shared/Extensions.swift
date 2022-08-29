@@ -30,6 +30,14 @@ extension UIViewController {
         }
     }
     
+    func getGroupId() -> String {
+        if let groupId = UserDefaults.standard.string(forKey: Constants.groupIdKey){
+            return groupId
+        } else {
+            fatalError(Constants.fatalError)
+        }
+    }
+    
     func showWarningAlert(warningText: String?) {
         let alert = UIAlertController(
             title: "Warning",
@@ -44,6 +52,24 @@ extension UIViewController {
             )
         )
         present(alert, animated: true, completion: nil)
+    }
+    
+    func showWarningAlertWithHandler(warningText: String) {
+        let alert = UIAlertController(
+            title: "Warning",
+            message: warningText,
+            preferredStyle: .alert
+        )
+        alert.addAction(
+            UIAlertAction(
+                title: "Ok",
+                style: .default,
+                handler: { [unowned self] _ in
+                    self.navigationController?.popToRootViewController(animated: true)
+                }
+            )
+        )
+        self.present(alert, animated: true, completion: nil)
     }
     
     func handleError(errorText: String?) -> ErrorView {
@@ -86,12 +112,6 @@ extension UIViewController {
         return true
     }
     
-    func checkGroup(group: Group?) {
-        guard let _ = group else {
-            fatalError(Constants.unspecifiedErrorText)
-        }
-    }
-    
     func checkIfContainsOnlyNumbers(str: String) -> Bool {
         if (str == "") { return true }
         let digitCharacters = CharacterSet.decimalDigits
@@ -102,6 +122,15 @@ extension UIViewController {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM dd yyyy"
         return formatter.string(from: date)
+    }
+    
+    func hideKeyboardWhenTappedAround() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
     }
     
     // ---------------Navigation--------------
@@ -137,40 +166,36 @@ extension UIViewController {
         self.navigationController?.pushViewController(newGroupSecondPageController, animated: true)
     }
     
-    func navigateToGroupPage(group: Group, isUserGroupMember: Bool) {
+    func navigateToGroupPage(groupId: String, isUserGroupMember: Bool) {
+        UserDefaults.standard.set(groupId, forKey: Constants.groupIdKey)
         UserDefaults.standard.set(isUserGroupMember, forKey: "isUserGroupMember")
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let groupPageController = storyBoard.instantiateViewController(withIdentifier: "GroupPageVC") as! GroupPageVC
-        groupPageController.group = group
         self.navigationController?.pushViewController(groupPageController, animated: true)
     }
     
-    func navigateToGrouInfoPage(group: Group, vc: GroupPageVC) {
+    func navigateToGrouInfoPage(vc: GroupPageVC) {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let groupInfoPagePageController = storyBoard.instantiateViewController(withIdentifier: "GroupInfoPageVC") as! GroupInfoPageVC
         groupInfoPagePageController.delegate = vc
-        groupInfoPagePageController.group = group
         self.navigationController?.pushViewController(groupInfoPagePageController, animated: true)
     }
     
-    func navigateToGroupMembersPage(group: Group) {
+    func navigateToGroupMembersPage() {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let groupMembersPageController = storyBoard.instantiateViewController(withIdentifier: "GroupMembersPageVC") as! GroupMembersPageVC
-        groupMembersPageController.group = group
         self.navigationController?.pushViewController(groupMembersPageController, animated: true)
     }
     
-    func navigateToGroupMediaFilesPage(group: Group) {
+    func navigateToGroupMediaFilesPage() {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let groupMediaFilesPageController = storyBoard.instantiateViewController(withIdentifier: "GroupMediaFilesPageVC") as! GroupMediaFilesPageVC
-        groupMediaFilesPageController.group = group
         self.navigationController?.pushViewController(groupMediaFilesPageController, animated: true)
     }
     
-    func navigateToAddGroupMembersPage(group: Group) {
+    func navigateToAddGroupMembersPage() {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let addGroupMembersPageController = storyBoard.instantiateViewController(withIdentifier: "AddGroupMembersPageVC") as! AddGroupMembersPageVC
-        addGroupMembersPageController.group = group
         self.navigationController?.pushViewController(addGroupMembersPageController, animated: true)
     }
     

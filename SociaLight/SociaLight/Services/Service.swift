@@ -697,6 +697,112 @@ class Service {
         }
     }
     
+    func getGroupTitle(parameters: [String:String], completion: @escaping (Result<String, Error>) -> ()) {
+        
+        components.path = "/getGroupTitle"
+
+        if let url = components.url {
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            if let data = data {
+                                let decoder = JSONDecoder()
+                                do {
+                                    let resp = try decoder.decode(GetGroupTitleResponse.self, from: data)
+                                    completion(.success(resp.groupTitle))
+                                } catch {
+                                    completion(.failure(error))
+                                }
+                            } else {
+                                completion(.failure(ServiceError.noData))
+                            }
+                        } else {
+                            completion(.failure(NSError(domain: "",
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
+                                                       )))
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    }
+    
+    func getGroupTitleAndDescription(parameters: [String:String], completion: @escaping (Result<GetGroupTitleAndDescriptionResponse, Error>) -> ()) {
+        
+        components.path = "/getGroupTitleAndDescription"
+
+        if let url = components.url {
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            if let data = data {
+                                let decoder = JSONDecoder()
+                                do {
+                                    let resp = try decoder.decode(GetGroupTitleAndDescriptionResponse.self, from: data)
+                                    completion(.success(resp))
+                                } catch {
+                                    completion(.failure(error))
+                                }
+                            } else {
+                                completion(.failure(ServiceError.noData))
+                            }
+                        } else {
+                            completion(.failure(NSError(domain: "",
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
+                                                       )))
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    }
+    
     func sendGroupInvitations(userId: String,
                               groupId: String,
                               members: Array<String>,
@@ -922,7 +1028,7 @@ class Service {
         }
     }
     
-    func sendFriendshipRequest(fromUserId: String, toUserId: String, completion: @escaping (Result<String, Error>) -> ()) {
+    func sendFriendshipRequest(fromUserId: String, toUserId: String, groupId: String, completion: @escaping (Result<String, Error>) -> ()) {
         
         components.path = "/sendFriendshipRequest"
         
@@ -932,7 +1038,8 @@ class Service {
             
             let parameters = [
                 "fromUserId": fromUserId,
-                "toUserId": toUserId
+                "toUserId": toUserId,
+                "groupId": groupId
             ]
             
             do {
@@ -1391,6 +1498,49 @@ class Service {
                             } else {
                                 completion(.failure(ServiceError.noData))
                             }
+                        } else {
+                            completion(.failure(NSError(domain: "",
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
+                                                       )))
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    }
+    
+    func assignAdminRole(parameters: [String:String],  completion: @escaping (Result<String, Error>) -> ()) {
+        
+        components.path = "/assignAdminRole"
+        
+        if let url = components.url {
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            completion(.success(""))
                         } else {
                             completion(.failure(NSError(domain: "",
                                                         code: httpUrlResponse.statusCode,
