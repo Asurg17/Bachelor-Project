@@ -16,6 +16,8 @@ class AddGroupMembersPageVC: UIViewController {
     @IBOutlet var warningLabel: UILabel!
     @IBOutlet var collectionViewWarningLabel: UILabel!
     
+    @IBOutlet var button: UIButton!
+    
     @IBOutlet var loader: UIActivityIndicatorView!
     
     private let service = Service()
@@ -34,8 +36,6 @@ class AddGroupMembersPageVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Add Group Members"
-        
         setupViews()
         hideKeyboardWhenTappedAround()
         getFiends()
@@ -104,6 +104,7 @@ class AddGroupMembersPageVC: UIViewController {
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
+                self.refreshControl.endRefreshing()
                 switch result {
                 case .success(let response):
                     self.handleSuccess(response: response)
@@ -169,12 +170,13 @@ class AddGroupMembersPageVC: UIViewController {
         loader.stopAnimating()
     }
     
-    func addGroupMembers() {
+    func sendGroupInvitations() {
         let userId = getUserId()
         let groupId = getGroupId()
         
         let members = getMembers()
         if members.count > 0 {
+            button.isEnabled = false
             service.sendGroupInvitations(userId: userId, groupId: groupId, members: members) { [weak self] result in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
@@ -189,6 +191,7 @@ class AddGroupMembersPageVC: UIViewController {
                             self.showWarningAlert(warningText: error.localizedDescription.description)
                         }
                     }
+                    self.button.isEnabled = true
                 }
             }
         }
@@ -211,7 +214,7 @@ class AddGroupMembersPageVC: UIViewController {
     }
     
     @IBAction func add() {
-        addGroupMembers()
+        sendGroupInvitations()
     }
     
     @IBAction func back() {
@@ -221,7 +224,6 @@ class AddGroupMembersPageVC: UIViewController {
     @objc private func didPullToRefresh(_ sender: Any) {
         clear()
         getFiends()
-        self.refreshControl.endRefreshing()
     }
     
     @objc func textFieldDidChange(_ textField: UITextField) {

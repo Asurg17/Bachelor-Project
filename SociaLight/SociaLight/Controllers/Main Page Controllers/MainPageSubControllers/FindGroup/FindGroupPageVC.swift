@@ -77,6 +77,7 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
                     guard let self = self else { return }
                     DispatchQueue.main.async {
                         self.loader.stopAnimating()
+                        self.refreshControl.endRefreshing()
                         switch result {
                         case .success(let response):
                             self.handleSuccess(response: response)
@@ -127,7 +128,6 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
     
     @objc private func didPullToRefresh(_ sender: Any) {
         searchNewGroups()
-        self.refreshControl.endRefreshing()
     }
     
     @IBAction func back() {

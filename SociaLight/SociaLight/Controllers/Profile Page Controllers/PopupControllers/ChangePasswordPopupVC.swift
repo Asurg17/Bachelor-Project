@@ -56,6 +56,7 @@ class ChangePasswordPopupVC: UIViewController {
                         let userId = getUserId()
                         
                         loader.startAnimating()
+                        button.isEnabled = false
                         service.changePassword(
                             userId: userId,
                             oldPassword: oldPasswordTextField.text!,
@@ -70,12 +71,17 @@ class ChangePasswordPopupVC: UIViewController {
                                 case .failure(let error):
                                     self.showWarningAlert(warningText: error.localizedDescription.description)
                                 }
+                                self.button.isEnabled = true
                             }
                         }
+                    } else {
+                        showWarningAlert(warningText: Constants.passwordLengthWarningText)
                     }
                 } else {
                     showWarningAlert(warningText: Constants.samePasswordsWarningText)
                 }
+            } else {
+                showWarningAlert(warningText: Constants.passwordDoesNotMatchWarningText)
             }
         } else {
             showWarningAlert(warningText: Constants.fieldsAreNotFilledWarningText)

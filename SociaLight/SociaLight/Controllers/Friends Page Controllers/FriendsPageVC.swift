@@ -77,6 +77,7 @@ class FriendsPageVC: UIViewController {
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
+                self.refreshControl.endRefreshing()
                 switch result {
                 case .success(let response):
                     self.handleSuccess(response: response)
@@ -171,7 +172,6 @@ class FriendsPageVC: UIViewController {
     @objc private func didPullToRefresh(_ sender: Any) {
         clear()
         getFiends()
-        self.refreshControl.endRefreshing()
     }
     
     @objc func textFieldDidChange(_ textField: UITextField) {

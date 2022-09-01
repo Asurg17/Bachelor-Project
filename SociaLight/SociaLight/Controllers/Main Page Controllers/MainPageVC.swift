@@ -78,6 +78,7 @@ class MainPageVC: UIViewController, GroupCellDelegate {
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
+                self.refreshControl.endRefreshing()
                 switch result {
                 case .success(let response):
                     self.handleSuccess(response: response)
@@ -161,7 +162,6 @@ class MainPageVC: UIViewController, GroupCellDelegate {
     @objc private func didPullToRefresh(_ sender: Any) {
         clearFilterText()
         getUserGroups()
-        self.refreshControl.endRefreshing()
     }
     
     @objc func textFieldDidChange(_ textField: UITextField) {

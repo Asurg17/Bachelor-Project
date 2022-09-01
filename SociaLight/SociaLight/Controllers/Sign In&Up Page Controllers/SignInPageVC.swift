@@ -57,6 +57,7 @@ class SignInPageVC: UIViewController {
         if checkIfAllViewsAreFilled() {
             if checkPasswordLength(password: passwordTextField.text!) {
                 loader.startAnimating()
+                button.isEnabled = false
                 service.validateUser(
                     username: usernameTextField.text!.lowercased(),
                     password: passwordTextField.text!
@@ -70,8 +71,11 @@ class SignInPageVC: UIViewController {
                         case .failure(let error):
                             self.showWarningAlert(warningText: error.localizedDescription.description)
                         }
+                        self.button.isEnabled = true
                     }
                 }
+            } else {
+                showWarningAlert(warningText: Constants.passwordLengthWarningText)
             }
         } else {
             showWarningAlert(warningText: Constants.fieldsAreNotFilledWarningText)

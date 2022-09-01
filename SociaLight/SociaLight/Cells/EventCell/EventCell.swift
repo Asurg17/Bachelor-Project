@@ -53,8 +53,6 @@ class EventCell: UITableViewCell {
     
     func configure(with model: EventCellModel) {
         self.model = model
-        
-        
     }
         
     @IBAction func navigate() {

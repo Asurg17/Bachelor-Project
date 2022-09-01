@@ -8,8 +8,21 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"sync"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
+
+// Web socket
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
+
+var msgConnections = make(map[string]*websocket.Conn)
+var msgConnectionsMutex = &sync.Mutex{}
 
 // SignIn-SignUp structs
 
@@ -175,10 +188,39 @@ type GetAllGroupMessagesParams struct {
 	GroupId string
 }
 
-type GetNewMessagesParams struct {
-	UserId                       string
-	GroupId                      string
-	LastMessageSentDateTimestamp string
+type GetGroupNewMessagesParams struct {
+	UserId               string
+	GroupId              string
+	LastMessageUniqueKey string
+}
+
+type GetGroupOldMessagesParams struct {
+	UserId                string
+	GroupId               string
+	FirstMessageUniqueKey string
+}
+
+// Event structs
+
+type CreateNewEventParams struct {
+	UserId           string
+	GroupId          string
+	EventName        string
+	EventDescription string
+	Place            string
+	Date             string
+	Time             string
+	FormattedDate    string
+	EventUniqueKey   string
+}
+
+// Task structs
+
+type CreateNewTaskParams struct {
+	UserId         string
+	AssigneeId     string
+	Task           string
+	EventUniqueKey string
 }
 
 // Additional structs
@@ -935,8 +977,8 @@ func (s *Server) getAllGroupMessages(w http.ResponseWriter, req *http.Request) {
 	w.Write(jsonResp)
 }
 
-func (s *Server) getNewMessages(w http.ResponseWriter, req *http.Request) {
-	var params GetNewMessagesParams
+func (s *Server) getGroupNewMessages(w http.ResponseWriter, req *http.Request) {
+	var params GetGroupNewMessagesParams
 
 	err := json.NewDecoder(req.Body).Decode(&params)
 	if err != nil {
@@ -945,7 +987,7 @@ func (s *Server) getNewMessages(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	response, err := s.messageManager.getNewMessages(params.UserId, params.GroupId, params.LastMessageSentDateTimestamp)
+	response, err := s.messageManager.getGroupNewMessages(params.UserId, params.GroupId, params.LastMessageUniqueKey)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
@@ -962,6 +1004,108 @@ func (s *Server) getNewMessages(w http.ResponseWriter, req *http.Request) {
 	w.Write(jsonResp)
 }
 
+func (s *Server) getGroupOldMessages(w http.ResponseWriter, req *http.Request) {
+	var params GetGroupOldMessagesParams
+
+	err := json.NewDecoder(req.Body).Decode(&params)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	response, err := s.messageManager.getGroupOldMessages(params.UserId, params.GroupId, params.FirstMessageUniqueKey)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	jsonResp, err := json.Marshal(response)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+	w.Write(jsonResp)
+}
+
+// Events
+
+func (s *Server) createNewEvent(w http.ResponseWriter, req *http.Request) {
+	var params CreateNewEventParams
+
+	err := json.NewDecoder(req.Body).Decode(&params)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	err = s.eventManager.createNewEvent(params)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+}
+
+// Task
+
+func (s *Server) createNewTask(w http.ResponseWriter, req *http.Request) {
+	var params CreateNewTaskParams
+
+	err := json.NewDecoder(req.Body).Decode(&params)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	err = s.taskManager.createNewTask(params)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+}
+
+// Websocket
+
+func messagesWsEndpoint(w http.ResponseWriter, r *http.Request) {
+	userId := r.URL.Query().Get("userId")
+
+	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+
+	ws, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println(err)
+	}
+
+	msgConnectionsMutex.Lock()
+	msgConnections[userId] = ws
+	msgConnectionsMutex.Unlock()
+
+	fmt.Println(len(msgConnections))
+	fmt.Println(msgConnections)
+	log.Println("Client Successfully Connected...")
+
+	reader(ws, userId)
+}
+
+func reader(conn *websocket.Conn, userId string) {
+	for {
+		_, _, err := conn.ReadMessage()
+		if err != nil {
+			msgConnectionsMutex.Lock()
+			delete(msgConnections, userId)
+			msgConnectionsMutex.Unlock()
+			return
+		}
+	}
+}
+
 type Server struct {
 	signInUpManager     *SignInUpManager
 	userManager         *UserManager
@@ -969,6 +1113,8 @@ type Server struct {
 	fileManager         *FileManager
 	notificationManager *NotificationManager
 	messageManager      *MessageManager
+	eventManager        *EventManager
+	taskManager         *TaskManager
 }
 
 func NewServer(signInUpManager *SignInUpManager,
@@ -976,7 +1122,9 @@ func NewServer(signInUpManager *SignInUpManager,
 	groupManager *GroupManager,
 	fileManager *FileManager,
 	notificationManager *NotificationManager,
-	messageManager *MessageManager) *Server {
+	messageManager *MessageManager,
+	eventManager *EventManager,
+	taskManager *TaskManager) *Server {
 	return &Server{
 		signInUpManager:     signInUpManager,
 		userManager:         userManager,
@@ -984,6 +1132,8 @@ func NewServer(signInUpManager *SignInUpManager,
 		fileManager:         fileManager,
 		notificationManager: notificationManager,
 		messageManager:      messageManager,
+		eventManager:        eventManager,
+		taskManager:         taskManager,
 	}
 }
 
@@ -1032,7 +1182,14 @@ func (s *Server) Start() {
 	// Messages
 	http.HandleFunc("/sendMessage", s.sendMessage)
 	http.HandleFunc("/getAllGroupMessages", s.getAllGroupMessages)
-	http.HandleFunc("/getNewMessages", s.getNewMessages)
+	http.HandleFunc("/getGroupNewMessages", s.getGroupNewMessages)
+	http.HandleFunc("/getGroupOldMessages", s.getGroupOldMessages)
+
+	// Events
+	http.HandleFunc("/createNewEvent", s.createNewEvent)
+
+	// Websocket
+	http.HandleFunc("/messagesWsEndpoint", messagesWsEndpoint)
 
 	// Listen And Serve
 	log.Fatal(http.ListenAndServe(":9000", nil))

@@ -28,8 +28,6 @@ class GroupMediaFilesPageVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Group Media Files"
-        
         setupViews()
     }
     
@@ -72,6 +70,7 @@ class GroupMediaFilesPageVC: UIViewController {
         service.getGroupMediaFiles(parameters: parameters) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
+                self.refreshControl.endRefreshing()
                 switch result {
                 case .success(let response):
                     self.handleSuccess(mediaFiles: response.mediaFiles)
@@ -114,7 +113,6 @@ class GroupMediaFilesPageVC: UIViewController {
     
     @objc private func didPullToRefresh(_ sender: Any) {
         getGroupMediaFiles()
-        self.refreshControl.endRefreshing()
     }
 }
 

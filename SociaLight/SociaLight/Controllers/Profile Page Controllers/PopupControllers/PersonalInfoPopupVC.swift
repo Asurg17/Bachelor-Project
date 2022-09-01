@@ -54,9 +54,8 @@ class PersonalInfoPopupVC: UIViewController {
         datePicker.datePickerMode = .date
         datePicker.addTarget(self, action: #selector(birthDateChange(datePicker:)), for: UIControl.Event.valueChanged)
         datePicker.preferredDatePickerStyle = .wheels
-        datePicker.frame.size = CGSize(width: 0, height: 150)
         datePicker.maximumDate = Date()
-        
+        datePicker.locale = Locale(identifier: "en_US_POSIX")
         birthDateTextField.inputView = datePicker
     }
     
@@ -76,6 +75,7 @@ class PersonalInfoPopupVC: UIViewController {
             let userId = getUserId()
                 
             loader.startAnimating()
+            button.isEnabled = false
             service.changePersonalInfo(
                 userId: userId,
                 age: getUserAge(),
@@ -92,6 +92,7 @@ class PersonalInfoPopupVC: UIViewController {
                     case .failure(let error):
                         self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
+                    self.button.isEnabled = true
                 }
             }
         } else {

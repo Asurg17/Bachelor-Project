@@ -40,7 +40,7 @@ extension SendMeetingInvitationPopupVC: UITextFieldDelegate {
         
         if let text = textField.text,
            let textRange = Range(range, in: text) {
-            let updatedText = text.replacingCharacters(in: textRange, with: string)
+            let _ = text.replacingCharacters(in: textRange, with: string)
             
 //            if textField == phoneTextField {
 //                if !checkIfContainsOnlyNumbers(str: updatedText) { return false }

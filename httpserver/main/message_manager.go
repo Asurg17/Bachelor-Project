@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 	"errors"
+
+	"github.com/gorilla/websocket"
 )
 
 type MessageManager struct {
@@ -16,6 +18,37 @@ func NewMessageManager(connectionPool *PGConnectionPool) *MessageManager {
 }
 
 // Manager Functions
+
+func (m *MessageManager) notifyGroupMembers(messageId string, groupId string) error {
+	getQuery := `select m.user_id
+				from group_members m
+				where m.group_id = $1;`
+
+	rows, err := m.connectionPool.db.Query(getQuery, groupId)
+	if err != nil && err != sql.ErrNoRows {
+		return err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var userId string
+		err = rows.Scan(&userId)
+		if err != nil {
+			return err
+		}
+
+		msgConnectionsMutex.Lock()
+		if conn, found := msgConnections[userId]; found {
+			if err := conn.WriteMessage(websocket.TextMessage, []byte("messages updated")); err != nil {
+				msgConnectionsMutex.Unlock()
+				return err
+			}
+		}
+		msgConnectionsMutex.Unlock()
+	}
+
+	return nil
+}
 
 func (m *MessageManager) sendMessage(messageId string, messageType string, senderId string, groupId string, content string, sendDate string, sendDateTimestamp string, duration string) error {
 	if !isUserValid(senderId, m.connectionPool.db) {
@@ -39,6 +72,11 @@ func (m *MessageManager) sendMessage(messageId string, messageType string, sende
 		return err
 	}
 
+	err = m.notifyGroupMembers(messageId, groupId)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -47,7 +85,9 @@ func (m *MessageManager) getAllGroupMessages(userId string, groupId string) (map
 		return nil, errors.New("can't get group messages. user not valid")
 	}
 
-	getQuery := `select m.sender_id,
+	getQuery := `select m.* 
+				from (select m.id,
+						m.sender_id,
 						(select s.first_name
 						from users s
 						where s.user_id = m.sender_id) name,
@@ -59,7 +99,8 @@ func (m *MessageManager) getAllGroupMessages(userId string, groupId string) (map
 						m.duration
 					from messages m
 					where m.group_id = $1
-					order by m.send_date_timestamp;`
+					order by m.id desc limit 30) m
+					order by id;`
 
 	rows, err := m.connectionPool.db.Query(getQuery, groupId)
 	if err != nil && err != sql.ErrNoRows {
@@ -70,6 +111,7 @@ func (m *MessageManager) getAllGroupMessages(userId string, groupId string) (map
 	messages := make([]map[string]string, 0)
 
 	for rows.Next() {
+		var messageUniqueKey string
 		var senderId string
 		var senderName string
 		var messageId string
@@ -78,11 +120,12 @@ func (m *MessageManager) getAllGroupMessages(userId string, groupId string) (map
 		var content string
 		var sendDateTimestamp string
 		var duration string
-		err = rows.Scan(&senderId, &senderName, &messageId, &sentDate, &messageType, &content, &sendDateTimestamp, &duration)
+		err = rows.Scan(&messageUniqueKey, &senderId, &senderName, &messageId, &sentDate, &messageType, &content, &sendDateTimestamp, &duration)
 		if err != nil {
 			return nil, err
 		}
 		message := make(map[string]string)
+		message["messageUniqueKey"] = messageUniqueKey
 		message["senderId"] = senderId
 		message["senderName"] = senderName
 		message["messageId"] = messageId
@@ -101,12 +144,13 @@ func (m *MessageManager) getAllGroupMessages(userId string, groupId string) (map
 	return response, nil
 }
 
-func (m *MessageManager) getNewMessages(userId string, groupId string, lastMessageSentDateTimestamp string) (map[string][]map[string]string, error) {
+func (m *MessageManager) getGroupNewMessages(userId string, groupId string, lastMessageUniqueKey string) (map[string][]map[string]string, error) {
 	if !isUserValid(userId, m.connectionPool.db) {
-		return nil, errors.New("can't get messages. user not valid")
+		return nil, errors.New("can't get group messages. user not valid")
 	}
 
-	getQuery := `select m.sender_id,
+	getQuery := `select m.id,
+						m.sender_id,
 						(select s.first_name
 						from users s
 						where s.user_id = m.sender_id) name,
@@ -118,10 +162,10 @@ func (m *MessageManager) getNewMessages(userId string, groupId string, lastMessa
 						m.duration
 					from messages m
 					where m.group_id = $1
-					and m.send_date_timestamp > $2
-					order by m.send_date_timestamp;`
+					and m.id > $2
+					order by m.id;`
 
-	rows, err := m.connectionPool.db.Query(getQuery, groupId, lastMessageSentDateTimestamp)
+	rows, err := m.connectionPool.db.Query(getQuery, groupId, lastMessageUniqueKey)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -130,6 +174,7 @@ func (m *MessageManager) getNewMessages(userId string, groupId string, lastMessa
 	messages := make([]map[string]string, 0)
 
 	for rows.Next() {
+		var messageUniqueKey string
 		var senderId string
 		var senderName string
 		var messageId string
@@ -138,11 +183,77 @@ func (m *MessageManager) getNewMessages(userId string, groupId string, lastMessa
 		var content string
 		var sendDateTimestamp string
 		var duration string
-		err = rows.Scan(&senderId, &senderName, &messageId, &sentDate, &messageType, &content, &sendDateTimestamp, &duration)
+		err = rows.Scan(&messageUniqueKey, &senderId, &senderName, &messageId, &sentDate, &messageType, &content, &sendDateTimestamp, &duration)
 		if err != nil {
 			return nil, err
 		}
 		message := make(map[string]string)
+		message["messageUniqueKey"] = messageUniqueKey
+		message["senderId"] = senderId
+		message["senderName"] = senderName
+		message["messageId"] = messageId
+		message["sentDate"] = sentDate
+		message["messageType"] = messageType
+		message["content"] = content
+		message["sendDateTimestamp"] = sendDateTimestamp
+		message["duration"] = duration
+
+		messages = append(messages, message)
+	}
+
+	response := make(map[string][]map[string]string)
+	response["messages"] = messages
+
+	return response, nil
+}
+
+func (m *MessageManager) getGroupOldMessages(userId string, groupId string, firstMessageUniqueKey string) (map[string][]map[string]string, error) {
+	if !isUserValid(userId, m.connectionPool.db) {
+		return nil, errors.New("can't get messages. user not valid")
+	}
+
+	getQuery := `select m.* 
+				from (select m.id,
+						m.sender_id,
+						(select s.first_name
+						from users s
+						where s.user_id = m.sender_id) name,
+						m.message_id,
+						m.send_date,
+						m.type,
+						m.content,
+						m.send_date_timestamp,
+						m.duration
+					from messages m
+					where m.group_id = $1
+					and m.id < $2
+					order by m.id desc limit 30) m
+					order by id;`
+
+	rows, err := m.connectionPool.db.Query(getQuery, groupId, firstMessageUniqueKey)
+	if err != nil && err != sql.ErrNoRows {
+		return nil, err
+	}
+	defer rows.Close()
+
+	messages := make([]map[string]string, 0)
+
+	for rows.Next() {
+		var messageUniqueKey string
+		var senderId string
+		var senderName string
+		var messageId string
+		var sentDate string
+		var messageType string
+		var content string
+		var sendDateTimestamp string
+		var duration string
+		err = rows.Scan(&messageUniqueKey, &senderId, &senderName, &messageId, &sentDate, &messageType, &content, &sendDateTimestamp, &duration)
+		if err != nil {
+			return nil, err
+		}
+		message := make(map[string]string)
+		message["messageUniqueKey"] = messageUniqueKey
 		message["senderId"] = senderId
 		message["senderName"] = senderName
 		message["messageId"] = messageId

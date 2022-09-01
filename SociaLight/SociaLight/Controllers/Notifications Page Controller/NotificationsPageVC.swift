@@ -33,6 +33,8 @@ class NotificationsPageVC: UIViewController {
     
     private let service = Service()
     private var tableData = [NotificationsSection]()
+    
+    private let refreshControl = UIRefreshControl()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,8 +66,8 @@ class NotificationsPageVC: UIViewController {
         tableView.layoutMargins.left = 0.1
         tableView.layoutMargins.right = 0.1
         
-        tableView.refreshControl = UIRefreshControl()
-        tableView.refreshControl?.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
+        refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
+        tableView.refreshControl = refreshControl
         
         tableView.separatorInset = UIEdgeInsets(top: 0, left: Constants.tableRowHeight + Constants.tableViewOffset, bottom: 0, right: Constants.tableViewOffset)
 
@@ -95,6 +97,7 @@ class NotificationsPageVC: UIViewController {
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
+                self.refreshControl.endRefreshing()
                 switch result {
                 case .success(let response):
                     self.handleSuccess(response: response)
@@ -152,7 +155,7 @@ class NotificationsPageVC: UIViewController {
         }
     }
     
-    func removeFromTable(elem: NotificationCellModel){
+    func removeFromTable(elem: NotificationCellModel) {
         for section in 0...tableData.count-1 {
             if let row = tableData[section].notifications.firstIndex(where: { $0.requestUniqueKey == elem.requestUniqueKey && $0.notificationType == elem.notificationType }) {
                 let indexPath = IndexPath(row: row, section: section)
@@ -179,9 +182,6 @@ class NotificationsPageVC: UIViewController {
     
     @objc private func didPullToRefresh(_ sender: Any) {
         getNotifications()
-        DispatchQueue.main.async {
-            self.tableView.refreshControl?.endRefreshing()
-        }
     }
 
 }
@@ -201,6 +201,7 @@ extension NotificationsPageVC: NotificationCellDelegate {
                     self.removeFromTable(elem: notification.model)
                 case .failure(let error):
                     self.showWarningAlert(warningText: error.localizedDescription.description)
+                    notification.enableButtons()
                 }
             }
         }
@@ -219,6 +220,7 @@ extension NotificationsPageVC: NotificationCellDelegate {
                     self.removeFromTable(elem: notification.model)
                 case .failure(let error):
                     self.showWarningAlert(warningText: error.localizedDescription.description)
+                    notification.enableButtons()
                 }
             }
         }
@@ -237,6 +239,7 @@ extension NotificationsPageVC: NotificationCellDelegate {
                     self.removeFromTable(elem: notification.model)
                 case .failure(let error):
                     self.showWarningAlert(warningText: error.localizedDescription.description)
+                    notification.enableButtons()
                 }
             }
         }
@@ -255,6 +258,7 @@ extension NotificationsPageVC: NotificationCellDelegate {
                     self.removeFromTable(elem: notification.model)
                 case .failure(let error):
                     self.showWarningAlert(warningText: error.localizedDescription.description)
+                    notification.enableButtons()
                 }
             }
         }
@@ -265,10 +269,7 @@ extension NotificationsPageVC: NotificationCellDelegate {
     }
     
     func navigateToGroupPage(groupId: String) {
-        navigateToGroupPage(
-            groupId: groupId,
-            isUserGroupMember: false
-        )
+        navigateToGroupPage(groupId: groupId, isUserGroupMember: false)
     }
     
 }

@@ -8,16 +8,41 @@
 import UIKit
 import MessageKit
 import KeychainSwift
+import AVFoundation
 
 extension UIViewController {
     
     public static let dateFormatter: DateFormatter = {
-        let formattre = DateFormatter()
-        formattre.dateStyle = .short
-        formattre.timeStyle = .long
-        formattre.locale = .current
-        return formattre
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM-dd-yyyy HH:mm:ss.SSS"
+        return formatter
     }()
+    
+    func getDateString(date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        switch true {
+        case Calendar.current.isDateInToday(date) || Calendar.current.isDateInYesterday(date):
+            formatter.doesRelativeDateFormatting = true
+            formatter.dateStyle = .short
+            formatter.timeStyle = .none
+        case Calendar.current.isDate(date, equalTo: Date(), toGranularity: .weekOfYear):
+            formatter.dateFormat = "EEEE"
+        case Calendar.current.isDate(date, equalTo: Date(), toGranularity: .year):
+            formatter.dateFormat = "E, d MMM"
+        default:
+            formatter.dateFormat = "MMM d, yyyy"
+        }
+        return formatter.string(from: date)
+    }
+    
+    func getTimeString(date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        let time = formatter.string(from: date)
+        return time
+    }
     
     // ------------Shared Functions-----------
     
@@ -92,14 +117,12 @@ extension UIViewController {
         if (pass1 == pass2) {
             return true
         } else {
-            showWarningAlert(warningText: "Passwords doesn’t match!")
             return false
         }
     }
     
     func checkPasswordLength(password: String) -> Bool {
         if password.count < 6 {
-            showWarningAlert(warningText: "Password should be at least 6 characters long!")
             return false
         }
         return true
@@ -120,7 +143,22 @@ extension UIViewController {
     
     func formatDate(date: Date) -> String {
         let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "MMMM dd yyyy"
+        return formatter.string(from: date)
+    }
+    
+    func formatEventDate(date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: date)
+    }
+    
+    func formatEventTime(date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "HH:mm"
         return formatter.string(from: date)
     }
     
@@ -178,24 +216,28 @@ extension UIViewController {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let groupInfoPagePageController = storyBoard.instantiateViewController(withIdentifier: "GroupInfoPageVC") as! GroupInfoPageVC
         groupInfoPagePageController.delegate = vc
+        groupInfoPagePageController.title = ""
         self.navigationController?.pushViewController(groupInfoPagePageController, animated: true)
     }
     
     func navigateToGroupMembersPage() {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let groupMembersPageController = storyBoard.instantiateViewController(withIdentifier: "GroupMembersPageVC") as! GroupMembersPageVC
+        groupMembersPageController.title = "Group Members"
         self.navigationController?.pushViewController(groupMembersPageController, animated: true)
     }
     
     func navigateToGroupMediaFilesPage() {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let groupMediaFilesPageController = storyBoard.instantiateViewController(withIdentifier: "GroupMediaFilesPageVC") as! GroupMediaFilesPageVC
+        groupMediaFilesPageController.title = "Group Media Files"
         self.navigationController?.pushViewController(groupMediaFilesPageController, animated: true)
     }
     
     func navigateToAddGroupMembersPage() {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let addGroupMembersPageController = storyBoard.instantiateViewController(withIdentifier: "AddGroupMembersPageVC") as! AddGroupMembersPageVC
+        addGroupMembersPageController.title = "Add Group Members"
         self.navigationController?.pushViewController(addGroupMembersPageController, animated: true)
     }
     
@@ -214,8 +256,8 @@ extension UIViewController {
     }
     
     func navigateToSendMeetingInvitationPopupPage() {
-        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let sendMeetingInvitatioPopupPageController = storyBoard.instantiateViewController(withIdentifier: "SendMeetingInvitationPopupVC") as! SendMeetingInvitationPopupVC
+        let storyboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let sendMeetingInvitatioPopupPageController = storyboard.instantiateViewController(withIdentifier: "SendMeetingInvitationPopupVC") as! SendMeetingInvitationPopupVC
         sendMeetingInvitatioPopupPageController.providesPresentationContextTransitionStyle = true
         sendMeetingInvitatioPopupPageController.definesPresentationContext = true
         sendMeetingInvitatioPopupPageController.modalPresentationStyle = .overCurrentContext
@@ -224,8 +266,8 @@ extension UIViewController {
     }
     
     func navigateToPersonalInfoPopupPage(vc: ProfilePageVC) {
-        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let personalInfoPopupPageController = storyBoard.instantiateViewController(withIdentifier: "PersonalInfoPopupVC") as! PersonalInfoPopupVC
+        let storyboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let personalInfoPopupPageController = storyboard.instantiateViewController(withIdentifier: "PersonalInfoPopupVC") as! PersonalInfoPopupVC
         personalInfoPopupPageController.providesPresentationContextTransitionStyle = true
         personalInfoPopupPageController.definesPresentationContext = true
         personalInfoPopupPageController.modalPresentationStyle = .overCurrentContext
@@ -242,6 +284,93 @@ extension UIViewController {
         changePasswordPopupPageController.modalPresentationStyle = .overCurrentContext
         changePasswordPopupPageController.modalTransitionStyle = .crossDissolve
         self.navigationController?.present(changePasswordPopupPageController, animated: true)
+    }
+    
+    func navigateNewEventPagePage() {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "NewEventPageStoryboard", bundle: nil)
+        let newEventPageController = storyBoard.instantiateViewController(withIdentifier: "NewEventPageVC") as! NewEventPageVC
+        newEventPageController.title = "New Event"
+        self.navigationController?.pushViewController(newEventPageController, animated: true)
+    }
+        //TasksPageVC
+    func navigateToTasksPage(event: NewEvent) {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "TasksPageStoryboard", bundle: nil)
+        let tasksPageController = storyBoard.instantiateViewController(withIdentifier: "TasksPageVC") as! TasksPageVC
+        tasksPageController.title = "Tasks"
+        tasksPageController.event = event
+        self.navigationController?.pushViewController(tasksPageController, animated: true)
+    }
+    
+    func navigateToNewTaskPopupVC(members: [GroupMember]) {
+        let storyboard: UIStoryboard = UIStoryboard(name: "TasksPageStoryboard", bundle: nil)
+        let newTaskPopupController = storyboard.instantiateViewController(withIdentifier: "NewTaskPopupVC") as! NewTaskPopupVC
+        newTaskPopupController.providesPresentationContextTransitionStyle = true
+        newTaskPopupController.definesPresentationContext = true
+        newTaskPopupController.modalPresentationStyle = .overCurrentContext
+        newTaskPopupController.modalTransitionStyle = .crossDissolve
+        newTaskPopupController.members = members
+        self.navigationController?.present(newTaskPopupController, animated: true)
+    }
+    
+    // ---------------Check access--------------
+    
+    func checkCameraAccess() -> Bool {
+       switch AVCaptureDevice.authorizationStatus(for: .video) {
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .video) { success in
+                ()
+            }
+            return false
+       case .denied, .restricted:
+            showWarningAlert(warningText: "Please go to setting and allow camera access!")
+            return false
+        case .authorized:
+            return true
+        @unknown default:
+            return false
+        }
+    }
+    
+    func checkMicrophoneAccess() -> Bool {
+        switch AVAudioSession.sharedInstance().recordPermission {
+        case .granted:
+            return true
+        case .denied:
+            showWarningAlert(warningText: "Please go to setting and allow microphone access!")
+            return false
+        case .undetermined:
+            AVAudioSession.sharedInstance().requestRecordPermission({ granted in
+                ()
+            })
+            return false
+        @unknown default:
+            return false
+        }
+    }
+}
+
+extension UINavigationController {
+    func popToViewController(ofClass: AnyClass, animated: Bool = true) {
+        if let vc = viewControllers.last(where: { $0.isKind(of: ofClass) }) {
+            popToViewController(vc, animated: animated)
+        }
+    }
+}
+
+extension UITextField {
+    func addBottomBorder(){
+        let bottomLine = CALayer()
+        bottomLine.frame = CGRect(x: 0, y: self.frame.size.height - 1, width: self.frame.size.width-20, height: 1)
+        bottomLine.backgroundColor = UIColor.darkGray.cgColor
+        borderStyle = .none
+        layer.addSublayer(bottomLine)
+    }
+}
+
+extension UIRefreshControl {
+    func refreshManually() {
+        beginRefreshing()
+        sendActions(for: .valueChanged)
     }
 }
 

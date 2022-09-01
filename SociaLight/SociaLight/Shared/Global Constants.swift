@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct serverStruct {
+struct ServerStruct {
     // server data
     static let serverScheme: String = "http"
     static let serverHost: String = "192.168.100.3"
@@ -25,7 +25,10 @@ struct Constants {
     
     // Warning textst
     static let unspecifiedWarningText: String = "Something went wrong!"
-    static let fieldsAreNotFilledWarningText: String = "Please fill all the fields!"
+    static let fieldsAreNotFilledWarningText: String = "Please fill all fields!"
+    static let requiredFieldsAreNotFilledWarningText: String = "Please fill all required fields!"
+    static let passwordDoesNotMatchWarningText: String = "Passwords doesn’t match!"
+    static let passwordLengthWarningText: String = "Password should be at least 6 characters long!"
     static let samePasswordsWarningText: String = "Can't use same password!"
     static let noChangesdWarningText: String = "Nothing to change!"
     static let membersCountNotChosenWarningText: String = "Please choose members count!"
@@ -56,12 +59,19 @@ struct Constants {
     static let lastNameCharactersMaxNum = 15
     static let groupNameCharactersMaxNum = 35
     static let groupDescriptionCharactersMaxNum = 100
+    static let eventNameCharactersMaxNum = 35
+    static let eventDescriptionCharactersMaxNum = 150
+    static let eventPlaceCharactersMaxNum = 150
+    
     static let usernameCharactersMaxNumWarning = "Maximum length of Username is: \(usernameCharactersMaxNum) characters"
     static let phoneCharactersMaxNumWarning = "Maximum length of Phone Number is: \(phoneCharactersMaxNum) characters"
     static let firstNameCharactersMaxNumWarning = "Maximum length of First Name is: \(firstNameCharactersMaxNum) characters"
     static let lastNameCharactersMaxNumWarning = "Maximum length of Last Name is: \(lastNameCharactersMaxNum) characters"
     static let groupNameCharactersMaxNumWarning = "Maximum length of Group Name is: \(groupNameCharactersMaxNum) characters"
     static let groupDescriptionCharactersMaxNumWarning = "Maximum length of Group Desctiption is: \(groupDescriptionCharactersMaxNum) characters"
+    static let eventNameCharactersMaxNumWarning = "Maximum length of Event Name is: \(eventNameCharactersMaxNum) characters"
+    static let eventDescriptionCharactersMaxNumWarning = "Maximum length of Event Desctiption is: \(eventDescriptionCharactersMaxNum) characters"
+    static let eventPlaceCharactersMaxNumWarning = "Maximum length of Event Place is: \(eventPlaceCharactersMaxNum) characters"
     
     // Table&Collection View Parameters
     static let itemCountInLine: CGFloat = 3
@@ -84,8 +94,8 @@ struct Constants {
     static let messageHeightMultiplier = 0.35
     
     //
-    static let getImageURLPrefix: String = serverStruct.serverScheme + "://" + serverStruct.serverHost + ":" + serverStruct.serverPort.description + "/getImage?imageKey="
-    static let getAudioURLPrefix: String = serverStruct.serverScheme + "://" + serverStruct.serverHost + ":" + serverStruct.serverPort.description + "/getAudio?audioKey="
+    static let getImageURLPrefix: String = ServerStruct.serverScheme + "://" + ServerStruct.serverHost + ":" + ServerStruct.serverPort.description + "/getImage?imageKey="
+    static let getAudioURLPrefix: String = ServerStruct.serverScheme + "://" + ServerStruct.serverHost + ":" + ServerStruct.serverPort.description + "/getAudio?audioKey="
     
     static let userImagePrefix: String = "userImage"
     static let groupImagePrefix: String = "groupImage"

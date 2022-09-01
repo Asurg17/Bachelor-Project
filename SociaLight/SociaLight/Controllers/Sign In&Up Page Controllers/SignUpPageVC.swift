@@ -56,6 +56,7 @@ class SignUpPageVC: UIViewController {
                                        pass2: confirmPasswordTextField.text!) {
                 if checkPasswordLength(password: passwordTextField.text!) {
                     loader.startAnimating()
+                    button.isEnabled = false
                     service.registerNewUser(
                         username: usernameTextField.text!.lowercased(),
                         firstName: getFirstName(),
@@ -72,9 +73,14 @@ class SignUpPageVC: UIViewController {
                             case .failure(let error):
                                 self.showWarningAlert(warningText: error.localizedDescription.description)
                             }
+                            self.button.isEnabled = true
                         }
                     }
+                } else {
+                    showWarningAlert(warningText: Constants.passwordLengthWarningText)
                 }
+            } else {
+                showWarningAlert(warningText: Constants.passwordDoesNotMatchWarningText)
             }
         } else {
             showWarningAlert(warningText: Constants.fieldsAreNotFilledWarningText)
@@ -97,10 +103,6 @@ class SignUpPageVC: UIViewController {
            passwordTextField.text         == "" ||
            confirmPasswordTextField.text  == "" { return false }
         return true
-    }
-    
-    func checkIfPasswordsMatches() -> Bool {
-        return passwordTextField.text == confirmPasswordTextField.text
     }
     
     func handleSuccess(response: String) {

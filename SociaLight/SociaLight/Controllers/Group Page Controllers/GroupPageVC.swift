@@ -11,21 +11,15 @@ import MessageKit
 import InputBarAccessoryView
 import AVFoundation
 import Photos
+import JGProgressHUD
 
 class GroupPageVC: MessagesViewController {
     
     private var bottomView: UIView?
-    
     private let service = Service()
-    
     private var messages = [Message]()
-    
-    private var timer = Timer()
-    
-    private var didFinishLoadingMessages = false
-    
     private var isInputBarButtonItemHidden = true
-
+    private var isSocketClosed = false
     private var selfSender: Sender? {
         let userId = getUserId()
 
@@ -35,6 +29,14 @@ class GroupPageVC: MessagesViewController {
             displayName: "Me"
         )
     }
+//  Scroll
+    private let loader = JGProgressHUD()
+    private let refreshControl = UIRefreshControl()
+    private var isFirstCall = true
+    private var isRefreshingManually = false
+    private var hasScrolledToLastItem = false
+    private var scrollToLastView = false
+    
     
 //  Action Buttons
     
@@ -60,11 +62,22 @@ class GroupPageVC: MessagesViewController {
     }
     
     open private(set) var state: PlayerState = .stopped
+
+// WebSocket
     
+    private var webSocket: URLSessionWebSocketTask?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        getGroupTitle()
+        createWebSocket() // create web socket
+        
+        refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
+        refreshControl.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+        refreshControl.isUserInteractionEnabled = false
+        messagesCollectionView.alwaysBounceVertical = true
+        messagesCollectionView.refreshControl = refreshControl
     }
     
     override func viewDidLayoutSubviews() {
@@ -74,24 +87,21 @@ class GroupPageVC: MessagesViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        getGroupTitle()
+        
+        if isFirstCall {
+            loader.textLabel.text = "Loading"
+            loader.style = .light
+            loader.backgroundColor = .white.withAlphaComponent(0.5)
+            loader.show(in: self.view)
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        // shedule service call
-        DispatchQueue.global(qos: .background).async { [weak self] in
-            guard let self = self else { return }
-            self.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { _ in
-                self.listenForNewMessages()
-            })
-            let runLoop = RunLoop.current
-            runLoop.add(self.timer, forMode: .default)
-            runLoop.run()
+        if isFirstCall {
+            self.getAllGroupMessages()
         }
-        
-//        messageInputBar.inputTextView.becomeFirstResponder()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -103,8 +113,10 @@ class GroupPageVC: MessagesViewController {
         }
         
         stopAnyOngoingPlaying()
-        timer.invalidate()
+//        close()
     }
+    
+    //
     
     func setupViews() {
         setupMessagesCollectionView()
@@ -228,39 +240,7 @@ class GroupPageVC: MessagesViewController {
         }
     }
     
-    func checkCameraAccess() -> Bool {
-       switch AVCaptureDevice.authorizationStatus(for: .video) {
-        case .notDetermined:
-            AVCaptureDevice.requestAccess(for: .video) { success in
-                ()
-            }
-            return false
-       case .denied, .restricted:
-            showWarningAlert(warningText: "Please go to setting and allow camera access!")
-            return false
-        case .authorized:
-            return true
-        @unknown default:
-            return false
-        }
-    }
-    
-    func checkMicrophoneAccess() -> Bool {
-        switch AVAudioSession.sharedInstance().recordPermission {
-        case .granted:
-            return true
-        case .denied:
-            showWarningAlert(warningText: "Please go to setting and allow microphone access!")
-            return false
-        case .undetermined:
-            AVAudioSession.sharedInstance().requestRecordPermission({ granted in
-                ()
-            })
-            return false
-        @unknown default:
-            return false
-        }
-    }
+    //
     
     func getGroupTitle() {
         let parameters = [
@@ -273,7 +253,7 @@ class GroupPageVC: MessagesViewController {
                 switch result {
                 case .success(let response):
                     self.title = response
-                    self.getAllGroupMessages()
+//                    self.getAllGroupMessages()
                 case .failure(let error):
                     self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
@@ -281,7 +261,10 @@ class GroupPageVC: MessagesViewController {
         }
     }
     
+    // First call -> Get all group messages (gets last 30 messages)
+    
     func getAllGroupMessages() {
+        print("Star: getAllGroupMessages")
         let parameters = [
             "groupId": getGroupId(),
             "userId": getUserId()
@@ -290,98 +273,85 @@ class GroupPageVC: MessagesViewController {
         service.getAllGroupMessages(parameters: parameters) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
+                self.loader.dismiss(animated: true)
                 switch result {
                 case .success(let response):
-                    self.handleSuccess(response: response)
+                    self.isFirstCall = false
+                    self.handleGetAllGroupMessagesSuccess(response: response)
                 case .failure(let error):
                     self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
+                print("End: getAllGroupMessages")
             }
         }
     }
     
-    func handleSuccess(response: GroupMessages) {
-        var collectionMessages = [Message]()
-        for message in response.messages {
-            let sender = Sender(
-                imageURL: (Constants.getImageURLPrefix + Constants.userImagePrefix + message.senderId).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "",
-                senderId: message.senderId,
-                displayName: message.senderName
-            )
-            
-            var messageKind: MessageKind?
-            
-            if message.messageType == "text" {
-                
-                messageKind = .text(message.content)
-                
-            } else if message.messageType == "photo" {
-                
-                let media = Media(
-                    url: URL(string: message.content),
-                    image: nil,
-                    placeholderImage: UIImage(named: "royal")!,
-                    size: getMediaMessageSize()
-                )
-                
-                messageKind = .photo(media)
-                
-            } else if message.messageType == "audio" {
-                
-                if let audioURL = URL(string: message.content),
-                   let duration = Float(message.duration) {
-                    let audio = Audio(
-                        url: audioURL,
-                        duration: duration,
-                        size: getAudioMessageSize(duration: duration)
-                    )
-                    
-                    messageKind = .audio(audio)
+    func handleGetAllGroupMessagesSuccess(response: GroupMessages) {
+        if !response.messages.isEmpty {
+            messages = getCollectionMessages(response: response).collectionMessages
+            messagesCollectionView.reloadData()
+            messagesCollectionView.scrollToLastItem()
+            print("finished handling..")
+        }
+    }
+    
+    // Called when socket notifies that new message was added to the group
+    
+    func getGroupNewMessages() {
+        print("Star: getGroupNewMessages")
+        let lastMessageUniqueKey = messages.isEmpty ? "0" : messages[messages.count-1].messageUniqueKey
+        
+        let parameters = [
+            "groupId": getGroupId(),
+            "userId": getUserId(),
+            "lastMessageUniqueKey": lastMessageUniqueKey
+        ]
+        
+        service.getGroupNewMessages(parameters: parameters) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.handleGetGroupNewMessagesSuccess(response: response)
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
+                print("End: getGroupNewMessages")
             }
-            
-            guard let kind = messageKind else { continue }
-            
-            let collectionMessage = Message(
-                sender: sender,
-                messageId: message.messageId,
-                sentDate: GroupPageVC.dateFormatter.date(from: message.sentDate) ?? Date(),
-                kind: kind,
-                sentDateTimestamp: message.sendDateTimestamp,
-                duration: Double(message.duration) ?? 0.0
-            )
-            
-            collectionMessages.append(collectionMessage)
-            
         }
-        
-        messages = collectionMessages
-        messagesCollectionView.reloadData()
-        messagesCollectionView.scrollToLastItem()
-        
-        didFinishLoadingMessages = true
     }
     
-    @objc func listenForNewMessages() {
-        if didFinishLoadingMessages {//&& state != .playing {
-            var lastMessageSentDateTimestamp = "0"
-                
-            if !messages.isEmpty {
-                lastMessageSentDateTimestamp = messages[messages.count-1].sentDateTimestamp
+    func handleGetGroupNewMessagesSuccess(response: GroupMessages) {
+        if !response.messages.isEmpty {
+            let resp =  getCollectionMessages(response: response)
+            messages.append(contentsOf: resp.collectionMessages)
+            if resp.containsMyMessages {
+                messagesCollectionView.reloadData()
+                messagesCollectionView.scrollToLastItem()
+            } else if messages.count > 5 {
+                messagesCollectionView.reloadDataAndKeepOffset()
+            } else {
+                messagesCollectionView.reloadData()
             }
-            
+        }
+    }
+    
+    //
+    
+    func getGroupOldMessages() {
+        if !messages.isEmpty {
             let parameters = [
                 "groupId": getGroupId(),
                 "userId": getUserId(),
-                "lastMessageSentDateTimestamp": lastMessageSentDateTimestamp
+                "firstMessageUniqueKey": messages[0].messageUniqueKey
             ]
             
-            service.getNewMessages(parameters: parameters) { [weak self] result in
+            service.getGroupOldMessages(parameters: parameters) { [weak self] result in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let response):
-                        self.addNewMessagesToCollectionView(response: response)
+                        self.handleGetGroupOldMessagesSuccess(response: response)
                     case .failure(let error):
                         self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
@@ -390,75 +360,136 @@ class GroupPageVC: MessagesViewController {
         }
     }
     
-    func addNewMessagesToCollectionView(response: GroupMessages) {
-        
-        var scrollToLastItem = false
-        
-        if response.messages.count != 0 {
-            for message in response.messages {
-                let sender = Sender(
-                    imageURL: (Constants.getImageURLPrefix + Constants.userImagePrefix + message.senderId).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "",
-                    senderId: message.senderId,
-                    displayName: message.senderName
-                )
-                
-                if let selfSender = selfSender, sender.senderId == selfSender.senderId {
-                    scrollToLastItem = true
-                }
-                
-                var messageKind: MessageKind?
-                
-                if message.messageType == "text" {
-                    
-                    messageKind = .text(message.content)
-                    
-                } else if message.messageType == "photo" {
-                    
-                    let media = Media(url: URL(string: message.content),
-                                      image: nil,
-                                      placeholderImage: UIImage(named: "royal")!,
-                                      size: getMediaMessageSize())
-                    
-                    messageKind = .photo(media)
-                    
-                } else if message.messageType == "audio" {
-                    
-                    if let audioURL = URL(string: message.content),
-                       let duration = Float(message.duration) {
-                        let audio = Audio(
-                            url: audioURL,
-                            duration: duration,
-                            size: getAudioMessageSize(duration: duration)
-                        )
-                        
-                        messageKind = .audio(audio)
-                    }
-                }
-                
-                guard let kind = messageKind else { return }
-                
-                let collectionMessage = Message(
-                    sender: sender,
-                    messageId: message.messageId,
-                    sentDate: GroupPageVC.dateFormatter.date(from: message.sentDate) ?? Date(),
-                    kind: kind,
-                    sentDateTimestamp: message.sendDateTimestamp,
-                    duration: Double(message.duration) ?? 0.0
-                )
-                
-                messages.append(collectionMessage)
+    func handleGetGroupOldMessagesSuccess(response: GroupMessages) {
+        if !response.messages.isEmpty {
+            let resp = getCollectionMessages(response: response)
+            messages.insert(contentsOf: resp.collectionMessages, at: 0)
+            messagesCollectionView.reloadDataAndKeepOffset()
+        }
+    }
+    
+    //
+    
+    func getCollectionMessages(response: GroupMessages) -> GetCollectionMessagesResp {
+        var collectionMessages = [Message]()
+        var containsMyMessages = false
+        for message in response.messages {
+            guard let kind = getMessageKind(message: message),
+                  let sender = getSender(message: message) else { continue }
             
+            if sender.senderId == selfSender?.senderId { containsMyMessages = true }
+           
+            collectionMessages.append(Message(
+                sender: sender,
+                messageUniqueKey: message.messageUniqueKey,
+                messageId: message.messageId,
+                sentDate: GroupPageVC.dateFormatter.date(from: message.sentDate) ?? Date(),
+                kind: kind,
+                sentDateTimestamp: message.sendDateTimestamp,
+                duration: Double(message.duration) ?? 0.0
+            ))
+        }
+        return GetCollectionMessagesResp(collectionMessages: collectionMessages, containsMyMessages: containsMyMessages)
+    }
+    
+    func getSender(message: GroupMessage) -> Sender? {
+        return Sender(
+            imageURL: (Constants.getImageURLPrefix + Constants.userImagePrefix + message.senderId).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "",
+            senderId: message.senderId,
+            displayName: message.senderName
+        )
+    }
+    
+    func getMessageKind(message: GroupMessage) -> MessageKind? {
+        var messageKind: MessageKind?
+        
+        if message.messageType == "text" {
+            
+            messageKind = .text(message.content)
+            
+        } else if message.messageType == "photo" {
+            
+            let media = Media(
+                url: URL(string: message.content),
+                image: nil,
+                placeholderImage: UIImage(named: "royal")!,
+                size: getMediaMessageSize()
+            )
+            
+            messageKind = .photo(media)
+            
+        } else if message.messageType == "audio" {
+            
+            if let audioURL = URL(string: message.content),
+               let duration = Float(message.duration) {
+                let audio = Audio(
+                    url: audioURL,
+                    duration: duration,
+                    size: getAudioMessageSize(duration: duration)
+                )
+                
+                messageKind = .audio(audio)
             }
-
-            if scrollToLastItem {
-                messagesCollectionView.reloadData()
-                messagesCollectionView.scrollToLastItem()
-            } else {
-//                messagesCollectionView.reloadDataAndKeepOffset()
-                messagesCollectionView.reloadData()
+        }
+        
+        return messageKind
+    }
+    
+    //
+    
+    func createWebSocket() {
+        let session = URLSession(
+            configuration: .default ,
+            delegate: self,
+            delegateQueue: OperationQueue()
+        )
+        
+        if let url = URL(string: "ws://\(ServerStruct.serverHost):\(ServerStruct.serverPort)/messagesWsEndpoint?userId=\(getUserId())") {
+            webSocket = session.webSocketTask(with: url)
+            webSocket?.resume()
+        } // esle way
+    }
+    
+    func ping() {
+        webSocket?.sendPing { error in
+            if let error = error {
+                print(error)
             }
         }
     }
+    
+    func close() {
+        webSocket?.cancel(with: .goingAway, reason: "Close The Connection".data(using: .utf8))
+    }
+    
+    func send() {
+    }
+    
+    func receive() {
+        self.webSocket?.receive(completionHandler: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let message):
+                switch message {
+                case .data(let data):
+                    print("Got Data -> \(data)")
+                case .string(_):
+                    DispatchQueue.main.sync {
+                        self.getGroupNewMessages()
+                    }
+                default:
+                    break
+                }
+            case .failure(let error):
+                
+                print("Received error: \(error)")
+            }
+            
+            self.receive()
+        })
+    }
+    
+    //
     
     func getMediaMessageSize() -> CGSize {
         let screenSize: CGRect = UIScreen.main.bounds
@@ -486,10 +517,33 @@ class GroupPageVC: MessagesViewController {
         return documentDirectory
     }
     
+    //
+    
+    override func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        print("Done")
+        hasScrolledToLastItem = true
+    }
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if hasScrolledToLastItem {
+            if scrollView.contentOffset.y <= ((view.safeAreaInsets.top * -1)) {
+                if !isRefreshingManually && !refreshControl.isRefreshing {
+                    isRefreshingManually = true
+                    refreshControl.refreshManually()
+                    getGroupOldMessages()
+                }
+            } else {
+                isRefreshingManually = false
+            }
+        }
+    }
+    
+    //
+    
     @IBAction func setupRecorder() {
         if soundRecorder == nil {
             let recordSettings = [AVFormatIDKey: kAudioFormatMPEG4AAC,
-                       AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue,
+                       AVEncoderAudioQualityKey: AVAudioQuality.medium.rawValue,
                             //AVEncoderBitRateKey: 320000,
                           AVNumberOfChannelsKey: 1,
                                 AVSampleRateKey: 44100.0 ] as [String : Any]
@@ -522,6 +576,7 @@ class GroupPageVC: MessagesViewController {
     }
     
     @IBAction func back() {
+        close()
         if UserDefaults.standard.bool(forKey: "isUserGroupMember") {
             navigationController?.popToRootViewController(animated: true)
         } else {
@@ -529,6 +584,11 @@ class GroupPageVC: MessagesViewController {
         }
     }
     
+    //
+    
+    @objc private func didPullToRefresh(_ sender: Any) {
+        refreshControl.endRefreshing()
+   }
     
     @objc func joinGroup() {
         let userId = getUserId()
@@ -547,6 +607,21 @@ class GroupPageVC: MessagesViewController {
             }
         }
     }
+}
+
+extension GroupPageVC: URLSessionWebSocketDelegate {
+
+    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
+        print("Did connect to socket")
+        ping()
+        receive()
+    }
+    
+    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
+        print("Disconnect from Server")
+        isSocketClosed = true
+    }
+    
 }
 
 extension GroupPageVC: UpdateGroup {
@@ -620,6 +695,7 @@ extension GroupPageVC: UIImagePickerControllerDelegate, UINavigationControllerDe
                           size: .zero)
         
         let message = Message(sender: sender,
+                              messageUniqueKey: "",
                               messageId: messageId,
                               sentDate: Date(),
                               kind: .photo(media),
@@ -688,6 +764,7 @@ extension GroupPageVC: AVAudioRecorderDelegate {
                               size: .zero)
             
             let message = Message(sender: sender,
+                                  messageUniqueKey: "",
                                   messageId: messageId,
                                   sentDate: Date(),
                                   kind: .audio(audio),
@@ -710,6 +787,7 @@ extension GroupPageVC: InputBarAccessoryViewDelegate {
         
         let collectionMessage = Message(
             sender: sender,
+            messageUniqueKey: "",
             messageId: messageId,
             sentDate: Date(),
             kind: .text(text),
@@ -781,10 +859,8 @@ extension GroupPageVC: InputBarAccessoryViewDelegate {
     }
     
     private func createMessageId() -> String? {
-        let userId = getUserId()
-
         let dateString = GroupPageVC.dateFormatter.string(from: Date())
-        let newIdentifier = "\(getGroupId())_\(userId)_\(dateString)"
+        let newIdentifier = "\(getGroupId())_\(getUserId())_\(dateString)"
 
         return newIdentifier
     }
@@ -836,7 +912,6 @@ extension GroupPageVC: MessagesDataSource, MessagesLayoutDelegate, MessagesDispl
                 }
             )
         }
-        
     }
     
     func configureAudioCell(_ cell: AudioMessageCell, message: MessageType) {
@@ -856,41 +931,84 @@ extension GroupPageVC: MessagesDataSource, MessagesLayoutDelegate, MessagesDispl
         }
     }
     
-//    func messageHeaderView(for indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageReusableView {
-//        let message = messages[indexPath.section]
-//
-//        let view = messagesCollectionView.dequeueReusableHeaderView(MessageReusableView.self, for: indexPath)
-//        view.backgroundColor = UIColor.black
-//
-//        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 50, height: 30))
-//        label.text = message.sender.displayName
-//        label.tintColor = UIColor.gray
-//        label.textColor = UIColor.gray
-//        label.backgroundColor = UIColor.gray
-//
-//        view.addSubview(label)
-//        return view
-//    }
-//
-//    func headerViewSize(for section: Int, in messagesCollectionView: MessagesCollectionView) -> CGSize {
-//        return CGSize(width: 100, height: 30)
-//    }
+    func messageTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
+        if !isPreviousMessageSameSender(at: indexPath) {
+            let name = message.sender.senderId == selfSender?.senderId ? "me" : message.sender.displayName
+            return NSAttributedString(
+                string: name,
+                attributes: [
+                    NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .caption1),
+                    NSAttributedString.Key.foregroundColor: UIColor.darkGray,
+                ]
+            )
+        }
+        return nil
+    }
     
-//    func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
-//        let name = message.sender.displayName
-//        //let paragraph = NSMutableParagraphStyle()
-//        return NSAttributedString(
-//          string: name,
-//          attributes: [
-//            .font: UIFont.preferredFont(forTextStyle: .caption1),
-//            .foregroundColor: UIColor.gray,
-//          ]
-//        )
-//    }
+    func messageTopLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return !isPreviousMessageSameSender(at: indexPath) ? 25 : 0
+    }
     
-//    func cellTopLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
-//        return 30
-//    }
+    func messageBottomLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
+        return NSAttributedString(
+            string: getTimeString(date: message.sentDate),
+            attributes: [
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 10.0),
+                NSAttributedString.Key.foregroundColor: UIColor.gray,
+            ]
+        )
+    }
+    
+    func messageBottomLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return 20
+    }
+    
+    func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
+        if !isPreviousMessageSameSendDate(at: indexPath) {
+            return NSAttributedString(
+                string: getDateString(date: message.sentDate),
+                attributes: [
+                  NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 15),
+                  NSAttributedString.Key.foregroundColor: UIColor.darkGray,
+                ]
+            )
+        }
+        return nil
+    }
+    
+    func cellTopLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return !isPreviousMessageSameSendDate(at: indexPath) ? 30 : 0
+    }
+    
+    func isPreviousMessageSameSender(at indexPath: IndexPath) -> Bool {
+        guard indexPath.section - 1 >= 0 else { return false }
+        return messages[indexPath.section].sender.senderId == messages[indexPath.section-1].sender.senderId
+    }
+    
+    func isPreviousMessageSameSendDate(at indexPath: IndexPath) -> Bool {
+        guard indexPath.section - 1 >= 0 else { return false }
+        return getDateString(date: messages[indexPath.section].sentDate) == getDateString(date: messages[indexPath.section-1].sentDate)
+    }
+    
+    //    func messageHeaderView(for indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageReusableView {
+    //        let message = messages[indexPath.section]
+    //
+    //        let view = messagesCollectionView.dequeueReusableHeaderView(MessageReusableView.self, for: indexPath)
+    //        view.backgroundColor = UIColor.black
+    //
+    //        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 50, height: 30))
+    //        label.text = message.sender.displayName
+    //        label.tintColor = UIColor.gray
+    //        label.textColor = UIColor.gray
+    //        label.backgroundColor = UIColor.gray
+    //
+    //        view.addSubview(label)
+    //        return view
+    //    }
+    //
+    //    func headerViewSize(for section: Int, in messagesCollectionView: MessagesCollectionView) -> CGSize {
+    //        return CGSize(width: 100, height: 30)
+    //    }
     
 }
 

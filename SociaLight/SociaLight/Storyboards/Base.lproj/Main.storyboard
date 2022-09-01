@@ -122,7 +122,7 @@
                             </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="E4P-VR-9wb" firstAttribute="top" secondItem="7ga-va-EyL" secondAttribute="bottom" constant="5" id="7AO-Lj-A3p"/>
                             <constraint firstItem="7ga-va-EyL" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="BtO-Tj-dmS"/>
@@ -509,6 +509,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="button" destination="xWD-9U-x3k" id="ISD-SL-ioT"/>
                         <outlet property="collectionView" destination="Cmo-rG-eZ8" id="ZWY-vB-N0q"/>
                         <outlet property="collectionViewWarningLabel" destination="rm9-I4-oGA" id="12b-dS-KPy"/>
                         <outlet property="friendNameTextField" destination="h7D-Q5-Gbx" id="RVJ-45-0uJ"/>
@@ -580,7 +581,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="CPc-hO-DsK">
-                                <rect key="frame" x="32" y="245" width="350" height="150"/>
+                                <rect key="frame" x="32" y="245" width="350" height="200"/>
                                 <subviews>
                                     <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="PK1-wP-hny" customClass="GroupInfoActionView" customModule="SociaLight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="350" height="50"/>
@@ -601,8 +602,16 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="labelText" value="View media &amp; files"/>
                                         </userDefinedRuntimeAttributes>
                                     </view>
-                                    <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="QAZ-Ok-5gA" customClass="GroupInfoActionView" customModule="SociaLight" customModuleProvider="target">
+                                    <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="qXE-EA-wdr" customClass="GroupInfoActionView" customModule="SociaLight" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="100" width="350" height="50"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="iconImage" value="calendar.badge.plus" catalog="system"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="labelText" value="Create New Event"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="QAZ-Ok-5gA" customClass="GroupInfoActionView" customModule="SociaLight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="150" width="350" height="50"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="iconImage" value="rectangle.portrait.and.arrow.right" catalog="system"/>
@@ -645,7 +654,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Title" id="Wa0-cP-528" userLabel="Navigation Item">
-                        <barButtonItem key="leftBarButtonItem" image="arrow.backward" catalog="system" id="yvr-5B-n8z">
+                        <barButtonItem key="leftBarButtonItem" image="chevron.backward" catalog="system" id="yvr-5B-n8z">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <action selector="back" destination="uea-ZX-c9R" id="9An-p9-a7L"/>
@@ -654,6 +663,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="actionStackView" destination="CPc-hO-DsK" id="nTO-NT-JIz"/>
+                        <outlet property="createNewEventActionView" destination="qXE-EA-wdr" id="To0-95-89n"/>
                         <outlet property="groupDescriptionLabel" destination="8zE-h0-uIn" id="sUL-XG-W29"/>
                         <outlet property="groupImageView" destination="09z-OD-ZPf" id="DFw-os-Rpu"/>
                         <outlet property="groupMembersActionView" destination="PK1-wP-hny" id="qLF-o2-pJN"/>
@@ -1456,7 +1466,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="syn-YS-a00" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5193" y="2721"/>
+            <point key="canvasLocation" x="5232" y="2721"/>
         </scene>
         <!--Home-->
         <scene sceneID="n1Y-d4-2qE">
@@ -1528,7 +1538,7 @@
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="2Fu-z3-J8k">
                                             <rect key="frame" x="33" y="148.5" width="265" height="108"/>
                                             <subviews>
-                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Birth Date" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="oHy-lM-yhv" customClass="DesignableUITextField" customModule="SociaLight" customModuleProvider="target">
+                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Birth Date" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="oHy-lM-yhv" customClass="DesignableUITextField" customModule="SociaLight" customModuleProvider="target">
                                                     <rect key="frame" x="0.0" y="0.0" width="265" height="49"/>
                                                     <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
@@ -1948,6 +1958,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="button" destination="wDT-Gh-g4k" id="WR8-du-082"/>
                         <outlet property="collectionView" destination="KJm-VT-HuN" id="j4o-va-3zq"/>
                         <outlet property="collectionViewWarningLabel" destination="sO9-Pn-2HV" id="S09-Dc-Hbv"/>
                         <outlet property="friendNameTextField" destination="cmk-O4-5Tc" id="cjz-tk-kcX"/>
@@ -2199,7 +2210,7 @@
                                                         </userDefinedRuntimeAttribute>
                                                     </userDefinedRuntimeAttributes>
                                                 </textField>
-                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Birth Date" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ea0-HT-so2" customClass="DesignableUITextField" customModule="SociaLight" customModuleProvider="target">
+                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Birth Date" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Ea0-HT-so2" customClass="DesignableUITextField" customModule="SociaLight" customModuleProvider="target">
                                                     <rect key="frame" x="0.0" y="59" width="265" height="49"/>
                                                     <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
@@ -2285,7 +2296,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jjS-sT-AoV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4450" y="3409"/>
+            <point key="canvasLocation" x="4451" y="3425"/>
         </scene>
     </scenes>
     <designables>
@@ -2311,7 +2322,7 @@
             <size key="intrinsicContentSize" width="45.5" height="31"/>
         </designable>
         <designable name="Bla-5R-cOB">
-            <size key="intrinsicContentSize" width="165" height="18"/>
+            <size key="intrinsicContentSize" width="145" height="18"/>
         </designable>
         <designable name="CWZ-yd-qpi">
             <size key="intrinsicContentSize" width="173" height="23"/>
@@ -2323,7 +2334,7 @@
             <size key="intrinsicContentSize" width="66" height="33"/>
         </designable>
         <designable name="UtA-Pp-i6r">
-            <size key="intrinsicContentSize" width="107.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="88.5" height="19.5"/>
         </designable>
         <designable name="VWe-nz-UQF">
             <size key="intrinsicContentSize" width="123" height="33"/>
@@ -2347,7 +2358,7 @@
             <size key="intrinsicContentSize" width="173" height="23"/>
         </designable>
         <designable name="fIj-Bk-OXc">
-            <size key="intrinsicContentSize" width="110.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="90.5" height="19.5"/>
         </designable>
         <designable name="h7D-Q5-Gbx">
             <size key="intrinsicContentSize" width="156.5" height="23"/>
@@ -2377,13 +2388,13 @@
             <size key="intrinsicContentSize" width="106" height="29"/>
         </designable>
         <designable name="pAR-c0-5gQ">
-            <size key="intrinsicContentSize" width="139.5" height="19.5"/>
+            <size key="intrinsicContentSize" width="122.5" height="19.5"/>
         </designable>
         <designable name="q8O-sX-dcy">
             <size key="intrinsicContentSize" width="114" height="18"/>
         </designable>
         <designable name="sAv-1g-3C5">
-            <size key="intrinsicContentSize" width="106" height="18"/>
+            <size key="intrinsicContentSize" width="86" height="18"/>
         </designable>
         <designable name="wDT-Gh-g4k">
             <size key="intrinsicContentSize" width="46.5" height="31"/>
@@ -2401,6 +2412,7 @@
         <image name="arrow.right" catalog="system" width="128" height="98"/>
         <image name="bell.badge" catalog="system" width="128" height="124"/>
         <image name="calendar" catalog="system" width="128" height="106"/>
+        <image name="calendar.badge.plus" catalog="system" width="128" height="108"/>
         <image name="chevron.backward" catalog="system" width="96" height="128"/>
         <image name="chevron.backward.2" catalog="system" width="128" height="105"/>
         <image name="deep-relief" width="600" height="510"/>

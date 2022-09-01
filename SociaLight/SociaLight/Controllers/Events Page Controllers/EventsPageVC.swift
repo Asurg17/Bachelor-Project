@@ -33,6 +33,8 @@ class EventsPageVC: UIViewController {
     
     private let service = Service()
     private var tableData = [EventsSection]()
+    
+    private let refreshControl = UIRefreshControl()
  
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,8 +53,8 @@ class EventsPageVC: UIViewController {
         tableView.keyboardDismissMode = .interactive
         tableView.allowsSelection = true
         
-        tableView.refreshControl = UIRefreshControl()
-        tableView.refreshControl?.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
+        refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
+        tableView.refreshControl = refreshControl
         
         tableView.separatorInset = UIEdgeInsets(top: 0, left: Constants.tableRowHeight + Constants.tableViewOffset, bottom: 0, right: Constants.tableViewOffset)
         
@@ -68,15 +70,12 @@ class EventsPageVC: UIViewController {
     }
     
     func getEvents() {
-        
+        self.refreshControl.endRefreshing()
     }
     
     
     @objc private func didPullToRefresh(_ sender: Any) {
         getEvents()
-        DispatchQueue.main.async {
-            self.tableView.refreshControl?.endRefreshing()
-        }
     }
 }
 

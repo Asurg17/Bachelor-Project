@@ -15,6 +15,8 @@ class NewGroupSecondPageVC: UIViewController {
     @IBOutlet var warningLabel: UILabel!
     @IBOutlet var collectionViewWarningLabel: UILabel!
     
+    @IBOutlet var button: UIButton!
+    
     @IBOutlet var loader: UIActivityIndicatorView!
     
     private let service = Service()
@@ -103,6 +105,7 @@ class NewGroupSecondPageVC: UIViewController {
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
+                self.refreshControl.endRefreshing()
                 switch result {
                 case .success(let response):
                     self.handleSuccess(response: response)
@@ -172,6 +175,7 @@ class NewGroupSecondPageVC: UIViewController {
         let userId = getUserId()
         
         loader.startAnimating()
+        button.isEnabled = false
         service.createGroup(
             requestParams:
                 CreateGroupRequest(groupName: group?.groupName ?? "",
@@ -180,7 +184,7 @@ class NewGroupSecondPageVC: UIViewController {
                                    isPrivate: group?.isPrivate.description ?? "none",
                                    userId: userId)
         ) { [weak self] result in
-                    guard let self = self else { return }
+            guard let self = self else { return }
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
@@ -190,6 +194,7 @@ class NewGroupSecondPageVC: UIViewController {
                 case .failure(let error):
                     self.loader.stopAnimating()
                     self.showWarningAlert(warningText: error.localizedDescription.description)
+                    self.button.isEnabled = true
                 }
             }
         }
@@ -208,6 +213,7 @@ class NewGroupSecondPageVC: UIViewController {
                 case .failure(let error):
                     self.loader.stopAnimating()
                     self.showWarningAlert(warningText: error.localizedDescription.description)
+                    self.button.isEnabled = true
                 }
             }
         }
@@ -221,7 +227,9 @@ class NewGroupSecondPageVC: UIViewController {
                 case .success(_):
                     self.sendGroupInvitations(userId: userId, groupId: groupId)
                 case .failure(let error):
+                    self.loader.stopAnimating()
                     self.showWarningAlert(warningText: error.localizedDescription.description)
+                    self.button.isEnabled = true
                 }
             }
         }
@@ -240,11 +248,13 @@ class NewGroupSecondPageVC: UIViewController {
                     case .failure(let error):
                         self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
+                    self.button.isEnabled = true
                 }
             }
         } else {
             self.loader.stopAnimating()
             self.navigateToGroupPage(groupId: self.group!.groupId, isUserGroupMember: true)
+            self.button.isEnabled = true
         }
     }
     
@@ -276,7 +286,6 @@ class NewGroupSecondPageVC: UIViewController {
     @objc private func didPullToRefresh(_ sender: Any) {
         clear()
         getFiends()
-        self.refreshControl.endRefreshing()
     }
     
     @objc func textFieldDidChange(_ textField: UITextField) {

@@ -85,15 +85,14 @@ class NotificationCell: UITableViewCell {
         )
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-//        let width = subviews[0].frame.width
-//        for view in subviews where view != contentView {
-//            if view.frame.width == width {
-//                view.removeFromSuperview()
-//            }
-//        }
+    func enableButtons() {
+        acceptButton.isEnabled = true
+        rejectButton.isEnabled = true
+    }
+    
+    func disableButtons() {
+        acceptButton.isEnabled = false
+        rejectButton.isEnabled = false
     }
     
     @IBAction func navigate() {
@@ -107,6 +106,7 @@ class NotificationCell: UITableViewCell {
     }
     
     @IBAction func accept() {
+        disableButtons()
         if model.notificationType == Constants.friendshipRequestNotificationKey {
             model.delegate?.friendshipAccepted(self)
         } else if model.notificationType == Constants.groupInvitationNotificationKey {
@@ -115,6 +115,7 @@ class NotificationCell: UITableViewCell {
     }
     
     @IBAction func reject() {
+        disableButtons()
         if model.notificationType == Constants.friendshipRequestNotificationKey {
             model.delegate?.friendshipRejected(self)
         } else if model.notificationType == Constants.groupInvitationNotificationKey {

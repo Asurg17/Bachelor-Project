@@ -18,6 +18,7 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     @IBOutlet var actionStackView: UIStackView!
     @IBOutlet var groupMembersActionView: GroupInfoActionView!
     @IBOutlet var seeMediaActionView: GroupInfoActionView!
+    @IBOutlet var createNewEventActionView: GroupInfoActionView!
     @IBOutlet var leaveGroupActionView: GroupInfoActionView!
     
     @IBOutlet var loader: UIActivityIndicatorView!
@@ -37,8 +38,6 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = ""
-        
         setupViews()
     }
     
@@ -57,6 +56,7 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     func setupActionViews() {
         groupMembersActionView.delegate = self
         seeMediaActionView.delegate = self
+        createNewEventActionView.delegate = self
         leaveGroupActionView.delegate = self
         
         let isUserGroupMember = UserDefaults.standard.bool(forKey: "isUserGroupMember")
@@ -128,6 +128,7 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
                     self.response = response
                     self.groupNameLabel.text = response.groupTitle
                     self.groupDescriptionLabel.text = response.groupDescription
+                    self.createNewEventActionView.isHidden = (response.userRole != Constants.admin)
                 case .failure(let error):
                     self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
@@ -141,6 +142,8 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
             navigateToGroupMembersPage()
           case seeMediaActionView:
             navigateToGroupMediaFilesPage()
+        case createNewEventActionView:
+            navigateNewEventPagePage()
           case leaveGroupActionView:
             leaveGroup()
           default:

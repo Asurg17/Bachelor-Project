@@ -5,8 +5,8 @@
 //  Created by Sandro Surguladze on 30.04.22.
 //
 
-import Foundation
 import UIKit
+import Foundation
 
 class Service {
     
@@ -14,9 +14,9 @@ class Service {
     private var components = URLComponents()
     
     init() {
-        components.scheme = serverStruct.serverScheme
-        components.host = serverStruct.serverHost
-        components.port = serverStruct.serverPort
+        components.scheme = ServerStruct.serverScheme
+        components.host = ServerStruct.serverHost
+        components.port = ServerStruct.serverPort
     }
     
     func registerNewUser(
@@ -1658,9 +1658,9 @@ class Service {
         }
     }
     
-    func getNewMessages(parameters: [String:String],  completion: @escaping (Result<GroupMessages, Error>) -> ()) {
+    func getGroupNewMessages(parameters: [String:String],  completion: @escaping (Result<GroupMessages, Error>) -> ()) {
         
-        components.path = "/getNewMessages"
+        components.path = "/getGroupNewMessages"
         
         if let url = components.url {
             var request = URLRequest(url: url)
@@ -1710,5 +1710,58 @@ class Service {
             completion(.failure(ServiceError.invalidParameters))
         }
     }
+    
+    func getGroupOldMessages(parameters: [String:String],  completion: @escaping (Result<GroupMessages, Error>) -> ()) {
+        
+        components.path = "/getGroupOldMessages"
+        
+        if let url = components.url {
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            if let data = data {
+                                let decoder = JSONDecoder()
+                                do {
+                                    let resp = try decoder.decode(GroupMessages.self, from: data)
+                                    completion(.success(resp))
+                                } catch {
+                                    completion(.failure(error))
+                                }
+                            } else {
+                                completion(.failure(ServiceError.noData))
+                            }
+                        } else {
+                            completion(.failure(NSError(domain: "",
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
+                                                       )))
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    }    
     
 }

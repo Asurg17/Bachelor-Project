@@ -150,13 +150,34 @@ struct MediaFile: Codable {
     let messageId: String
 }
 
+// New Event
+
+struct NewEvent {
+    let creatorUserId: String
+    let toUserId: String?
+    let groupId: String?
+    let eventName: String
+    let eventDescription: String?
+    let place: String
+    let dateString: String
+    let timeString: String?
+    let eventDate: String
+    let eventUniqueKey: String
+}
+
 // Messages
+
+struct GetCollectionMessagesResp {
+    let collectionMessages: [Message]
+    let containsMyMessages: Bool
+}
 
 struct GroupMessages: Codable {
     let messages: [GroupMessage]
 }
 
 struct GroupMessage: Codable {
+    let messageUniqueKey: String
     let senderId: String
     let senderName: String
     let messageId: String
@@ -169,6 +190,7 @@ struct GroupMessage: Codable {
 
 struct Message: MessageType {
     var sender: SenderType
+    var messageUniqueKey: String
     var messageId: String
     var sentDate: Date
     var kind: MessageKind
