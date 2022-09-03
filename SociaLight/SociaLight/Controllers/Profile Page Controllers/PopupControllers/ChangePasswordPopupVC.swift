@@ -18,7 +18,7 @@ class ChangePasswordPopupVC: UIViewController {
     
     @IBOutlet var loader: UIActivityIndicatorView!
     
-    private let service = Service()
+    private let service = UserService()
 
     override func viewDidLoad() {
         super.viewDidLoad()

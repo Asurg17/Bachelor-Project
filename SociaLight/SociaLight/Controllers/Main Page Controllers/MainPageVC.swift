@@ -14,7 +14,7 @@ class MainPageVC: UIViewController, GroupCellDelegate {
     @IBOutlet var filterTextField: RoundCornerTextField!
     @IBOutlet var warningLabel: UILabel!
     
-    private let service = Service()
+    private let userService = UserService()
     
     var collectionData = [GroupCellModel]()
     var groups = [GroupCellModel]()
@@ -74,7 +74,7 @@ class MainPageVC: UIViewController, GroupCellDelegate {
         let userId = getUserId()
        
         loader.startAnimating()
-        service.getUserGroups(userId: userId) { [weak self] result in
+        userService.getUserGroups(userId: userId) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()

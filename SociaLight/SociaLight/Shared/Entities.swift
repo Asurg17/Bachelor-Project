@@ -16,13 +16,11 @@ struct ServiceResponse {
     let isWarning: Bool
 }
 
-// -------------UserId---------------
-
 struct UserIdResponse: Codable {
     let userId: String
 }
 
-// -------------Group----------------
+// Group
 
 struct GetGroupTitleResponse: Codable {
     let groupTitle: String
@@ -34,7 +32,7 @@ struct GetGroupTitleAndDescriptionResponse: Codable {
     let userRole: String
 }
 
-// -------------UserInfo--------------
+// UserInfo
 
 struct UserInfoResponse: Codable {
     let username: String
@@ -47,7 +45,7 @@ struct UserInfoResponse: Codable {
     let phone: String
 }
 
-// -------------UserGroups-------------
+// UserGroups
 
 struct UserGroups: Codable {
     let groups: [UserGroup]
@@ -62,7 +60,7 @@ struct UserGroup: Codable {
     let userRole: String
 }
 
-// -----------Friends-------------------
+// Friends
 
 struct UserFriends: Codable {
     let friends: [UserFriend]
@@ -75,7 +73,7 @@ struct UserFriend: Codable {
     let friendPhone: String
 }
 
-// -------------Group------------------
+// Group
 
 
 struct Group {
@@ -103,7 +101,7 @@ struct GroupMember: Codable {
     let userRole: String
 }
 
-// -----------Create Group Request & Response-------------
+// Create Group Request & Response
 
 struct CreateGroupResponse: Codable {
     let groupId: String
@@ -118,7 +116,7 @@ struct CreateGroupRequest {
 }
 
 
-// -----------------Notifications-----------------
+// Notifications
 
 struct Notifications: Codable {
     let notifications: [Notification]
@@ -220,4 +218,41 @@ struct Audio: AudioItem {
 struct Location: LocationItem {
     var location: CLLocation
     var size: CGSize
+}
+
+// Events
+
+struct Events: Codable {
+    let events: [Event]
+}
+
+struct Event: Codable {
+    let eventUniqueKey: String
+    let creatorId: String
+    let toUserId: String
+    let groupId: String
+    let eventHeader: String
+    let eventTitle: String
+    let eventDescription: String
+    let place: String
+    let eventType: String
+    let date: String
+    let time: String
+}
+
+// Tasks
+
+struct Tasks: Codable {
+    let tasks: [Task]
+}
+
+struct Task: Codable {
+    let assigneeId: String
+    let assigneeName: String
+    let eventKey: String
+    let taskTitle: String
+    let date: String
+    let time: String
+    let taskId: String
+    let taskStatus: String
 }

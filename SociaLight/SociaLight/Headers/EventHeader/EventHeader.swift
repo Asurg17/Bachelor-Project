@@ -16,7 +16,6 @@ class EventHeaderModel {
 }
 
 class EventHeader: UITableViewHeaderFooterView {
-
     @IBOutlet var headerTitleLabel: UILabel!
      
     func configure(with model: EventHeaderModel){

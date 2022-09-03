@@ -16,14 +16,13 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gaX-F7-bqR">
                     <rect key="frame" x="0.0" y="0.0" width="751" height="160"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3oL-qQ-q73">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3oL-qQ-q73">
                             <rect key="frame" x="16" y="80" width="719" height="0.0"/>
-                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="19"/>
+                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                             <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstItem="3oL-qQ-q73" firstAttribute="centerY" secondItem="gaX-F7-bqR" secondAttribute="centerY" id="ti3-Rl-TFM"/>
                         <constraint firstItem="3oL-qQ-q73" firstAttribute="leading" secondItem="gaX-F7-bqR" secondAttribute="leading" constant="16" id="yoW-UE-H5X"/>
@@ -32,7 +31,6 @@
                 </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
-            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="gaX-F7-bqR" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="QAv-ME-551"/>
                 <constraint firstAttribute="bottom" secondItem="gaX-F7-bqR" secondAttribute="bottom" id="evN-3F-Hc4"/>

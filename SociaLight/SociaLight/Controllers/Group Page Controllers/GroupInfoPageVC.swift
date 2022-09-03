@@ -18,12 +18,15 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     @IBOutlet var actionStackView: UIStackView!
     @IBOutlet var groupMembersActionView: GroupInfoActionView!
     @IBOutlet var seeMediaActionView: GroupInfoActionView!
+    @IBOutlet var viewGroupEventsActionView: GroupInfoActionView!
     @IBOutlet var createNewEventActionView: GroupInfoActionView!
     @IBOutlet var leaveGroupActionView: GroupInfoActionView!
     
     @IBOutlet var loader: UIActivityIndicatorView!
     
-    private let service = Service()
+    private let groupService = GroupService()
+    private let fileService = FileService()
+    private let userService = UserService()
     
     let imagePicker = UIImagePickerController()
     
@@ -56,11 +59,13 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     func setupActionViews() {
         groupMembersActionView.delegate = self
         seeMediaActionView.delegate = self
+        viewGroupEventsActionView.delegate = self
         createNewEventActionView.delegate = self
         leaveGroupActionView.delegate = self
         
         let isUserGroupMember = UserDefaults.standard.bool(forKey: "isUserGroupMember")
         groupMembersActionView.isHidden = !isUserGroupMember
+        viewGroupEventsActionView.isHidden = !isUserGroupMember
         leaveGroupActionView.isHidden = !isUserGroupMember
     }
     
@@ -119,7 +124,7 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
         ]
         
         loader.startAnimating()
-        service.getGroupTitleAndDescription(parameters: parameters) { [weak self] result in
+        groupService.getGroupTitleAndDescription(parameters: parameters) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
@@ -138,15 +143,17 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     
     func actionDidInitiated(_ sender: GroupInfoActionView) {
         switch sender {
-          case groupMembersActionView:
+        case groupMembersActionView:
             navigateToGroupMembersPage()
-          case seeMediaActionView:
+        case seeMediaActionView:
             navigateToGroupMediaFilesPage()
+        case viewGroupEventsActionView:
+            navigateToEventsPage()
         case createNewEventActionView:
-            navigateNewEventPagePage()
-          case leaveGroupActionView:
+            navigateToNewEventPage()
+        case leaveGroupActionView:
             leaveGroup()
-          default:
+        default:
             ()
         }
     }
@@ -156,7 +163,7 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
         let groupId = getGroupId()
         
         loader.startAnimating()
-        service.leaveGroup(userId: userId, groupId: groupId) { [weak self] result in
+        userService.leaveGroup(userId: userId, groupId: groupId) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
@@ -174,7 +181,7 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
         let _ = getUserId()
             
         loader.startAnimating()
-        service.uploadImage(imageKey: Constants.groupImagePrefix + getGroupId(), image: image) { [weak self] result in
+        fileService.uploadImage(imageKey: Constants.groupImagePrefix + getGroupId(), image: image) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
@@ -195,7 +202,7 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
             let groupId = getGroupId()
                 
             loader.startAnimating()
-            service.saveGroupUpdates(
+            groupService.saveGroupUpdates(
                 userId: userId,
                 groupId: groupId,
                 groupName: (groupName ?? groupNameLabel.text)!,

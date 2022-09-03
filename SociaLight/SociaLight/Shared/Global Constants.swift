@@ -22,6 +22,8 @@ struct Constants {
     static let groupIdKey: String = "groupId"
     static let admin: String = "A"
     static let member: String = "M"
+    static let activeTaskStatus: String = "A"
+    static let groupEvent: String = "in_group"
     
     // Warning textst
     static let unspecifiedWarningText: String = "Something went wrong!"
@@ -34,6 +36,7 @@ struct Constants {
     static let membersCountNotChosenWarningText: String = "Please choose members count!"
     static let groupNameWarningText: String = "You Should Provide Group Name!"
     static let maximalGroupMembersNumberReachedWarningText: String = "Can't add new Member to the Group. Maximal number of members is reached!"
+    static let assigneeNotChosenWarningText: String = "Please choose member"
     
     // Error Texts
     static let unspecifiedErrorText: String = "Something went wrong"
@@ -57,11 +60,11 @@ struct Constants {
     static let phoneCharactersMaxNum = 15
     static let firstNameCharactersMaxNum = 15
     static let lastNameCharactersMaxNum = 15
-    static let groupNameCharactersMaxNum = 35
+    static let groupNameCharactersMaxNum = 50
     static let groupDescriptionCharactersMaxNum = 100
-    static let eventNameCharactersMaxNum = 35
+    static let eventNameCharactersMaxNum = 50
     static let eventDescriptionCharactersMaxNum = 150
-    static let eventPlaceCharactersMaxNum = 150
+    static let eventPlaceCharactersMaxNum = 120
     
     static let usernameCharactersMaxNumWarning = "Maximum length of Username is: \(usernameCharactersMaxNum) characters"
     static let phoneCharactersMaxNumWarning = "Maximum length of Phone Number is: \(phoneCharactersMaxNum) characters"

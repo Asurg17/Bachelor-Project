@@ -8,6 +8,7 @@
 import UIKit
 import KeychainSwift
 import SDWebImage
+import JGProgressHUD
 
 class ProfilePageVC: UIViewController {
     
@@ -19,14 +20,11 @@ class ProfilePageVC: UIViewController {
     @IBOutlet var birthDateLabel: UILabel!
     @IBOutlet var phoneLabel: UILabel!
     @IBOutlet var popupButtonsStackView: UIStackView!
-    @IBOutlet var sendMeetingInvitation: UIButton!
-    @IBOutlet var signOutBarButton: UIBarButtonItem!
     
-    @IBOutlet var loader: UIActivityIndicatorView!
-    
-    private let service = Service()
-    
+    private let loader = JGProgressHUD()
     private let imagePicker = UIImagePickerController()
+    private let fileService = FileService()
+    private let userService = UserService()
     
     var currUserId: String?
     
@@ -64,11 +62,11 @@ class ProfilePageVC: UIViewController {
     func loadUserInfo() {
         let userId = currUserId ?? getUserId()
         
-        loader.startAnimating()
-        service.getUserInfo(userId: userId) { [weak self] result in
+        showLoader(text: "Loading...")
+        userService.getUserInfo(userId: userId) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
-                self.loader.stopAnimating()
+                self.loader.dismiss(animated: true)
                 switch result {
                 case .success(let response):
                     self.reloadView(userInfo: response, userId: userId)
@@ -82,11 +80,11 @@ class ProfilePageVC: UIViewController {
     func uploadUserImage(userImage: UIImage) {
         let userId = currUserId ?? getUserId()
         
-        loader.startAnimating()
-        service.uploadImage(imageKey: Constants.userImagePrefix + userId, image: userImage) { [weak self] result in
+        showLoader(text: "Uploading...")
+        fileService.uploadImage(imageKey: Constants.userImagePrefix + userId, image: userImage) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
-                self.loader.stopAnimating()
+                self.loader.dismiss(animated: true)
                 switch result {
                 case .success(_):
                     ()
@@ -128,15 +126,22 @@ class ProfilePageVC: UIViewController {
         UserDefaults.standard.set(userInfo.birthDate, forKey: "user.birthDate")
     }
     
-    @IBAction func sendMeetingInvitationButtonTouchedUpInside() {
-        navigateToSendMeetingInvitationPopupPage()
+    func showLoader(text: String) {
+        loader.textLabel.text = text
+        loader.style = .light
+        loader.backgroundColor = .white.withAlphaComponent(0.5)
+        loader.show(in: self.view)
+    }
+    
+    @IBAction func showFriendsPage() {
+        navigateToFriendsPage()
     }
     
     @IBAction func showPersonalInfoPopup() {
         navigateToPersonalInfoPopupPage(vc: self)
     }
     
-    @IBAction func changePasswordPopup() {
+    @IBAction func showChangePasswordPopup() {
         navigateToChangePasswordPopupPage()
     }
     

@@ -104,7 +104,7 @@ func (m *GroupManager) getGroupMembers(userId string, groupId string) (map[strin
 							from users
 							where user_id = $1)
 				order by case when m.user_id = $1 then 1
-						 else 2 end, lower(s.first_name)`
+						 else 2 end, lower(s.first_name);`
 
 	rows, err := m.connectionPool.db.Query(getQuery, userId, groupId)
 	if err != nil && err != sql.ErrNoRows {

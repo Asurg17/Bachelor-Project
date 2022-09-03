@@ -20,6 +20,7 @@ class CustomDropDownCell: DropDownCell {
                 if image == nil {
                     self.userImage.image = UIImage(named: "empty_avatar_image")
                 }
-          })
+            }
+        )
     }
 }

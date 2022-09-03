@@ -14,7 +14,7 @@ class GroupMediaFilesPageVC: UIViewController {
     @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var warningLabel: UILabel!
     
-    private let service = Service()
+    private let groupService = GroupService()
     
     var collectionData = [MediaFileCellModel]()
     
@@ -67,7 +67,7 @@ class GroupMediaFilesPageVC: UIViewController {
             "groupId": getGroupId()
         ]
         
-        service.getGroupMediaFiles(parameters: parameters) { [weak self] result in
+        groupService.getGroupMediaFiles(parameters: parameters) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.refreshControl.endRefreshing()

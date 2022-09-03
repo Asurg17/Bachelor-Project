@@ -35,7 +35,7 @@ func (m *NotificationManager) getUserNotifications(userId string) (map[string][]
 					,(select count(*)
 					from group_members 
 					where group_id = g.group_id) members_count
-					,to_char(n.inp_date, 'DD-FMMonth-YYYY') send_date
+					,to_char(n.inp_date, 'DD FMMonth YYYY') send_date
 					,to_char(n.inp_date, 'HH24:MI') send_time
 					,n.inp_date dt
 				from notifications n
@@ -55,7 +55,7 @@ func (m *NotificationManager) getUserNotifications(userId string) (map[string][]
 					,'' group_description
 					,0 group_capacity
 					,0 members_count
-					,to_char(r.request_date, 'DD-FMMonth-YYYY') send_date
+					,to_char(r.request_date, 'DD FMMonth YYYY') send_date
 					,to_char(r.request_date, 'HH24:MI') send_time
 					,r.request_date dt
 				from friendship_requests r,
@@ -76,7 +76,7 @@ func (m *NotificationManager) getUserNotifications(userId string) (map[string][]
 					,(select count(*)
 					from group_members 
 					where group_id = g.group_id) members_count
-					,to_char(s.invitation_date, 'DD-FMMonth-YYYY') send_date
+					,to_char(s.invitation_date, 'DD FMMonth YYYY') send_date
 					,to_char(s.invitation_date, 'HH24:MI') send_time
 					,s.invitation_date dt
 				from invitations s,

@@ -63,11 +63,8 @@ class FriendCell: UITableViewCell {
         friendName.text = model.friendFristName + " " + model.friendLastName
         friendPhone.text = model.friendPhone
         
-        if self.model.isFriendsPage {
-            checkboxOuterView.isHidden = true
-        } else {
-            checkIfCellIsSelected()
-        }
+        checkIfCellIsSelected()
+        checkboxOuterView.isHidden = model.isFriendsPage
     }
 
     override func layoutSubviews() {

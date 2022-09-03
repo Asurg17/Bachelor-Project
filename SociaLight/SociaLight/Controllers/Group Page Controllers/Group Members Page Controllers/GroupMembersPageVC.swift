@@ -15,7 +15,9 @@ class GroupMembersPageVC: UIViewController {
     @IBOutlet var memberNameTextField: UITextField!
     @IBOutlet var addNewMemberBarButton: UIBarButtonItem!
     
-    private let service = Service()
+    private let groupService = GroupService()
+    private let notificationService = NotificationService()
+    private let userService = UserService()
     
     private var members = [GroupMemberCellModel]()
     private var tableData = [GroupMemberCellModel]()
@@ -75,7 +77,7 @@ class GroupMembersPageVC: UIViewController {
         let groupId = getGroupId()
         
         loader.startAnimating()
-        service.getGroupMembers(userId: userId, groupId: groupId) { [weak self] result in
+        groupService.getGroupMembers(userId: userId, groupId: groupId) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
@@ -146,7 +148,7 @@ class GroupMembersPageVC: UIViewController {
         let groupId = getGroupId()
         
         loader.startAnimating()
-        service.leaveGroup(userId: memberId, groupId: groupId) { [weak self] result in
+        userService.leaveGroup(userId: memberId, groupId: groupId) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
@@ -176,7 +178,7 @@ class GroupMembersPageVC: UIViewController {
             "groupId": getGroupId()
         ]
         
-        service.assignAdminRole(parameters: parameters) { [weak self] result in
+        userService.assignAdminRole(parameters: parameters) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
@@ -218,7 +220,7 @@ extension GroupMembersPageVC: GroupMemberCellDelegate {
         let userId = getUserId()
         let groupId = getGroupId()
         
-        service.sendFriendshipRequest(fromUserId: userId, toUserId: member.model.memberId, groupId: groupId) { [weak self] result in
+        notificationService.sendFriendshipRequest(fromUserId: userId, toUserId: member.model.memberId, groupId: groupId) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
@@ -238,7 +240,7 @@ extension GroupMembersPageVC: GroupMemberCellDelegate {
     
     func userIsClicked(_ member: GroupMemberCell) {
         if member.model.memberId != getUserId() {
-            navigateToUserProfilePage(memberId: member.model.memberId)
+            navigateToUserProfilePage(userId: member.model.memberId)
         }
     }
     

@@ -18,7 +18,7 @@ class SignInPageVC: UIViewController {
     
     @IBOutlet var loader: UIActivityIndicatorView!
     
-    private let service = Service()
+    private let service = SignInUpService()
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -11,16 +11,14 @@ class PersonalInfoPopupVC: UIViewController {
     
     @IBOutlet var phoneTextField: DesignableUITextField!
     @IBOutlet var birthDateTextField: DesignableUITextField!
-    
     @IBOutlet var contentView: UIView!
     @IBOutlet var button: UIButton!
-    
     @IBOutlet var loader: UIActivityIndicatorView!
     
     var delegate: DismissProtocol?
     
     private let datePicker = UIDatePicker()
-    private let service = Service()
+    private let userService = UserService()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,7 +74,7 @@ class PersonalInfoPopupVC: UIViewController {
                 
             loader.startAnimating()
             button.isEnabled = false
-            service.changePersonalInfo(
+            userService.changePersonalInfo(
                 userId: userId,
                 age: getUserAge(),
                 phoneNumber: phoneTextField.text ?? "",

@@ -16,9 +16,8 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
     
     @IBOutlet var groupIdentifierTextField: RoundCornerTextField!
     
-    private let service = Service()
+    private let groupService = GroupService()
     private let keychain = KeychainSwift()
-    
     private var isServiceCalled = false
     
     lazy var flowLayout: UICollectionViewFlowLayout = {
@@ -73,7 +72,7 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
                 let userId = getUserId()
                     
                 loader.startAnimating()
-                service.searchNewGroups(userId: userId, groupIdentifier: groupIdentifier) { [weak self] result in
+                groupService.searchNewGroups(userId: userId, groupIdentifier: groupIdentifier) { [weak self] result in
                     guard let self = self else { return }
                     DispatchQueue.main.async {
                         self.loader.stopAnimating()

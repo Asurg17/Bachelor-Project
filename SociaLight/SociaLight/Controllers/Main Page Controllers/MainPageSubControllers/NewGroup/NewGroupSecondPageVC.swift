@@ -19,7 +19,10 @@ class NewGroupSecondPageVC: UIViewController {
     
     @IBOutlet var loader: UIActivityIndicatorView!
     
-    private let service = Service()
+    private let groupService = GroupService()
+    private let notificationService = NotificationService()
+    private let fileService = FileService()
+    private let userService = UserService()
     
     private let refreshControl = UIRefreshControl()
     
@@ -101,7 +104,7 @@ class NewGroupSecondPageVC: UIViewController {
         let userId = getUserId()
         
         loader.startAnimating()
-        service.getUserFriends(userId: userId) { [weak self] result in
+        userService.getUserFriends(userId: userId) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
@@ -176,7 +179,7 @@ class NewGroupSecondPageVC: UIViewController {
         
         loader.startAnimating()
         button.isEnabled = false
-        service.createGroup(
+        groupService.createGroup(
             requestParams:
                 CreateGroupRequest(groupName: group?.groupName ?? "",
                                    groupDescription: group?.groupDescription ?? "",
@@ -201,7 +204,7 @@ class NewGroupSecondPageVC: UIViewController {
     }
     
     func uploadGroupImage(userId: String, groupId: String) {
-        service.uploadImage(
+        fileService.uploadImage(
             imageKey: Constants.groupImagePrefix + groupId,
             image: (group?.groupImage ?? UIImage(named: "Groupicon"))!
         ) { [weak self] result in
@@ -220,7 +223,7 @@ class NewGroupSecondPageVC: UIViewController {
     }
     
     func addSelfToGroup(userId: String, groupId: String)  {
-        service.addUserToGroup(userId: userId, groupId: groupId, userRole: Constants.admin) { [weak self] result in
+        userService.addUserToGroup(userId: userId, groupId: groupId, userRole: Constants.admin) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 switch result {
@@ -238,7 +241,7 @@ class NewGroupSecondPageVC: UIViewController {
     func sendGroupInvitations(userId: String, groupId: String) {
         let members = getMembers()
         if members.count > 0 {
-            service.sendGroupInvitations(userId: userId, groupId: groupId, members: members) { [weak self] result in
+            notificationService.sendGroupInvitations(userId: userId, groupId: groupId, members: members) { [weak self] result in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     self.loader.stopAnimating()

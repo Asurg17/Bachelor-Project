@@ -15,6 +15,10 @@ protocol UpdateGroup {
     func update(groupTitle: String)
 }
 
+protocol UpdateTasksProtocol {
+    func update()
+}
+
 // --------------Cells & Reusable Views Protocols------------------
 
 protocol NotificationCellDelegate: AnyObject {
@@ -27,8 +31,12 @@ protocol NotificationCellDelegate: AnyObject {
 }
 
 protocol EventCellDelegate: AnyObject {
-    func navigateToGroupPage(_ event: EventCell)
-    func navigateToUserPage(_ event: EventCell)
+    func navigate(eventKey: String)
+}
+
+protocol TaskCellProtocol: AnyObject {
+    func navigate(eventKey: String)
+    func doneTask(_ task: TaskCell)
 }
 
 protocol FriendCellDelegate: AnyObject {

@@ -54,16 +54,20 @@ class NewEventPageVC: UIViewController {
         eventNameTextField.becomeFirstResponder()
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        stackView.layoutIfNeeded()
+        placeTextField.addBottomBorder()
+        dateTextField.addBottomBorder()
+        timeTextField.addBottomBorder()
+    }
+    
     func setupViews() {
         eventNameTextField.delegate = self
         eventDescriptionTextField.delegate = self
         placeTextField.delegate = self
         dateTextField.delegate = self
         timeTextField.delegate = self
-        
-        placeTextField.addBottomBorder()
-        dateTextField.addBottomBorder()
-        timeTextField.addBottomBorder()
         
         let dtPicker = datePicker
         dtPicker.addTarget(self, action: #selector(dateHasChanged(datePicker:)), for: UIControl.Event.valueChanged)
@@ -95,6 +99,14 @@ class NewEventPageVC: UIViewController {
                 showWarningAlert(warningText: "Can't create new event :(")
                 return
             }
+            
+            var time = timeTextField.text ?? ""
+            if time.isEmpty {
+                time = "-:-"
+            }
+            
+            if selectedDate.isEmpty { selectedDate = formatEventDate(date: Date()) }
+            
             let parameters = [
                 "userId": getUserId(),
                 "groupId": getGroupId(),
@@ -102,7 +114,7 @@ class NewEventPageVC: UIViewController {
                 "eventDescription": eventDescriptionTextField.text ?? "",
                 "place": placeTextField.text!,
                 "date": dateTextField.text!,
-                "time": timeTextField.text ?? "",
+                "time": time,
                 "formattedDate": selectedDate,
                 "eventUniqueKey": eventUniqueKey
             ]
@@ -114,7 +126,7 @@ class NewEventPageVC: UIViewController {
                     self.dismissLoader()
                     switch result {
                     case .success(_):
-                        self.navigate(eventUniqueKey: eventUniqueKey)
+                        self.navigate(eventKey: eventUniqueKey, creatorId: self.getUserId(), groupId: self.getGroupId())
                     case .failure(let error):
                         self.showWarningAlert(warningText: error.localizedDescription.description)
                     }
@@ -142,21 +154,19 @@ class NewEventPageVC: UIViewController {
         loader.dismiss(animated: true)
     }
     
-    func navigate(eventUniqueKey: String) {
-        navigateToTasksPage(event:
-            NewEvent(
-                creatorUserId: getUserId(),
-                toUserId: "",
-                groupId: getGroupId(),
-                eventName: eventNameTextField.text!,
-                eventDescription: eventDescriptionTextField.text,
-                place: placeTextField.text!,
-                dateString: dateTextField.text!,
-                timeString: timeTextField.text,
-                eventDate: selectedDate,
-                eventUniqueKey: eventUniqueKey
-            )
-        )
+    func navigate(eventKey: String, creatorId: String, groupId: String) {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "TasksPageStoryboard", bundle: nil)
+        let tasksPageController = storyBoard.instantiateViewController(withIdentifier: "TasksPageVC") as! TasksPageVC
+        tasksPageController.title = "Tasks"
+        tasksPageController.eventKey = eventKey
+        tasksPageController.creatorId = creatorId
+        tasksPageController.groupId = groupId
+        var array = navigationController?.viewControllers
+        array?.removeLast()
+        array?.append(tasksPageController)
+        navigationController?.setViewControllers(array!, animated: true)
+        
+        //navigateToTasksPage(eventKey: eventKey, creatorId: creatorId, groupId: groupId)
     }
     
     func chackIfallRequiredFieldsAreFilled() -> Bool {
@@ -178,13 +188,13 @@ class NewEventPageVC: UIViewController {
     }
     
     @objc
-    func dateHasChanged(datePicker: UIDatePicker){
-        dateTextField.text = formatDate(date: datePicker.date)
+    func dateHasChanged(datePicker: UIDatePicker) {
         selectedDate = formatEventDate(date: datePicker.date)
+        dateTextField.text = formatDate(date: datePicker.date)
     }
     
     @objc
-    func timeHasChanged(datePicker: UIDatePicker){
+    func timeHasChanged(datePicker: UIDatePicker) {
         timeTextField.text = formatEventTime(date: datePicker.date)
     }
     
@@ -205,7 +215,6 @@ class NewEventPageVC: UIViewController {
             view.frame.origin.y = 0
         }
     }
-
 }
 
 extension NewEventPageVC: UITextFieldDelegate {
@@ -258,5 +267,4 @@ extension NewEventPageVC: UITextFieldDelegate {
         
         return true
     }
-    
 }

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import JGProgressHUD
 
 class NotificationsSection {
     
@@ -27,14 +28,13 @@ class NotificationsSection {
 
 class NotificationsPageVC: UIViewController {
     
-    @IBOutlet var loader: UIActivityIndicatorView!
     @IBOutlet var tableView: UITableView!
     @IBOutlet var warningText: UILabel!
     
-    private let service = Service()
+    private let service = NotificationService()
     private var tableData = [NotificationsSection]()
-    
     private let refreshControl = UIRefreshControl()
+    private var loader = JGProgressHUD()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -88,18 +88,17 @@ class NotificationsPageVC: UIViewController {
     }
     
     func getNotifications() {
-        clearTable()
-        
         let userId = getUserId()
         
-        loader.startAnimating()
+        showLoader(text: "Loading...")
         service.getUserNotifications(userId: userId) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
-                self.loader.stopAnimating()
+                self.loader.dismiss(animated: true)
                 self.refreshControl.endRefreshing()
                 switch result {
                 case .success(let response):
+                    self.clearTable()
                     self.handleSuccess(response: response)
                 case .failure(let error):
                     self.showWarningAlert(warningText: error.localizedDescription.description)
@@ -132,9 +131,9 @@ class NotificationsPageVC: UIViewController {
             if let sectionIndex = tableData.firstIndex(where: { $0.id == id }) {
                 tableData[sectionIndex].notifications.append(notificationCellModel)
                 
-                tableView.beginUpdates()
-                tableView.reloadSections(IndexSet(integer: sectionIndex), with: .fade)
-                tableView.endUpdates()
+//                tableView.beginUpdates()
+//                tableView.reloadSections(IndexSet(integer: sectionIndex), with: .fade)
+//                tableView.endUpdates()
             
             } else {
                 
@@ -146,12 +145,11 @@ class NotificationsPageVC: UIViewController {
                 
                 tableData.append(section)
                 
-                tableView.beginUpdates()
-                tableView.insertSections(IndexSet(integer: tableData.count-1), with: .fade)
-                tableView.endUpdates()
-                
+//                tableView.beginUpdates()
+//                tableView.insertSections(IndexSet(integer: tableData.count-1), with: .fade)
+//                tableView.endUpdates()
             }
-
+            tableView.reloadData()
         }
     }
     
@@ -179,6 +177,23 @@ class NotificationsPageVC: UIViewController {
         }
     }
     
+    func showLoader(text: String) {
+        loader = JGProgressHUD()
+        loader.textLabel.text = text
+        loader.style = .light
+        loader.backgroundColor = .white.withAlphaComponent(0.5)
+        loader.show(in: self.view)
+    }
+    
+    func dismissLoader() {
+        UIView.animate(withDuration: 0.2, animations: {
+            self.loader.textLabel.text = "Success"
+            self.loader.detailTextLabel.text = nil
+            self.loader.indicatorView = JGProgressHUDSuccessIndicatorView()
+        })
+                       
+        loader.dismiss(animated: true)
+    }
     
     @objc private func didPullToRefresh(_ sender: Any) {
         getNotifications()
@@ -191,11 +206,11 @@ extension NotificationsPageVC: NotificationCellDelegate {
     func friendshipAccepted(_ notification: NotificationCell) {
         let userId = getUserId()
             
-        loader.startAnimating()
+        showLoader(text: "Processing...")
         service.acceptFriendshipRequest(userId: userId, fromUserId: notification.model.fromUserId, requestUniqueKey: notification.model.requestUniqueKey) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
-                self.loader.stopAnimating()
+                self.dismissLoader()
                 switch result {
                 case .success(_):
                     self.removeFromTable(elem: notification.model)
@@ -210,11 +225,11 @@ extension NotificationsPageVC: NotificationCellDelegate {
     func friendshipRejected(_ notification: NotificationCell) {
         let userId = getUserId()
         
-        loader.startAnimating()
+        showLoader(text: "Processing...")
         service.rejectFriendshipRequest(userId: userId, requestUniqueKey: notification.model.requestUniqueKey) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
-                self.loader.stopAnimating()
+                self.dismissLoader()
                 switch result {
                 case .success(_):
                     self.removeFromTable(elem: notification.model)
@@ -229,11 +244,11 @@ extension NotificationsPageVC: NotificationCellDelegate {
     func acceptInvitation(_ notification: NotificationCell) {
         let userId = getUserId()
         
-        loader.startAnimating()
+        showLoader(text: "Processing...")
         service.acceptInvitation(userId: userId, fromUserId: notification.model.fromUserId, groupId: notification.model.groupId, requestUniqueKey: notification.model.requestUniqueKey) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
-                self.loader.stopAnimating()
+                self.dismissLoader()
                 switch result {
                 case .success(_):
                     self.removeFromTable(elem: notification.model)
@@ -248,11 +263,11 @@ extension NotificationsPageVC: NotificationCellDelegate {
     func rejectInvitation(_ notification: NotificationCell) {
         let userId = getUserId()
         
-        loader.startAnimating()
+        showLoader(text: "Processing...")
         service.rejectInvitation(userId: userId, requestUniqueKey: notification.model.requestUniqueKey) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
-                self.loader.stopAnimating()
+                self.dismissLoader()
                 switch result {
                 case .success(_):
                     self.removeFromTable(elem: notification.model)
@@ -265,7 +280,7 @@ extension NotificationsPageVC: NotificationCellDelegate {
     }
     
     func navigateToUserPage(userId: String) {
-        navigateToUserProfilePage(memberId: userId)
+        navigateToUserProfilePage(userId: userId)
     }
     
     func navigateToGroupPage(groupId: String) {

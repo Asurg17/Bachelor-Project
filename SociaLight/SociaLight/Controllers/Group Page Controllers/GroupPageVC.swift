@@ -15,8 +15,10 @@ import JGProgressHUD
 
 class GroupPageVC: MessagesViewController {
     
-    private var bottomView: UIView?
-    private let service = Service()
+    private let groupService = GroupService()
+    private let messageService = MessageService()
+    private let userService = UserService()
+    private let fileService = FileService()
     private var messages = [Message]()
     private var isInputBarButtonItemHidden = true
     private var isSocketClosed = false
@@ -29,6 +31,8 @@ class GroupPageVC: MessagesViewController {
             displayName: "Me"
         )
     }
+    private var bottomView: UIView?
+    
 //  Scroll
     private let loader = JGProgressHUD()
     private let refreshControl = UIRefreshControl()
@@ -91,7 +95,7 @@ class GroupPageVC: MessagesViewController {
         if isFirstCall {
             loader.textLabel.text = "Loading"
             loader.style = .light
-            loader.backgroundColor = .white.withAlphaComponent(0.5)
+            loader.backgroundColor = .white.withAlphaComponent(1)
             loader.show(in: self.view)
         }
     }
@@ -247,13 +251,12 @@ class GroupPageVC: MessagesViewController {
             "userId": getUserId(),
             "groupId": getGroupId()
         ]
-        service.getGroupTitle(parameters: parameters) { [weak self] result in
+        groupService.getGroupTitle(parameters: parameters) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
                     self.title = response
-//                    self.getAllGroupMessages()
                 case .failure(let error):
                     self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
@@ -270,10 +273,9 @@ class GroupPageVC: MessagesViewController {
             "userId": getUserId()
         ]
         
-        service.getAllGroupMessages(parameters: parameters) { [weak self] result in
+        messageService.getAllGroupMessages(parameters: parameters) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
-                self.loader.dismiss(animated: true)
                 switch result {
                 case .success(let response):
                     self.isFirstCall = false
@@ -281,6 +283,7 @@ class GroupPageVC: MessagesViewController {
                 case .failure(let error):
                     self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
+                self.loader.dismiss(afterDelay: 0.3, animated: true)
                 print("End: getAllGroupMessages")
             }
         }
@@ -307,7 +310,7 @@ class GroupPageVC: MessagesViewController {
             "lastMessageUniqueKey": lastMessageUniqueKey
         ]
         
-        service.getGroupNewMessages(parameters: parameters) { [weak self] result in
+        messageService.getGroupNewMessages(parameters: parameters) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 switch result {
@@ -346,7 +349,7 @@ class GroupPageVC: MessagesViewController {
                 "firstMessageUniqueKey": messages[0].messageUniqueKey
             ]
             
-            service.getGroupOldMessages(parameters: parameters) { [weak self] result in
+            messageService.getGroupOldMessages(parameters: parameters) { [weak self] result in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     switch result {
@@ -594,7 +597,7 @@ class GroupPageVC: MessagesViewController {
         let userId = getUserId()
         let groupId = getGroupId()
         
-        service.addUserToGroup(userId: userId, groupId: groupId, userRole: Constants.member) { [weak self] result in
+        userService.addUserToGroup(userId: userId, groupId: groupId, userRole: Constants.member) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 switch result {
@@ -674,7 +677,7 @@ extension GroupPageVC: UIImagePickerControllerDelegate, UINavigationControllerDe
         let _ = getUserId()
         
         let imageKey = "in_group_image_" + messageId.replacingOccurrences(of: " ", with: "-")
-        service.uploadImage(imageKey: imageKey, image: image) { [weak self] result in
+        fileService.uploadImage(imageKey: imageKey, image: image) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 switch result {
@@ -742,7 +745,7 @@ extension GroupPageVC: AVAudioRecorderDelegate {
         let _ = getUserId()
         
         let audioKey = "in_group_audio_" + messageId.replacingOccurrences(of: " ", with: "-")
-        service.uploadAudio(audioKey: audioKey, audioData: audioData, duration: duration) { [weak self] result in
+        fileService.uploadAudio(audioKey: audioKey, audioData: audioData, duration: duration) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 switch result {
@@ -810,7 +813,7 @@ extension GroupPageVC: InputBarAccessoryViewDelegate {
             "duration": collectionMessage.duration.description
         ]
         
-        service.sendMessage(message: message) { [weak self] result in
+        messageService.sendMessage(message: message) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 switch result {
@@ -1074,7 +1077,7 @@ extension GroupPageVC: MessageCellDelegate, AVAudioPlayerDelegate {
             "audioKey": "in_group_audio_" + message.messageId.replacingOccurrences(of: " ", with: "-")
         ]
         
-        service.getAudio(parameters: parameters) { [weak self] result in
+        fileService.getAudio(parameters: parameters) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 switch result {

@@ -7,17 +7,17 @@
 
 import UIKit
 import SDWebImage
+import JGProgressHUD
 
 class FriendsPageVC: UIViewController {
     
     @IBOutlet var tableView: UITableView!
     @IBOutlet var friendNameTextField: UITextField!
     @IBOutlet var warningLabel: UILabel!
-    @IBOutlet var loader: UIActivityIndicatorView!
     
-    private let service = Service()
+    private let service = UserService()
+    private let loader = JGProgressHUD()
     private let refreshControl = UIRefreshControl()
-    
     private var friends = [FriendCellModel]()
     private var tableData = [FriendCellModel]()
     
@@ -72,11 +72,11 @@ class FriendsPageVC: UIViewController {
     func getFiends() {
         let userId = getUserId()
         
-        loader.startAnimating()
+        showLoader()
         service.getUserFriends(userId: userId) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
-                self.loader.stopAnimating()
+                self.loader.dismiss(animated: true)
                 self.refreshControl.endRefreshing()
                 switch result {
                 case .success(let response):
@@ -110,7 +110,7 @@ class FriendsPageVC: UIViewController {
     }
     
     func filterFriends(filterString: String) {
-        loader.startAnimating()
+        showLoader()
         var filteredFriends: [FriendCellModel] = []
         if filterString != "" {
             for friend in friends {
@@ -124,7 +124,7 @@ class FriendsPageVC: UIViewController {
         }
         tableData = filteredFriends
         tableView.reloadData()
-        loader.stopAnimating()
+        loader.dismiss(animated: true)
     }
     
     func delete(at indexPath: IndexPath) {
@@ -168,6 +168,12 @@ class FriendsPageVC: UIViewController {
         friendNameTextField.resignFirstResponder()
     }
     
+    func showLoader() {
+        loader.textLabel.text = "Loading..."
+        loader.style = .light
+        loader.backgroundColor = .white.withAlphaComponent(0.5)
+        loader.show(in: self.view)
+    }
     
     @objc private func didPullToRefresh(_ sender: Any) {
         clear()
@@ -184,7 +190,7 @@ extension FriendsPageVC: FriendCellDelegate {
     
     func cellDidClick(_ friend: FriendCell) {
         if friendNameTextField.isFirstResponder { friendNameTextField.resignFirstResponder() }
-        navigateToUserProfilePage(memberId: friend.model.friendId)
+        navigateToUserProfilePage(userId: friend.model.friendId)
     }
     
 }

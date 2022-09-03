@@ -6,9 +6,9 @@
 //
 
 import UIKit
+import JGProgressHUD
 
 class EventsSection {
-    
     var id: String
     var header: EventHeaderModel?
     var events = [EventCellModel]()
@@ -22,23 +22,28 @@ class EventsSection {
         self.header = header
         self.events = events
     }
-    
 }
 
 class EventsPageVC: UIViewController {
     
-    @IBOutlet var loader: UIActivityIndicatorView!
     @IBOutlet var tableView: UITableView!
     @IBOutlet var warningText: UILabel!
     
-    private let service = Service()
+    private let service = EventService()
     private var tableData = [EventsSection]()
+    private let loader = JGProgressHUD()
+    
+    var groupId: String?
     
     private let refreshControl = UIRefreshControl()
  
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Events"
+        setupViews()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         getEvents()
     }
     
@@ -47,11 +52,18 @@ class EventsPageVC: UIViewController {
     }
     
     func setupTableView() {
+        tableView.clipsToBounds = true
+        tableView.layer.cornerRadius = 20
+        tableView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+        
         tableView.delegate = self
         tableView.dataSource = self
         
         tableView.keyboardDismissMode = .interactive
-        tableView.allowsSelection = true
+        tableView.allowsSelection = false
+        
+        tableView.layoutMargins.left = 0.1
+        tableView.layoutMargins.right = 0.1
         
         refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
         tableView.refreshControl = refreshControl
@@ -69,10 +81,75 @@ class EventsPageVC: UIViewController {
         )
     }
     
-    func getEvents() {
-        self.refreshControl.endRefreshing()
+    func clearTable() {
+        tableData = []
+        tableView.reloadData()
     }
     
+    func getEvents() {
+        let parameters = [
+            "userId": getUserId(),
+            "groupId": groupId ?? "",
+            "currentDate": formatEventDate(date: Date())
+        ]
+        
+        showLoader()
+        service.getEvents(parameters: parameters) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.refreshControl.endRefreshing()
+                self.loader.dismiss(animated: true)
+                switch result {
+                case .success(let response):
+                    self.clearTable()
+                    self.handleSuccess(events: response.events)
+                case .failure(let error):
+                    self.showWarningAlert(warningText: error.localizedDescription.description)
+                }
+            }
+        }
+    }
+    
+    func handleSuccess(events: [Event]) {
+        for event in events {
+         
+            let id = event.date
+            
+            let eventCellModel = EventCellModel(
+                eventUniqueKey: event.eventUniqueKey,
+                creatorId: event.creatorId,
+                toUserId: event.toUserId,
+                groupId: event.groupId,
+                eventHeader: event.eventHeader,
+                eventTitle: event.eventTitle,
+                eventDescription: event.eventDescription,
+                place: event.place,
+                eventType: event.eventType,
+                date: event.date,
+                time: event.time,
+                delegate: self
+            )
+            
+            if let sectionIndex = tableData.firstIndex(where: { $0.id == id }) {
+                tableData[sectionIndex].events.append(eventCellModel)
+            } else {
+                let section = EventsSection(
+                    id: id,
+                    header: EventHeaderModel(title: id),
+                    events: [eventCellModel]
+                )
+                tableData.append(section)
+            }
+        }
+        tableView.reloadData()
+    }
+    
+    func showLoader() {
+        loader.textLabel.text = "Loading..."
+        loader.style = .light
+        loader.backgroundColor = .white.withAlphaComponent(0.5)
+        loader.show(in: self.view)
+    }
     
     @objc private func didPullToRefresh(_ sender: Any) {
         getEvents()
@@ -80,18 +157,9 @@ class EventsPageVC: UIViewController {
 }
 
 extension EventsPageVC: EventCellDelegate {
-    
-    func navigateToGroupPage(_ event: EventCell) {
-        navigateToUserProfilePage(memberId: event.model.fromUserId)
+    func navigate(eventKey: String) {
+        navigateToEventPage(eventKey: eventKey)
     }
-    
-    func navigateToUserPage(_ event: EventCell) {
-        navigateToGroupPage(
-            groupId: event.model.groupId,
-            isUserGroupMember: true //tu datova arc wamova eventi
-        )
-    }
-    
 }
 
 extension EventsPageVC: UITableViewDataSource, UITableViewDelegate {
@@ -135,9 +203,6 @@ extension EventsPageVC: UITableViewDataSource, UITableViewDelegate {
         return Constants.tableHeaderHeight
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    }
-    
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return CGFloat.leastNormalMagnitude
     }
@@ -145,5 +210,4 @@ extension EventsPageVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return UIView()
     }
-    
 }

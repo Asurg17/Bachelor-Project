@@ -15,7 +15,6 @@ class SendMeetingInvitationPopupVC: UIViewController {
     var delegate: DismissProtocol?
     
     private let datePicker = UIDatePicker()
-    private let service = Service()
     
     override func viewDidLoad() {
         super.viewDidLoad()

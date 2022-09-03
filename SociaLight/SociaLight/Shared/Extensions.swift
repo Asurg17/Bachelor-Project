@@ -144,7 +144,7 @@ extension UIViewController {
     func formatDate(date: Date) -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "MMMM dd yyyy"
+        formatter.dateFormat = "dd MMMM yyyy"
         return formatter.string(from: date)
     }
     
@@ -171,7 +171,7 @@ extension UIViewController {
         view.endEditing(true)
     }
     
-    // ---------------Navigation--------------
+    // Navigation
     
     func navigateToSignUpPage() {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
@@ -248,11 +248,20 @@ extension UIViewController {
         self.navigationController?.pushViewController(imagePageController, animated: true)
     }
     
-    func navigateToUserProfilePage(memberId: String) {
+    func navigateToUserProfilePage(userId: String) {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let userProfilePageController = storyBoard.instantiateViewController(withIdentifier: "ProfilePageVC") as! ProfilePageVC
-        userProfilePageController.currUserId = memberId
+        userProfilePageController.currUserId = userId
+        userProfilePageController.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(userProfilePageController, animated: true)
+    }
+    
+    func navigateToFriendsPage() {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "FriendsPageStoryboard", bundle: nil)
+        let friendsPageController = storyBoard.instantiateViewController(withIdentifier: "FriendsPageVC") as! FriendsPageVC
+        friendsPageController.title = "Friends"
+        friendsPageController.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(friendsPageController, animated: true)
     }
     
     func navigateToSendMeetingInvitationPopupPage() {
@@ -260,7 +269,7 @@ extension UIViewController {
         let sendMeetingInvitatioPopupPageController = storyboard.instantiateViewController(withIdentifier: "SendMeetingInvitationPopupVC") as! SendMeetingInvitationPopupVC
         sendMeetingInvitatioPopupPageController.providesPresentationContextTransitionStyle = true
         sendMeetingInvitatioPopupPageController.definesPresentationContext = true
-        sendMeetingInvitatioPopupPageController.modalPresentationStyle = .overCurrentContext
+        sendMeetingInvitatioPopupPageController.modalPresentationStyle = .overFullScreen
         sendMeetingInvitatioPopupPageController.modalTransitionStyle = .crossDissolve
         self.navigationController?.present(sendMeetingInvitatioPopupPageController, animated: true)
     }
@@ -270,7 +279,7 @@ extension UIViewController {
         let personalInfoPopupPageController = storyboard.instantiateViewController(withIdentifier: "PersonalInfoPopupVC") as! PersonalInfoPopupVC
         personalInfoPopupPageController.providesPresentationContextTransitionStyle = true
         personalInfoPopupPageController.definesPresentationContext = true
-        personalInfoPopupPageController.modalPresentationStyle = .overCurrentContext
+        personalInfoPopupPageController.modalPresentationStyle = .overFullScreen
         personalInfoPopupPageController.modalTransitionStyle = .crossDissolve
         personalInfoPopupPageController.delegate = vc
         self.navigationController?.present(personalInfoPopupPageController, animated: true)
@@ -281,27 +290,46 @@ extension UIViewController {
         let changePasswordPopupPageController = storyBoard.instantiateViewController(withIdentifier: "ChangePasswordPopupVC") as! ChangePasswordPopupVC
         changePasswordPopupPageController.providesPresentationContextTransitionStyle = true
         changePasswordPopupPageController.definesPresentationContext = true
-        changePasswordPopupPageController.modalPresentationStyle = .overCurrentContext
+        changePasswordPopupPageController.modalPresentationStyle = .overFullScreen
         changePasswordPopupPageController.modalTransitionStyle = .crossDissolve
         self.navigationController?.present(changePasswordPopupPageController, animated: true)
     }
     
-    func navigateNewEventPagePage() {
+    func navigateToNewEventPage() {
         let storyBoard: UIStoryboard = UIStoryboard(name: "NewEventPageStoryboard", bundle: nil)
         let newEventPageController = storyBoard.instantiateViewController(withIdentifier: "NewEventPageVC") as! NewEventPageVC
         newEventPageController.title = "New Event"
         self.navigationController?.pushViewController(newEventPageController, animated: true)
     }
-        //TasksPageVC
-    func navigateToTasksPage(event: NewEvent) {
+    
+    func navigateToEventPage(eventKey: String) {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "EventPageStoryboard", bundle: nil)
+        let eventPageController = storyBoard.instantiateViewController(withIdentifier: "EventPageVC") as! EventPageVC
+        eventPageController.title = "Event"
+        eventPageController.eventKey = eventKey
+        eventPageController.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(eventPageController, animated: true)
+    }
+    
+    func navigateToEventsPage() {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let eventsPageController = storyBoard.instantiateViewController(withIdentifier: "EventsPageVC") as! EventsPageVC
+        eventsPageController.title = "Event"
+        eventsPageController.groupId = getGroupId()
+        self.navigationController?.pushViewController(eventsPageController, animated: true)
+    }
+    
+    func navigateToTasksPage(eventKey: String, creatorId: String, groupId: String) {
         let storyBoard: UIStoryboard = UIStoryboard(name: "TasksPageStoryboard", bundle: nil)
         let tasksPageController = storyBoard.instantiateViewController(withIdentifier: "TasksPageVC") as! TasksPageVC
         tasksPageController.title = "Tasks"
-        tasksPageController.event = event
+        tasksPageController.eventKey = eventKey
+        tasksPageController.creatorId = creatorId
+        tasksPageController.groupId = groupId
         self.navigationController?.pushViewController(tasksPageController, animated: true)
     }
     
-    func navigateToNewTaskPopupVC(members: [GroupMember]) {
+    func navigateToNewTaskPopupVC(members: [GroupMember], eventKey: String, vc: TasksPageVC) {
         let storyboard: UIStoryboard = UIStoryboard(name: "TasksPageStoryboard", bundle: nil)
         let newTaskPopupController = storyboard.instantiateViewController(withIdentifier: "NewTaskPopupVC") as! NewTaskPopupVC
         newTaskPopupController.providesPresentationContextTransitionStyle = true
@@ -309,10 +337,12 @@ extension UIViewController {
         newTaskPopupController.modalPresentationStyle = .overCurrentContext
         newTaskPopupController.modalTransitionStyle = .crossDissolve
         newTaskPopupController.members = members
+        newTaskPopupController.eventKey = eventKey
+        newTaskPopupController.delegate = vc
         self.navigationController?.present(newTaskPopupController, animated: true)
     }
     
-    // ---------------Check access--------------
+    // Check access
     
     func checkCameraAccess() -> Bool {
        switch AVCaptureDevice.authorizationStatus(for: .video) {
@@ -360,10 +390,19 @@ extension UINavigationController {
 extension UITextField {
     func addBottomBorder(){
         let bottomLine = CALayer()
-        bottomLine.frame = CGRect(x: 0, y: self.frame.size.height - 1, width: self.frame.size.width-20, height: 1)
+        bottomLine.frame = CGRect(x: 0, y: self.frame.size.height - 1, width: self.frame.size.width, height: 1)
         bottomLine.backgroundColor = UIColor.darkGray.cgColor
         borderStyle = .none
         layer.addSublayer(bottomLine)
+    }
+}
+
+extension UILabel {
+    func addBottomBorder(){
+        let bottomLayer = CALayer()
+        bottomLayer.frame = CGRect(x: 0, y: frame.height - 2, width: frame.width, height: 1)
+        bottomLayer.backgroundColor = UIColor.black.cgColor
+        layer.addSublayer(bottomLayer)
     }
 }
 

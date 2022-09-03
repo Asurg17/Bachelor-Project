@@ -11,19 +11,33 @@ import DropDown
 class NewTaskPopupVC: UIViewController {
     
     @IBOutlet var contentView: UIView!
+    @IBOutlet var taskTextField: UITextField!
+    @IBOutlet var memberView: UIView!
     @IBOutlet var memberTextView: UITextField!
     @IBOutlet var button: UIButton!
+    @IBOutlet var loader: UIActivityIndicatorView!
     
+    private var assigneeId: String?
     private let menu = DropDown()
+    private let service = TaskService()
     
+    var eventKey: String?
     var members = [GroupMember]()
+    var delegate: UpdateTasksProtocol?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        checkEventKey()
         setupViews()
         setupMenu()
         hideKeyboardWhenTappedAround()
         registerForKeyboardNotifications()
+    }
+    
+    func checkEventKey() {
+        if let _ = eventKey {} else {
+            dismissPopup()
+        }
     }
     
     func setupViews() {
@@ -47,8 +61,9 @@ class NewTaskPopupVC: UIViewController {
             }
             cell.configure(with: self.members[index].memberId)
         }
-        menu.anchorView = memberTextView
+        menu.anchorView = memberView
         menu.selectionAction = { index, title in
+            self.assigneeId = self.members[index].memberId
             self.memberTextView.text = title
         }
     }
@@ -66,7 +81,42 @@ class NewTaskPopupVC: UIViewController {
     }
     
     @IBAction func asignTask() {
-//        saveChanges()
+        guard let assigneeId = assigneeId else {
+            showWarningAlert(warningText: Constants.assigneeNotChosenWarningText)
+            return
+        }
+        
+        if let task = taskTextField.text {
+            if task.replacingOccurrences(of: " ", with: "").isEmpty {
+                showWarningAlert(warningText: Constants.requiredFieldsAreNotFilledWarningText)
+                return
+            } else {
+                let parameters = [
+                    "userId": getUserId(),
+                    "assigneeId": assigneeId,
+                    "eventUniqueKey": eventKey!,
+                    "task": task
+                ]
+                
+                loader.startAnimating()
+                service.createNewTask(parameters: parameters) { [weak self] result in
+                    guard let self = self else { return }
+                    DispatchQueue.main.async {
+                        self.loader.stopAnimating()
+                        switch result {
+                        case .success(_):
+                            self.dismissPopup()
+                            self.delegate?.update()
+                        case .failure(let error):
+                            self.showWarningAlert(warningText: error.localizedDescription.description)
+                        }
+                    }
+                }
+            }
+        } else {
+            showWarningAlert(warningText: Constants.requiredFieldsAreNotFilledWarningText)
+            return
+        }
     }
     
     @IBAction func dismissPopup() {

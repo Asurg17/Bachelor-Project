@@ -202,6 +202,17 @@ type GetGroupOldMessagesParams struct {
 
 // Event structs
 
+type GetEventsParams struct {
+	UserId      string
+	GroupId     string
+	CurrentDate string
+}
+
+type GetEventParams struct {
+	UserId         string
+	EventUniqueKey string
+}
+
 type CreateNewEventParams struct {
 	UserId           string
 	GroupId          string
@@ -216,11 +227,26 @@ type CreateNewEventParams struct {
 
 // Task structs
 
+type GetEventTasksParams struct {
+	UserId   string
+	EventKey string
+}
+
+type GetUserTasksParams struct {
+	UserId      string
+	CurrentDate string
+}
+
 type CreateNewTaskParams struct {
 	UserId         string
 	AssigneeId     string
-	Task           string
 	EventUniqueKey string
+	Task           string
+}
+
+type DoneTaskTaskParams struct {
+	UserId string
+	TaskId string
 }
 
 // Additional structs
@@ -1033,6 +1059,60 @@ func (s *Server) getGroupOldMessages(w http.ResponseWriter, req *http.Request) {
 
 // Events
 
+func (s *Server) getEvents(w http.ResponseWriter, req *http.Request) {
+	var params GetEventsParams
+
+	err := json.NewDecoder(req.Body).Decode(&params)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	response, err := s.eventManager.getEvents(params)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	jsonResp, err := json.Marshal(response)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+	w.Write(jsonResp)
+}
+
+func (s *Server) getEvent(w http.ResponseWriter, req *http.Request) {
+	var params GetEventParams
+
+	err := json.NewDecoder(req.Body).Decode(&params)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	response, err := s.eventManager.getEvent(params)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	jsonResp, err := json.Marshal(response)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+	w.Write(jsonResp)
+}
+
 func (s *Server) createNewEvent(w http.ResponseWriter, req *http.Request) {
 	var params CreateNewEventParams
 
@@ -1053,6 +1133,60 @@ func (s *Server) createNewEvent(w http.ResponseWriter, req *http.Request) {
 
 // Task
 
+func (s *Server) getEventTasks(w http.ResponseWriter, req *http.Request) {
+	var params GetEventTasksParams
+
+	err := json.NewDecoder(req.Body).Decode(&params)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	response, err := s.taskManager.getEventTasks(params)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	jsonResp, err := json.Marshal(response)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+	w.Write(jsonResp)
+}
+
+func (s *Server) getUserTasks(w http.ResponseWriter, req *http.Request) {
+	var params GetUserTasksParams
+
+	err := json.NewDecoder(req.Body).Decode(&params)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	response, err := s.taskManager.getUserTasks(params)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	jsonResp, err := json.Marshal(response)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+	w.Write(jsonResp)
+}
+
 func (s *Server) createNewTask(w http.ResponseWriter, req *http.Request) {
 	var params CreateNewTaskParams
 
@@ -1064,6 +1198,24 @@ func (s *Server) createNewTask(w http.ResponseWriter, req *http.Request) {
 	}
 
 	err = s.taskManager.createNewTask(params)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+}
+
+func (s *Server) doneTask(w http.ResponseWriter, req *http.Request) {
+	var params DoneTaskTaskParams
+
+	err := json.NewDecoder(req.Body).Decode(&params)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	err = s.taskManager.doneTask(params)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
@@ -1186,7 +1338,15 @@ func (s *Server) Start() {
 	http.HandleFunc("/getGroupOldMessages", s.getGroupOldMessages)
 
 	// Events
+	http.HandleFunc("/getEvents", s.getEvents)
+	http.HandleFunc("/getEvent", s.getEvent)
 	http.HandleFunc("/createNewEvent", s.createNewEvent)
+
+	// Tasks
+	http.HandleFunc("/getEventTasks", s.getEventTasks)
+	http.HandleFunc("/getUserTasks", s.getUserTasks)
+	http.HandleFunc("/createNewTask", s.createNewTask)
+	http.HandleFunc("/doneTask", s.doneTask)
 
 	// Websocket
 	http.HandleFunc("/messagesWsEndpoint", messagesWsEndpoint)

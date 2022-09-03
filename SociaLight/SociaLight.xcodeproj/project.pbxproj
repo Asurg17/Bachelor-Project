@@ -20,9 +20,23 @@
 		EA64E86F28C14E7700CC8964 /* DropDownCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA64E86D28C14E7700CC8964 /* DropDownCell.swift */; };
 		EA64E87028C14E7700CC8964 /* DropDownCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA64E86E28C14E7700CC8964 /* DropDownCell.xib */; };
 		EA64E87228C157EB00CC8964 /* EventService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA64E87128C157EB00CC8964 /* EventService.swift */; };
+		EA64E87428C2141200CC8964 /* TaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA64E87328C2141100CC8964 /* TaskService.swift */; };
+		EA64E87628C22E6F00CC8964 /* SignInUpService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA64E87528C22E6F00CC8964 /* SignInUpService.swift */; };
+		EA64E87828C22EE800CC8964 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA64E87728C22EE800CC8964 /* NotificationService.swift */; };
+		EA64E87A28C2304000CC8964 /* MessageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA64E87928C2304000CC8964 /* MessageService.swift */; };
+		EA64E87C28C230CC00CC8964 /* FileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA64E87B28C230CC00CC8964 /* FileService.swift */; };
+		EA64E87E28C231E600CC8964 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA64E87D28C231E600CC8964 /* UserService.swift */; };
+		EA64E88228C2437B00CC8964 /* FriendsPageStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EA64E88128C2437B00CC8964 /* FriendsPageStoryboard.storyboard */; };
+		EA64E88928C24AC800CC8964 /* EventPageStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EA64E88828C24AC700CC8964 /* EventPageStoryboard.storyboard */; };
+		EA64E88B28C251FE00CC8964 /* EventPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA64E88A28C251FE00CC8964 /* EventPageVC.swift */; };
+		EA64E88F28C2857E00CC8964 /* TaskHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA64E88E28C2857D00CC8964 /* TaskHeader.swift */; };
+		EA64E89128C2858A00CC8964 /* TaskHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA64E89028C2858A00CC8964 /* TaskHeader.xib */; };
+		EA64E89428C286E100CC8964 /* TaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA64E89228C286E100CC8964 /* TaskCell.swift */; };
+		EA64E89528C286E100CC8964 /* TaskCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA64E89328C286E100CC8964 /* TaskCell.xib */; };
+		EA64E89728C29A8D00CC8964 /* UserTasksPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA64E89628C29A8D00CC8964 /* UserTasksPageVC.swift */; };
 		EA6B195B283163670042B65B /* ChangePasswordPopupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6B195A283163670042B65B /* ChangePasswordPopupVC.swift */; };
 		EA6B195E2831789A0042B65B /* PersonalInfoPopupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6B195D2831789A0042B65B /* PersonalInfoPopupVC.swift */; };
-		EA6C5A80281D724F00721D7F /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6C5A7F281D724F00721D7F /* Service.swift */; };
+		EA6C5A80281D724F00721D7F /* GroupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6C5A7F281D724F00721D7F /* GroupService.swift */; };
 		EA6C5A82281FD13500721D7F /* MainPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6C5A81281FD13400721D7F /* MainPageVC.swift */; };
 		EA6C5A85281FD19000721D7F /* ProfilePageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6C5A84281FD19000721D7F /* ProfilePageVC.swift */; };
 		EA78ECB828BB973F004A297F /* SendMeetingInvitationPopupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78ECB728BB973F004A297F /* SendMeetingInvitationPopupVC.swift */; };
@@ -95,9 +109,23 @@
 		EA64E86D28C14E7700CC8964 /* DropDownCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownCell.swift; sourceTree = "<group>"; };
 		EA64E86E28C14E7700CC8964 /* DropDownCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DropDownCell.xib; sourceTree = "<group>"; };
 		EA64E87128C157EB00CC8964 /* EventService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventService.swift; sourceTree = "<group>"; };
+		EA64E87328C2141100CC8964 /* TaskService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskService.swift; sourceTree = "<group>"; };
+		EA64E87528C22E6F00CC8964 /* SignInUpService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInUpService.swift; sourceTree = "<group>"; };
+		EA64E87728C22EE800CC8964 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		EA64E87928C2304000CC8964 /* MessageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageService.swift; sourceTree = "<group>"; };
+		EA64E87B28C230CC00CC8964 /* FileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileService.swift; sourceTree = "<group>"; };
+		EA64E87D28C231E600CC8964 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
+		EA64E88128C2437B00CC8964 /* FriendsPageStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = FriendsPageStoryboard.storyboard; sourceTree = "<group>"; };
+		EA64E88828C24AC700CC8964 /* EventPageStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = EventPageStoryboard.storyboard; sourceTree = "<group>"; };
+		EA64E88A28C251FE00CC8964 /* EventPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPageVC.swift; sourceTree = "<group>"; };
+		EA64E88E28C2857D00CC8964 /* TaskHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskHeader.swift; sourceTree = "<group>"; };
+		EA64E89028C2858A00CC8964 /* TaskHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TaskHeader.xib; sourceTree = "<group>"; };
+		EA64E89228C286E100CC8964 /* TaskCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCell.swift; sourceTree = "<group>"; };
+		EA64E89328C286E100CC8964 /* TaskCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TaskCell.xib; sourceTree = "<group>"; };
+		EA64E89628C29A8D00CC8964 /* UserTasksPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTasksPageVC.swift; sourceTree = "<group>"; };
 		EA6B195A283163670042B65B /* ChangePasswordPopupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordPopupVC.swift; sourceTree = "<group>"; };
 		EA6B195D2831789A0042B65B /* PersonalInfoPopupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalInfoPopupVC.swift; sourceTree = "<group>"; };
-		EA6C5A7F281D724F00721D7F /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
+		EA6C5A7F281D724F00721D7F /* GroupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupService.swift; sourceTree = "<group>"; };
 		EA6C5A81281FD13400721D7F /* MainPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPageVC.swift; sourceTree = "<group>"; };
 		EA6C5A84281FD19000721D7F /* ProfilePageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePageVC.swift; sourceTree = "<group>"; };
 		EA78ECB728BB973F004A297F /* SendMeetingInvitationPopupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMeetingInvitationPopupVC.swift; sourceTree = "<group>"; };
@@ -245,6 +273,7 @@
 				EA7C699528B3591E0030E755 /* MediaFileCell */,
 				EADF48D428A00C41001C4692 /* NotificationCell */,
 				EA7C69A328B7B4AC0030E755 /* EventCell */,
+				EA64E88C28C2854800CC8964 /* TaskCell */,
 				EA64E86C28C14E5F00CC8964 /* DropDownCell */,
 			);
 			path = Cells;
@@ -266,6 +295,57 @@
 				EA64E86E28C14E7700CC8964 /* DropDownCell.xib */,
 			);
 			path = DropDownCell;
+			sourceTree = "<group>";
+		};
+		EA64E88328C24A1400CC8964 /* Event Page Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				EA64E88828C24AC700CC8964 /* EventPageStoryboard.storyboard */,
+				EAC81DAD28C134E200561934 /* NewEventPageStoryboard.storyboard */,
+			);
+			path = "Event Page Storyboards";
+			sourceTree = "<group>";
+		};
+		EA64E88428C24A2900CC8964 /* Additional Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				EA7C698C28B17D510030E755 /* ImagePageStoryboard.storyboard */,
+			);
+			path = "Additional Storyboards";
+			sourceTree = "<group>";
+		};
+		EA64E88528C24A4300CC8964 /* Friend Page Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				EA64E88128C2437B00CC8964 /* FriendsPageStoryboard.storyboard */,
+			);
+			path = "Friend Page Storyboards";
+			sourceTree = "<group>";
+		};
+		EA64E88628C24A7A00CC8964 /* Task Page Stroyboards */ = {
+			isa = PBXGroup;
+			children = (
+				EAC81DAF28C134F100561934 /* TasksPageStoryboard.storyboard */,
+			);
+			path = "Task Page Stroyboards";
+			sourceTree = "<group>";
+		};
+		EA64E88C28C2854800CC8964 /* TaskCell */ = {
+			isa = PBXGroup;
+			children = (
+				EA64E89228C286E100CC8964 /* TaskCell.swift */,
+				EA64E89328C286E100CC8964 /* TaskCell.xib */,
+			);
+			path = TaskCell;
+			sourceTree = "<group>";
+		};
+		EA64E88D28C2855B00CC8964 /* TaskHeader */ = {
+			isa = PBXGroup;
+			children = (
+				EA64E88E28C2857D00CC8964 /* TaskHeader.swift */,
+				EA64E89028C2858A00CC8964 /* TaskHeader.xib */,
+			);
+			path = TaskHeader;
 			sourceTree = "<group>";
 		};
 		EA6B195C283178450042B65B /* PopupControllers */ = {
@@ -298,8 +378,14 @@
 		EA6C5A7E281D723A00721D7F /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				EA6C5A7F281D724F00721D7F /* Service.swift */,
+				EA64E87528C22E6F00CC8964 /* SignInUpService.swift */,
+				EA6C5A7F281D724F00721D7F /* GroupService.swift */,
+				EA64E87D28C231E600CC8964 /* UserService.swift */,
+				EA64E87B28C230CC00CC8964 /* FileService.swift */,
+				EA64E87928C2304000CC8964 /* MessageService.swift */,
+				EA64E87728C22EE800CC8964 /* NotificationService.swift */,
 				EA64E87128C157EB00CC8964 /* EventService.swift */,
+				EA64E87328C2141100CC8964 /* TaskService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -342,6 +428,7 @@
 		EA7C699B28B7A7030030E755 /* Events Page Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				EA64E88A28C251FE00CC8964 /* EventPageVC.swift */,
 				EA7C699C28B7A7F70030E755 /* EventsPageVC.swift */,
 				EAC81DA828C0D6BB00561934 /* NewEventPageVC.swift */,
 			);
@@ -389,12 +476,12 @@
 			children = (
 				EA481B322836A08500719282 /* Sign In&Up Page Controllers */,
 				EA7D0E312871C8F500579619 /* Main Page Controllers */,
+				EA086E262886DDED00055825 /* Group Page Controllers */,
 				EADF48D928A17B6F001C4692 /* Notifications Page Controller */,
 				EA7C699B28B7A7030030E755 /* Events Page Controllers */,
 				EAC81DAA28C0FB4900561934 /* Task Page Controllers */,
 				EA7D0E322871C93B00579619 /* Profile Page Controllers */,
 				EA7C699028B2AD110030E755 /* Friends Page Controllers */,
-				EA086E262886DDED00055825 /* Group Page Controllers */,
 				EA481B332836A32C00719282 /* Additional Controllers */,
 			);
 			path = Controllers;
@@ -441,6 +528,7 @@
 			children = (
 				EAC81DAB28C11FDF00561934 /* TasksPageVC.swift */,
 				EAC81DB128C13B5400561934 /* NewTaskPopupVC.swift */,
+				EA64E89628C29A8D00CC8964 /* UserTasksPageVC.swift */,
 			);
 			path = "Task Page Controllers";
 			sourceTree = "<group>";
@@ -467,9 +555,10 @@
 			children = (
 				EA9E6BCB27FCB93E00101170 /* Main.storyboard */,
 				EA9E6BD327FCB94100101170 /* LaunchScreen.storyboard */,
-				EA7C698C28B17D510030E755 /* ImagePageStoryboard.storyboard */,
-				EAC81DAD28C134E200561934 /* NewEventPageStoryboard.storyboard */,
-				EAC81DAF28C134F100561934 /* TasksPageStoryboard.storyboard */,
+				EA64E88528C24A4300CC8964 /* Friend Page Storyboards */,
+				EA64E88328C24A1400CC8964 /* Event Page Storyboards */,
+				EA64E88628C24A7A00CC8964 /* Task Page Stroyboards */,
+				EA64E88428C24A2900CC8964 /* Additional Storyboards */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -530,6 +619,7 @@
 		EAE7D21F28A2BAD00034552F /* Headers */ = {
 			isa = PBXGroup;
 			children = (
+				EA64E88D28C2855B00CC8964 /* TaskHeader */,
 				EA7C699E28B7B2910030E755 /* EventHeader */,
 				EAE7D22028A2BAE00034552F /* NotificationHeader */,
 			);
@@ -624,7 +714,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				EACA50FC2864EAB600149482 /* SelectedFriendCell.xib in Resources */,
+				EA64E88928C24AC800CC8964 /* EventPageStoryboard.storyboard in Resources */,
 				EAE7D22928A55E8A0034552F /* ErrorView.xib in Resources */,
+				EA64E88228C2437B00CC8964 /* FriendsPageStoryboard.storyboard in Resources */,
 				EAE7D22428A2BB5A0034552F /* NotificationHeader.xib in Resources */,
 				EADF48D128998B9E001C4692 /* GroupMemberCell.xib in Resources */,
 				EA7C699928B359670030E755 /* MediaFileCell.xib in Resources */,
@@ -635,12 +727,14 @@
 				EA7C698D28B17D510030E755 /* ImagePageStoryboard.storyboard in Resources */,
 				EAC81DB028C134F100561934 /* TasksPageStoryboard.storyboard in Resources */,
 				EA9E6BD527FCB94100101170 /* LaunchScreen.storyboard in Resources */,
+				EA64E89528C286E100CC8964 /* TaskCell.xib in Resources */,
 				EAF6CF1E288FE210005E0AEE /* GroupInfoActionView.xib in Resources */,
 				EA9E6BD227FCB94100101170 /* Assets.xcassets in Resources */,
 				EA9E6BCD27FCB93E00101170 /* Main.storyboard in Resources */,
 				EA7C69A728B7B4DC0030E755 /* EventCell.xib in Resources */,
 				EAC81DAE28C134E300561934 /* NewEventPageStoryboard.storyboard in Resources */,
 				EA485DDD284CC7FA00077373 /* GroupCell.xib in Resources */,
+				EA64E89128C2858A00CC8964 /* TaskHeader.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -703,21 +797,29 @@
 				EACA50F62864C89500149482 /* FriendCell.swift in Sources */,
 				EAC81DAC28C11FE000561934 /* TasksPageVC.swift in Sources */,
 				EA481B352836BA2F00719282 /* Protocols.swift in Sources */,
+				EA64E87628C22E6F00CC8964 /* SignInUpService.swift in Sources */,
 				EADEE11B28B90C8A00823ACA /* Global Constants.swift in Sources */,
 				EACA50FB2864EAB600149482 /* SelectedFriendCell.swift in Sources */,
 				EA9A47A628159280006F8409 /* SignUpPageVC.swift in Sources */,
 				EA64E86F28C14E7700CC8964 /* DropDownCell.swift in Sources */,
+				EA64E88B28C251FE00CC8964 /* EventPageVC.swift in Sources */,
 				EA6B195E2831789A0042B65B /* PersonalInfoPopupVC.swift in Sources */,
+				EA64E87E28C231E600CC8964 /* UserService.swift in Sources */,
 				EAC81DB428C1439700561934 /* RoundCornerView.swift in Sources */,
 				EADF48CA28983649001C4692 /* GroupMembersPageVC.swift in Sources */,
 				EA9A47C42817295C006F8409 /* Extensions.swift in Sources */,
 				EA78ECB828BB973F004A297F /* SendMeetingInvitationPopupVC.swift in Sources */,
+				EA64E89428C286E100CC8964 /* TaskCell.swift in Sources */,
+				EA64E87C28C230CC00CC8964 /* FileService.swift in Sources */,
 				EAC81DB228C13B5400561934 /* NewTaskPopupVC.swift in Sources */,
+				EA64E87A28C2304000CC8964 /* MessageService.swift in Sources */,
 				EADFCF6F283115D50025EEA6 /* Entities.swift in Sources */,
 				EA485DD7284BC1FF00077373 /* RoundCornerTextField.swift in Sources */,
+				EA64E87828C22EE800CC8964 /* NotificationService.swift in Sources */,
 				EA6B195B283163670042B65B /* ChangePasswordPopupVC.swift in Sources */,
 				EA9E6BC627FCB93E00101170 /* AppDelegate.swift in Sources */,
 				EA64E87228C157EB00CC8964 /* EventService.swift in Sources */,
+				EA64E88F28C2857E00CC8964 /* TaskHeader.swift in Sources */,
 				EADF48D728A00C75001C4692 /* NotificationCell.swift in Sources */,
 				EA6C5A82281FD13500721D7F /* MainPageVC.swift in Sources */,
 				EAF6CF17288F2C96005E0AEE /* GroupInfoPageVC.swift in Sources */,
@@ -726,7 +828,7 @@
 				EAF6CF1C288FE1FD005E0AEE /* GroupInfoActionView.swift in Sources */,
 				EAE7D22228A2BB4D0034552F /* NotificationHeader.swift in Sources */,
 				EADF48D028998B9E001C4692 /* GroupMemberCell.swift in Sources */,
-				EA6C5A80281D724F00721D7F /* Service.swift in Sources */,
+				EA6C5A80281D724F00721D7F /* GroupService.swift in Sources */,
 				EA9A47B22815A391006F8409 /* DesignableUITextField.swift in Sources */,
 				EA086E282886DE3600055825 /* GroupPageVC.swift in Sources */,
 				EA7C698B28B171C30030E755 /* ImagePageVC.swift in Sources */,
@@ -734,7 +836,9 @@
 				EA7C699428B2CF860030E755 /* ImageOuterView.swift in Sources */,
 				EA7C699228B2AD400030E755 /* FriendsPageVC.swift in Sources */,
 				EACA50EC285F31D200149482 /* RoundButton.swift in Sources */,
+				EA64E89728C29A8D00CC8964 /* UserTasksPageVC.swift in Sources */,
 				EA7C699D28B7A7F80030E755 /* EventsPageVC.swift in Sources */,
+				EA64E87428C2141200CC8964 /* TaskService.swift in Sources */,
 				EABCC6622826A4410098EDCA /* TabBarVC.swift in Sources */,
 				EAC81DA928C0D6BB00561934 /* NewEventPageVC.swift in Sources */,
 				EA06AE7C282D56B200D84D7A /* RoundUIImageView.swift in Sources */,

@@ -20,7 +20,8 @@ class AddGroupMembersPageVC: UIViewController {
     
     @IBOutlet var loader: UIActivityIndicatorView!
     
-    private let service = Service()
+    private let notificationService = NotificationService()
+    private let userService = UserService()
     
     private let refreshControl = UIRefreshControl()
     
@@ -100,7 +101,7 @@ class AddGroupMembersPageVC: UIViewController {
         let groupId = getGroupId()
         
         loader.startAnimating()
-        service.getUserFriends(userId: userId, groupId: groupId) { [weak self] result in
+        userService.getUserFriends(userId: userId, groupId: groupId) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.stopAnimating()
@@ -177,7 +178,7 @@ class AddGroupMembersPageVC: UIViewController {
         let members = getMembers()
         if members.count > 0 {
             button.isEnabled = false
-            service.sendGroupInvitations(userId: userId, groupId: groupId, members: members) { [weak self] result in
+            notificationService.sendGroupInvitations(userId: userId, groupId: groupId, members: members) { [weak self] result in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     self.loader.stopAnimating()
