@@ -248,6 +248,113 @@ class UserService {
         }
     }
     
+    func searchNewFriends(userId: String, firstName: String, lastName: String, completion: @escaping (Result<UserFriends, Error>) -> ()) {
+        
+        components.path = "/searchNewFriends"
+        
+        if let url = components.url {
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "userId": userId,
+                "firstName": firstName,
+                "lastName": lastName
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            if let data = data {
+                                let decoder = JSONDecoder()
+                                do {
+                                    let resp = try decoder.decode(UserFriends.self, from: data)
+                                    completion(.success(resp))
+                                } catch {
+                                    completion(.failure(error))
+                                }
+                            } else {
+                                completion(.failure(ServiceError.noData))
+                            }
+                        } else {
+                            completion(.failure(NSError(domain: "",
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
+                                                       )))
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    }
+    
+    func sendFriendshipRequestToUser(fromUserId: String, toUserId: String, completion: @escaping (Result<String, Error>) -> ()) {
+        
+        components.path = "/sendFriendshipRequestToUser"
+        
+        if let url = components.url {
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = [
+                "fromUserId": fromUserId,
+                "toUserId": toUserId
+            ]
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            completion(.success("Send"))
+                        } else {
+                            completion(.failure(NSError(domain: "",
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
+                                                       )))
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    }
+    
     func addUserToGroup(userId: String, groupId: String, userRole: String, completion: @escaping (Result<String, Error>) -> ()) {
         
         components.path = "/addUserToGroup"

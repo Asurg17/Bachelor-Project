@@ -264,6 +264,14 @@ extension UIViewController {
         self.navigationController?.pushViewController(friendsPageController, animated: true)
     }
     
+    func navigateToSearchNewFriendsPage() {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "FriendsSearchPageStoryboard", bundle: nil)
+        let searchNewFriendsPageController = storyBoard.instantiateViewController(withIdentifier: "FriendsSearchPageVC") as! FriendsSearchPageVC
+        searchNewFriendsPageController.title = "Search New Friends"
+        searchNewFriendsPageController.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(searchNewFriendsPageController, animated: true)
+    }
+    
     func navigateToSendMeetingInvitationPopupPage() {
         let storyboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let sendMeetingInvitatioPopupPageController = storyboard.instantiateViewController(withIdentifier: "SendMeetingInvitationPopupVC") as! SendMeetingInvitationPopupVC

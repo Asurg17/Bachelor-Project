@@ -64,6 +64,17 @@ type GetUserFriendsForGroupParams struct {
 	GroupId string
 }
 
+type SearchNewFriendsParams struct {
+	UserId    string
+	FirstName string
+	LastName  string
+}
+
+type SendFriendshipRequestToUserParams struct {
+	FromUserId string
+	ToUSerId   string
+}
+
 type AddUserToGroupParams struct {
 	UserId   string
 	GroupId  string
@@ -456,6 +467,51 @@ func (s *Server) getUserFriendsForGroup(w http.ResponseWriter, req *http.Request
 		return
 	}
 	w.Write(jsonResp)
+}
+
+func (s *Server) searchNewFriends(w http.ResponseWriter, req *http.Request) {
+	var params SearchNewFriendsParams
+
+	err := json.NewDecoder(req.Body).Decode(&params)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	response, err := s.userManager.searchNewFriends(params)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	jsonResp, err := json.Marshal(response)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+	w.Write(jsonResp)
+}
+
+func (s *Server) sendFriendshipRequestToUser(w http.ResponseWriter, req *http.Request) {
+	var params SendFriendshipRequestToUserParams
+
+	err := json.NewDecoder(req.Body).Decode(&params)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	err = s.userManager.sendFriendshipRequestToUser(params)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
 }
 
 func (s *Server) addUserToGroup(w http.ResponseWriter, req *http.Request) {
@@ -1300,6 +1356,8 @@ func (s *Server) Start() {
 	http.HandleFunc("/getUserGroups", s.getUserGroups)
 	http.HandleFunc("/getUserFriends", s.getUserFriends)
 	http.HandleFunc("/getUserFriendsForGroup", s.getUserFriendsForGroup)
+	http.HandleFunc("/searchNewFriends", s.searchNewFriends)
+	http.HandleFunc("/sendFriendshipRequestToUser", s.sendFriendshipRequestToUser)
 	http.HandleFunc("/addUserToGroup", s.addUserToGroup)
 	http.HandleFunc("/changePassword", s.changePassword)
 	http.HandleFunc("/changePersonalInfo", s.changePersonalInfo)

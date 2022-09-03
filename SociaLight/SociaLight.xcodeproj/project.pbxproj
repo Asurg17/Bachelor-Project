@@ -10,6 +10,10 @@
 		EA06AE7C282D56B200D84D7A /* RoundUIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA06AE7B282D56B200D84D7A /* RoundUIImageView.swift */; };
 		EA071DD1285648AA008CC78C /* FindGroupPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA071DD0285648AA008CC78C /* FindGroupPageVC.swift */; };
 		EA086E282886DE3600055825 /* GroupPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA086E272886DE3600055825 /* GroupPageVC.swift */; };
+		EA2394B728C3C6AB002AAE29 /* FriendsSearchPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2394B628C3C6AB002AAE29 /* FriendsSearchPageVC.swift */; };
+		EA2394B928C3C70C002AAE29 /* FriendsSearchPageStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EA2394B828C3C70C002AAE29 /* FriendsSearchPageStoryboard.storyboard */; };
+		EA2394BF28C3C88D002AAE29 /* SearchFriendCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2394BD28C3C88D002AAE29 /* SearchFriendCell.swift */; };
+		EA2394C028C3C88D002AAE29 /* SearchFriendCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EA2394BE28C3C88D002AAE29 /* SearchFriendCell.xib */; };
 		EA2D13AC2857C15B0052E9BC /* NewGroupFirstPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2D13AB2857C15B0052E9BC /* NewGroupFirstPageVC.swift */; };
 		EA481B2F283676AE00719282 /* PopUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA481B2E283676AE00719282 /* PopUpView.swift */; };
 		EA481B312836778300719282 /* RoundCornerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA481B302836778300719282 /* RoundCornerButton.swift */; };
@@ -99,6 +103,10 @@
 		EA06AE7B282D56B200D84D7A /* RoundUIImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundUIImageView.swift; sourceTree = "<group>"; };
 		EA071DD0285648AA008CC78C /* FindGroupPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindGroupPageVC.swift; sourceTree = "<group>"; };
 		EA086E272886DE3600055825 /* GroupPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupPageVC.swift; sourceTree = "<group>"; };
+		EA2394B628C3C6AB002AAE29 /* FriendsSearchPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsSearchPageVC.swift; sourceTree = "<group>"; };
+		EA2394B828C3C70C002AAE29 /* FriendsSearchPageStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = FriendsSearchPageStoryboard.storyboard; sourceTree = "<group>"; };
+		EA2394BD28C3C88D002AAE29 /* SearchFriendCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFriendCell.swift; sourceTree = "<group>"; };
+		EA2394BE28C3C88D002AAE29 /* SearchFriendCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchFriendCell.xib; sourceTree = "<group>"; };
 		EA2D13AB2857C15B0052E9BC /* NewGroupFirstPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGroupFirstPageVC.swift; sourceTree = "<group>"; };
 		EA481B2E283676AE00719282 /* PopUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpView.swift; sourceTree = "<group>"; };
 		EA481B302836778300719282 /* RoundCornerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundCornerButton.swift; sourceTree = "<group>"; };
@@ -226,6 +234,15 @@
 			path = "Group Page Controllers";
 			sourceTree = "<group>";
 		};
+		EA2394BA28C3C81D002AAE29 /* SearchFriendCell */ = {
+			isa = PBXGroup;
+			children = (
+				EA2394BD28C3C88D002AAE29 /* SearchFriendCell.swift */,
+				EA2394BE28C3C88D002AAE29 /* SearchFriendCell.xib */,
+			);
+			path = SearchFriendCell;
+			sourceTree = "<group>";
+		};
 		EA3DB8BC59679CE3D7B93FCC /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -268,6 +285,7 @@
 			children = (
 				EACA50F32864C86200149482 /* FriendCell */,
 				EACA50F82864EA6500149482 /* SelectedFriendCell */,
+				EA2394BA28C3C81D002AAE29 /* SearchFriendCell */,
 				EA485DD9284CC5F800077373 /* GroupCell */,
 				EADF48CD28998B66001C4692 /* GroupMemberCell */,
 				EA7C699528B3591E0030E755 /* MediaFileCell */,
@@ -318,6 +336,7 @@
 			isa = PBXGroup;
 			children = (
 				EA64E88128C2437B00CC8964 /* FriendsPageStoryboard.storyboard */,
+				EA2394B828C3C70C002AAE29 /* FriendsSearchPageStoryboard.storyboard */,
 			);
 			path = "Friend Page Storyboards";
 			sourceTree = "<group>";
@@ -403,6 +422,7 @@
 			isa = PBXGroup;
 			children = (
 				EA7C699128B2AD3F0030E755 /* FriendsPageVC.swift */,
+				EA2394B628C3C6AB002AAE29 /* FriendsSearchPageVC.swift */,
 			);
 			path = "Friends Page Controllers";
 			sourceTree = "<group>";
@@ -716,6 +736,7 @@
 				EACA50FC2864EAB600149482 /* SelectedFriendCell.xib in Resources */,
 				EA64E88928C24AC800CC8964 /* EventPageStoryboard.storyboard in Resources */,
 				EAE7D22928A55E8A0034552F /* ErrorView.xib in Resources */,
+				EA2394C028C3C88D002AAE29 /* SearchFriendCell.xib in Resources */,
 				EA64E88228C2437B00CC8964 /* FriendsPageStoryboard.storyboard in Resources */,
 				EAE7D22428A2BB5A0034552F /* NotificationHeader.xib in Resources */,
 				EADF48D128998B9E001C4692 /* GroupMemberCell.xib in Resources */,
@@ -725,6 +746,7 @@
 				EACA50F72864C89500149482 /* FriendCell.xib in Resources */,
 				EA7C69A228B7B3450030E755 /* EventHeader.xib in Resources */,
 				EA7C698D28B17D510030E755 /* ImagePageStoryboard.storyboard in Resources */,
+				EA2394B928C3C70C002AAE29 /* FriendsSearchPageStoryboard.storyboard in Resources */,
 				EAC81DB028C134F100561934 /* TasksPageStoryboard.storyboard in Resources */,
 				EA9E6BD527FCB94100101170 /* LaunchScreen.storyboard in Resources */,
 				EA64E89528C286E100CC8964 /* TaskCell.xib in Resources */,
@@ -818,6 +840,8 @@
 				EA64E87828C22EE800CC8964 /* NotificationService.swift in Sources */,
 				EA6B195B283163670042B65B /* ChangePasswordPopupVC.swift in Sources */,
 				EA9E6BC627FCB93E00101170 /* AppDelegate.swift in Sources */,
+				EA2394BF28C3C88D002AAE29 /* SearchFriendCell.swift in Sources */,
+				EA2394B728C3C6AB002AAE29 /* FriendsSearchPageVC.swift in Sources */,
 				EA64E87228C157EB00CC8964 /* EventService.swift in Sources */,
 				EA64E88F28C2857E00CC8964 /* TaskHeader.swift in Sources */,
 				EADF48D728A00C75001C4692 /* NotificationCell.swift in Sources */,

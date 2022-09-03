@@ -163,6 +163,77 @@ func (m *UserManager) getUserFriends(userId string) (map[string][]map[string]str
 	return response, nil
 }
 
+func (m *UserManager) searchNewFriends(params SearchNewFriendsParams) (map[string][]map[string]string, error) {
+	if !isUserValid(params.UserId, m.connectionPool.db) {
+		return nil, errors.New("can't get users. user not valid")
+	}
+
+	getQuery := `select s.user_id
+					   ,s.first_name
+						,coalesce(s.last_name, '-') last_name
+						,coalesce(s.phone, '-') phone
+				from users s
+				where (lower(s.first_name) like lower('%' || $2 || '%'))
+				and (lower(s.last_name) like lower('%' || $3 || '%'))
+				and s.user_id != $1
+				and not exists (select *
+								from friends f
+								where f.user_id = $1
+								and f.friend_id = s.user_id)
+			 	and not exists (select *
+					   			from friendship_requests r
+								where ((r.from_user_id = $1 and r.to_user_id = s.user_id)
+								   or (r.from_user_id = s.user_id and r.to_user_id = $1))
+								and r.status = 'N');`
+
+	rows, err := m.connectionPool.db.Query(getQuery, params.UserId, params.FirstName, params.LastName)
+	if err != nil && err != sql.ErrNoRows {
+		return nil, err
+	}
+	defer rows.Close()
+
+	friends := make([]map[string]string, 0)
+
+	for rows.Next() {
+		var friendId string
+		var friendFirstName string
+		var friendLastName string
+		var friendPhone string
+		err = rows.Scan(&friendId, &friendFirstName, &friendLastName, &friendPhone)
+		if err != nil {
+			return nil, err
+		}
+		friend := make(map[string]string)
+		friend["friendId"] = friendId
+		friend["friendFirstName"] = friendFirstName
+		friend["friendLastName"] = friendLastName
+		friend["friendPhone"] = friendPhone
+
+		friends = append(friends, friend)
+	}
+
+	response := make(map[string][]map[string]string)
+	response["friends"] = friends
+
+	return response, nil
+}
+
+func (m *UserManager) sendFriendshipRequestToUser(params SendFriendshipRequestToUserParams) error {
+	if !isUserValid(params.FromUserId, m.connectionPool.db) || !isUserValid(params.ToUSerId, m.connectionPool.db) {
+		return errors.New("can't send friendship request. user not valid")
+	}
+
+	insertQuery := `insert into friendship_requests(from_user_id, to_user_id) 
+					values ($1, $2);`
+
+	_, err := m.connectionPool.db.Exec(insertQuery, params.FromUserId, params.ToUSerId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *UserManager) getUserFriendsForGroup(userId string, groupId string) (map[string][]map[string]string, error) {
 	if !isUserValid(userId, m.connectionPool.db) {
 		return nil, errors.New("can't get user friends. user not valid")

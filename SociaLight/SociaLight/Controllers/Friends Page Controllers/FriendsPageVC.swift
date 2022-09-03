@@ -175,6 +175,10 @@ class FriendsPageVC: UIViewController {
         loader.show(in: self.view)
     }
     
+    @IBAction func searchNewFriends() {
+        navigateToSearchNewFriendsPage()
+    }
+    
     @objc private func didPullToRefresh(_ sender: Any) {
         clear()
         getFiends()

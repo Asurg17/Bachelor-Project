@@ -52,6 +52,11 @@ protocol GroupMemberCellDelegate: AnyObject {
     func userIsClicked(_ member: GroupMemberCell)
 }
 
+protocol SearchFriendCellDelegate: AnyObject {
+    func sendFriendshipRequest(_ user: SearchFriendCell)
+    func userIsClicked(_ user: SearchFriendCell)
+}
+
 protocol MediaFileCellDelegate: AnyObject {
     func cellDidClick(_ media: MediaFileCell)
 }

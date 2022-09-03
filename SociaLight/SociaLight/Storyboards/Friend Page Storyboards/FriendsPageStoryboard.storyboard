@@ -77,7 +77,13 @@
                             <constraint firstItem="WMW-Sy-BoP" firstAttribute="leading" secondItem="s0H-e1-B8p" secondAttribute="leading" id="zaZ-89-nH5"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Friends" id="Sge-PQ-CIO"/>
+                    <navigationItem key="navigationItem" title="Friends" id="Sge-PQ-CIO">
+                        <barButtonItem key="rightBarButtonItem" image="person.badge.plus" catalog="system" id="sYE-hq-8oo">
+                            <connections>
+                                <action selector="searchNewFriends" destination="eAk-Z4-ak7" id="ie7-n4-rNu"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="friendNameTextField" destination="E2v-Eg-9uY" id="NxV-Hm-HlI"/>
                         <outlet property="tableView" destination="WMW-Sy-BoP" id="KG0-G4-5fh"/>
@@ -96,6 +102,7 @@
     </designables>
     <resources>
         <image name="deep-relief" width="600" height="510"/>
+        <image name="person.badge.plus" catalog="system" width="128" height="124"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
