@@ -184,7 +184,7 @@ extension FindGroupPageVC: UICollectionViewDelegateFlowLayout {
     ) -> CGSize {
         let spareWidth = collectionView.frame.width - (2 * Constants.spacing) - ((Constants.itemCountInLine - 1) * Constants.spacing) - Constants.additionalSpacing
         let cellWidth = spareWidth / Constants.itemCountInLine
-        let cellHeight = cellWidth * 1.40
+        let cellHeight = cellWidth * 1.50
         return CGSize(width: cellWidth, height: cellHeight)
     }
     
