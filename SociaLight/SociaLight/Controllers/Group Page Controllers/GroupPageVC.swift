@@ -73,9 +73,9 @@ class GroupPageVC: MessagesViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        createWebSocket() // create web socket
         setupViews()
         getGroupTitle()
-        createWebSocket() // create web socket
         
         refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
         refreshControl.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
@@ -135,6 +135,8 @@ class GroupPageVC: MessagesViewController {
         messageInputBar.inputTextView.delegate = self
         messageInputBar.sendButton.setImage(UIImage(systemName: "paperplane"), for: .normal)
         messageInputBar.sendButton.setTitle("", for: .normal)
+        //showMessageTimestampOnSwipeLeft = true
+        
         
         setupInputButtons()
     }
@@ -447,7 +449,7 @@ class GroupPageVC: MessagesViewController {
             delegateQueue: OperationQueue()
         )
         
-        if let url = URL(string: "ws://\(ServerStruct.serverHost):\(ServerStruct.serverPort)/messagesWsEndpoint?userId=\(getUserId())") {
+        if let url = URL(string: "ws://\(ServerStruct.serverHost):\(ServerStruct.serverPort)\(Constants.messagesWsEndpoint)\(getUserId())") {
             webSocket = session.webSocketTask(with: url)
             webSocket?.resume()
         } // esle way
@@ -627,12 +629,10 @@ extension GroupPageVC: URLSessionWebSocketDelegate {
     
 }
 
-extension GroupPageVC: UpdateGroup {
-    
+extension GroupPageVC: UpdateGroupProtocol {
     func update(groupTitle: String) {
         self.title = groupTitle
     }
-    
 }
 
 extension GroupPageVC: UITextViewDelegate {
@@ -993,26 +993,40 @@ extension GroupPageVC: MessagesDataSource, MessagesLayoutDelegate, MessagesDispl
         return getDateString(date: messages[indexPath.section].sentDate) == getDateString(date: messages[indexPath.section-1].sentDate)
     }
     
-    //    func messageHeaderView(for indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageReusableView {
-    //        let message = messages[indexPath.section]
-    //
-    //        let view = messagesCollectionView.dequeueReusableHeaderView(MessageReusableView.self, for: indexPath)
-    //        view.backgroundColor = UIColor.black
-    //
-    //        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 50, height: 30))
-    //        label.text = message.sender.displayName
-    //        label.tintColor = UIColor.gray
-    //        label.textColor = UIColor.gray
-    //        label.backgroundColor = UIColor.gray
-    //
-    //        view.addSubview(label)
-    //        return view
-    //    }
-    //
-    //    func headerViewSize(for section: Int, in messagesCollectionView: MessagesCollectionView) -> CGSize {
-    //        return CGSize(width: 100, height: 30)
-    //    }
+    func isNextMessageSameSender(at indexPath: IndexPath) -> Bool {
+        guard indexPath.section + 1 < messages.count else { return false }
+        return messages[indexPath.section].sender.senderId == messages[indexPath.section + 1].sender.senderId
+    }
     
+    func backgroundColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+        return message.sender.senderId == selfSender?.senderId ? UIColor.FlatColor.Blue.CuriousBlue : UIColor(red: 230 / 255, green: 230 / 255, blue: 230 / 255, alpha: 1)
+    }
+    
+    func messageStyle(for message: MessageType, at indexPath: IndexPath, in _: MessagesCollectionView) -> MessageStyle {
+        var corners: UIRectCorner = []
+
+        if isFromCurrentSender(message: message) {
+            corners.formUnion(.topLeft)
+            corners.formUnion(.bottomLeft)
+            corners.formUnion(.topRight)
+        } else {
+            corners.formUnion(.topRight)
+            corners.formUnion(.bottomRight)
+            corners.formUnion(.topLeft)
+        }
+
+        return .custom { view in
+            let radius: CGFloat = Constants.messagesCornerRadius
+            let path = UIBezierPath(
+                roundedRect: view.bounds,
+                byRoundingCorners: corners,
+                cornerRadii: CGSize(width: radius, height: radius)
+            )
+            let mask = CAShapeLayer()
+            mask.path = path.cgPath
+            view.layer.mask = mask
+        }
+    }
 }
 
 extension GroupPageVC: MessageCellDelegate, AVAudioPlayerDelegate {

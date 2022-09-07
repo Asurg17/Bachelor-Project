@@ -17,16 +17,16 @@ func NewEventManager(connectionPool *PGConnectionPool) *EventManager {
 
 // Manager Functions
 
-func (m *EventManager) getEvents(params GetEventsParams) (map[string][]map[string]string, error) {
-	if !isUserValid(params.UserId, m.connectionPool.db) {
+func (m *EventManager) getEvents(userId string, groupId string, currentDate string) (map[string][]map[string]string, error) {
+	if !isUserValid(userId, m.connectionPool.db) {
 		return nil, errors.New("can't search new groups. user not valid")
 	}
 
 	getQuery := ``
-	queryParam := params.UserId
+	queryParam := userId
 
-	if len(params.GroupId) != 0 {
-		queryParam = params.GroupId
+	if len(groupId) != 0 {
+		queryParam = groupId
 		getQuery = `select e.event_key,
 							e.creator_user_id,
 							coalesce(e.to_user_id, '') user_id,
@@ -51,6 +51,10 @@ func (m *EventManager) getEvents(params GetEventsParams) (map[string][]map[strin
 					from events e
 					where e.group_id = $1
 					and e.formatted_date >= $3
+					and exists(select *
+								from group_members 
+								where group_id = e.group_id
+								and user_id = $2)
 					order by e.formatted_date, (case when e.event_time = '-:-' then 2 else 1 end);`
 	} else {
 		getQuery = `select e.event_key,
@@ -75,15 +79,15 @@ func (m *EventManager) getEvents(params GetEventsParams) (map[string][]map[strin
 							e.event_date,
 							coalesce(e.event_time, '-:-') event_time
 					from events e
-					where e.to_user_id = $1 
+					where (e.to_user_id = $1 
 						or e.group_id in (select group_id
 											from group_members 
-										where user_id = $1)
+										where user_id = $1))
 					and e.formatted_date >= $3
 					order by e.formatted_date, (case when e.event_time = '-:-' then 2 else 1 end);`
 	}
 
-	rows, err := m.connectionPool.db.Query(getQuery, queryParam, params.UserId, params.CurrentDate)
+	rows, err := m.connectionPool.db.Query(getQuery, queryParam, userId, currentDate)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -129,13 +133,12 @@ func (m *EventManager) getEvents(params GetEventsParams) (map[string][]map[strin
 	return response, nil
 }
 
-func (m *EventManager) getEvent(params GetEventParams) (map[string]string, error) {
-	if !isUserValid(params.UserId, m.connectionPool.db) {
+func (m *EventManager) getEvent(userId string, eventUniqueKey string) (map[string]string, error) {
+	if !isUserValid(userId, m.connectionPool.db) {
 		return nil, errors.New("can't search new groups. user not valid")
 	}
 
-	getQuery := `select e.event_key,
-						e.creator_user_id,
+	getQuery := `select e.creator_user_id,
 						coalesce(e.to_user_id, '') user_id,
 						coalesce(e.group_id, '') group_id,
 						(case when e.to_user_id is null
@@ -158,7 +161,6 @@ func (m *EventManager) getEvent(params GetEventParams) (map[string]string, error
 				from events e
 				where e.event_key = $1;`
 
-	var eventUniqueKey string
 	var creatorId string
 	var toUserId string
 	var groupId string
@@ -170,7 +172,7 @@ func (m *EventManager) getEvent(params GetEventParams) (map[string]string, error
 	var date string
 	var time string
 
-	if err := m.connectionPool.db.QueryRow(getQuery, params.EventUniqueKey, params.UserId).Scan(&eventUniqueKey, &creatorId, &toUserId, &groupId, &eventHeader, &eventTitle, &eventDescription, &place, &eventType, &date, &time); err != nil {
+	if err := m.connectionPool.db.QueryRow(getQuery, eventUniqueKey, userId).Scan(&creatorId, &toUserId, &groupId, &eventHeader, &eventTitle, &eventDescription, &place, &eventType, &date, &time); err != nil {
 		return nil, err
 	}
 
@@ -190,8 +192,8 @@ func (m *EventManager) getEvent(params GetEventParams) (map[string]string, error
 	return response, nil
 }
 
-func (m *EventManager) createNewEvent(params CreateNewEventParams) error {
-	if !isUserValid(params.UserId, m.connectionPool.db) {
+func (m *EventManager) createNewEvent(userId string, groupId string, eventName string, place string, eventDescription string, date string, time string, formattedDate string, eventUniqueKey string) error {
+	if !isUserValid(userId, m.connectionPool.db) {
 		return errors.New("can't search new groups. user not valid")
 	}
 
@@ -199,8 +201,8 @@ func (m *EventManager) createNewEvent(params CreateNewEventParams) error {
 									event_type, event_description, event_date, event_time, formatted_date, event_key)
 					values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`
 
-	_, err := m.connectionPool.db.Exec(insertQuery, params.UserId, params.GroupId, params.EventName, params.Place, "in_group",
-		params.EventDescription, params.Date, params.Time, params.FormattedDate, params.EventUniqueKey)
+	_, err := m.connectionPool.db.Exec(insertQuery, userId, groupId, eventName, place, "in_group",
+		eventDescription, date, time, formattedDate, eventUniqueKey)
 	if err != nil {
 		return err
 	}

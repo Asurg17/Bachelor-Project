@@ -21,6 +21,9 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
+var mainConnections = make(map[string]*websocket.Conn)
+var mainConnectionsMutex = &sync.Mutex{}
+
 var msgConnections = make(map[string]*websocket.Conn)
 var msgConnectionsMutex = &sync.Mutex{}
 
@@ -148,8 +151,14 @@ type GetGroupMediaFilesParams struct {
 
 // Notification structs
 
+type CheckForNewNotificationsParams struct {
+	UserId	                      string
+	LastSeenNotificationUniqueKey string
+}
+
 type GetUserNotificationsParams struct {
-	UserId string
+	UserId					  string
+	LastNotificationUniqueKey string
 }
 
 type SendFriendshipRequestParams struct {
@@ -479,7 +488,7 @@ func (s *Server) searchNewFriends(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	response, err := s.userManager.searchNewFriends(params)
+	response, err := s.userManager.searchNewFriends(params.UserId, params.FirstName, params.LastName)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
@@ -506,7 +515,7 @@ func (s *Server) sendFriendshipRequestToUser(w http.ResponseWriter, req *http.Re
 		return
 	}
 
-	err = s.userManager.sendFriendshipRequestToUser(params)
+	err = s.userManager.sendFriendshipRequestToUser(params.FromUserId, params.ToUSerId)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
@@ -869,6 +878,32 @@ func (s *Server) getAudio(w http.ResponseWriter, req *http.Request) {
 
 // Notification
 
+func (s *Server) checkForNewNotifications(w http.ResponseWriter, req *http.Request) {
+	var params CheckForNewNotificationsParams
+
+	err := json.NewDecoder(req.Body).Decode(&params)
+	if err != nil {
+		w.Header().Set("Error", "Bad request")
+		w.WriteHeader(400)
+		return
+	}
+
+	response, err := s.notificationManager.checkForNewNotifications(params.UserId, params.LastSeenNotificationUniqueKey)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	jsonResp, err := json.Marshal(response)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+	}
+	w.Write(jsonResp)
+}
+
 func (s *Server) getUserNotifications(w http.ResponseWriter, req *http.Request) {
 	var params GetUserNotificationsParams
 
@@ -879,7 +914,7 @@ func (s *Server) getUserNotifications(w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	response, err := s.notificationManager.getUserNotifications(params.UserId)
+	response, err := s.notificationManager.getUserNotifications(params.UserId, params.LastNotificationUniqueKey)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
@@ -1125,7 +1160,7 @@ func (s *Server) getEvents(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	response, err := s.eventManager.getEvents(params)
+	response, err := s.eventManager.getEvents(params.UserId, params.GroupId, params.CurrentDate)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
@@ -1152,7 +1187,7 @@ func (s *Server) getEvent(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	response, err := s.eventManager.getEvent(params)
+	response, err := s.eventManager.getEvent(params.UserId, params.EventUniqueKey)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
@@ -1179,7 +1214,14 @@ func (s *Server) createNewEvent(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = s.eventManager.createNewEvent(params)
+	err = s.eventManager.createNewEvent(params.UserId, params.GroupId, params.EventName, params.Place, params.EventDescription, params.Date, params.Time, params.FormattedDate, params.EventUniqueKey)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	err = s.notificationManager.createNewNotification(params.UserId, "", "Created new Event(" + params.EventName + ") at Group: ", params.GroupId)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
@@ -1199,7 +1241,7 @@ func (s *Server) getEventTasks(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	response, err := s.taskManager.getEventTasks(params)
+	response, err := s.taskManager.getEventTasks(params.UserId, params.EventKey)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
@@ -1226,7 +1268,7 @@ func (s *Server) getUserTasks(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	response, err := s.taskManager.getUserTasks(params)
+	response, err := s.taskManager.getUserTasks(params.UserId, params.CurrentDate)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
@@ -1253,11 +1295,20 @@ func (s *Server) createNewTask(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = s.taskManager.createNewTask(params)
+	err = s.taskManager.createNewTask(params.UserId, params.AssigneeId, params.Task, params.EventUniqueKey)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
 		return
+	}
+
+	if params.UserId != params.AssigneeId {
+		err = s.notificationManager.createNewNotification(params.UserId, params.AssigneeId, "Assigned you new Task: " + params.Task, "")
+		if err != nil {
+			w.Header().Set("Error", err.Error())
+			w.WriteHeader(500)
+			return
+		}
 	}
 }
 
@@ -1271,7 +1322,7 @@ func (s *Server) doneTask(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = s.taskManager.doneTask(params)
+	err = s.taskManager.doneTask(params.UserId, params.TaskId)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
@@ -1281,10 +1332,48 @@ func (s *Server) doneTask(w http.ResponseWriter, req *http.Request) {
 
 // Websocket
 
-func messagesWsEndpoint(w http.ResponseWriter, r *http.Request) {
+func (s *Server) mainWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	userId := r.URL.Query().Get("userId")
 
-	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+	upgrader.CheckOrigin = func(r *http.Request) bool {
+		return s.sharedManager.isUserValid(userId)
+	}
+
+	ws, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println(err)
+	}
+
+	mainConnectionsMutex.Lock()
+	mainConnections[userId] = ws
+	mainConnectionsMutex.Unlock()
+
+	fmt.Println(len(mainConnections))
+	fmt.Println(mainConnections)
+	log.Println("Client Successfully Connected...")
+
+	mainWsEndpointReader(ws, userId)
+}
+
+func mainWsEndpointReader(conn *websocket.Conn, userId string) {
+	for {
+		_, _, err := conn.ReadMessage()
+		if err != nil {
+			print(err)
+			mainConnectionsMutex.Lock()
+			delete(mainConnections, userId)
+			mainConnectionsMutex.Unlock()
+			return
+		}
+	}
+}
+
+func (s *Server) messagesWsEndpoint(w http.ResponseWriter, r *http.Request) {
+	userId := r.URL.Query().Get("userId")
+
+	upgrader.CheckOrigin = func(r *http.Request) bool {
+		return s.sharedManager.isUserValid(userId)
+	}
 
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -1299,10 +1388,10 @@ func messagesWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(msgConnections)
 	log.Println("Client Successfully Connected...")
 
-	reader(ws, userId)
+	messagesWsEndpointReader(ws, userId)
 }
 
-func reader(conn *websocket.Conn, userId string) {
+func messagesWsEndpointReader(conn *websocket.Conn, userId string) {
 	for {
 		_, _, err := conn.ReadMessage()
 		if err != nil {
@@ -1323,6 +1412,7 @@ type Server struct {
 	messageManager      *MessageManager
 	eventManager        *EventManager
 	taskManager         *TaskManager
+	sharedManager       *SharedManager
 }
 
 func NewServer(signInUpManager *SignInUpManager,
@@ -1332,7 +1422,8 @@ func NewServer(signInUpManager *SignInUpManager,
 	notificationManager *NotificationManager,
 	messageManager *MessageManager,
 	eventManager *EventManager,
-	taskManager *TaskManager) *Server {
+	taskManager *TaskManager,
+	sharedManager *SharedManager) *Server {
 	return &Server{
 		signInUpManager:     signInUpManager,
 		userManager:         userManager,
@@ -1342,6 +1433,7 @@ func NewServer(signInUpManager *SignInUpManager,
 		messageManager:      messageManager,
 		eventManager:        eventManager,
 		taskManager:         taskManager,
+		sharedManager:       sharedManager,
 	}
 }
 
@@ -1381,6 +1473,7 @@ func (s *Server) Start() {
 	http.HandleFunc("/uploadAudio", s.uploadAudio)
 
 	// Notifications
+	http.HandleFunc("/checkForNewNotifications", s.checkForNewNotifications)
 	http.HandleFunc("/getUserNotifications", s.getUserNotifications)
 	http.HandleFunc("/sendGroupInvitations", s.sendGroupInvitations)
 	http.HandleFunc("/sendFriendshipRequest", s.sendFriendshipRequest)
@@ -1407,7 +1500,8 @@ func (s *Server) Start() {
 	http.HandleFunc("/doneTask", s.doneTask)
 
 	// Websocket
-	http.HandleFunc("/messagesWsEndpoint", messagesWsEndpoint)
+	http.HandleFunc("/mainWsEndpoint", s.mainWsEndpoint)
+	http.HandleFunc("/messagesWsEndpoint", s.messagesWsEndpoint)
 
 	// Listen And Serve
 	log.Fatal(http.ListenAndServe(":9000", nil))

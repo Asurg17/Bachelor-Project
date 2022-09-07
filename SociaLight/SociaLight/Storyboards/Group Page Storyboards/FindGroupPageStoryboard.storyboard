@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Find Group-->
+        <scene sceneID="wUo-kl-YWL">
+            <objects>
+                <viewController storyboardIdentifier="FindGroupPageVC" hidesBottomBarWhenPushed="YES" id="jbk-yI-Gri" customClass="FindGroupPageVC" customModule="SociaLight" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Igf-uB-4uf">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NgJ-nS-IQu">
+                                <rect key="frame" x="0.0" y="60" width="414" height="50"/>
+                                <subviews>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search Group" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="YvI-Xb-T3Y" customClass="RoundCornerTextField" customModule="SociaLight" customModuleProvider="target">
+                                        <rect key="frame" x="41.5" y="2.5" width="331" height="45"/>
+                                        <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <textInputTraits key="textInputTraits" returnKeyType="search"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="paddingLeft">
+                                                <real key="value" value="20"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="paddingRight">
+                                                <real key="value" value="20"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </textField>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="YvI-Xb-T3Y" firstAttribute="centerY" secondItem="NgJ-nS-IQu" secondAttribute="centerY" id="78d-2I-5CJ"/>
+                                    <constraint firstItem="YvI-Xb-T3Y" firstAttribute="centerX" secondItem="NgJ-nS-IQu" secondAttribute="centerX" id="CBx-hh-vp6"/>
+                                    <constraint firstItem="YvI-Xb-T3Y" firstAttribute="height" secondItem="NgJ-nS-IQu" secondAttribute="height" multiplier="0.9" id="Sde-fk-43f"/>
+                                    <constraint firstItem="YvI-Xb-T3Y" firstAttribute="width" secondItem="NgJ-nS-IQu" secondAttribute="width" multiplier="0.8" id="wdR-0x-fc5"/>
+                                    <constraint firstAttribute="height" constant="50" id="y9f-Th-yJV"/>
+                                </constraints>
+                            </view>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="svC-14-bdO">
+                                <rect key="frame" x="0.0" y="126" width="414" height="770"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="xiK-K3-NtS">
+                                    <size key="itemSize" width="128" height="128"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells/>
+                            </collectionView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="0Cz-pl-H48">
+                                <rect key="frame" x="188.5" y="429.5" width="37" height="37"/>
+                                <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </activityIndicatorView>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Groups Were Found" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ajB-jn-FDq">
+                                <rect key="frame" x="118" y="437.5" width="178" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="pRj-nV-76s"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="0Cz-pl-H48" firstAttribute="centerX" secondItem="Igf-uB-4uf" secondAttribute="centerX" id="0gr-lF-t6U"/>
+                            <constraint firstItem="ajB-jn-FDq" firstAttribute="centerY" secondItem="Igf-uB-4uf" secondAttribute="centerY" id="8Ut-2D-vE9"/>
+                            <constraint firstItem="svC-14-bdO" firstAttribute="leading" secondItem="pRj-nV-76s" secondAttribute="leading" id="C7U-4c-fTr"/>
+                            <constraint firstItem="ajB-jn-FDq" firstAttribute="centerX" secondItem="Igf-uB-4uf" secondAttribute="centerX" id="IP4-rB-qnB"/>
+                            <constraint firstItem="NgJ-nS-IQu" firstAttribute="width" secondItem="Igf-uB-4uf" secondAttribute="width" id="Ph3-DT-lgm"/>
+                            <constraint firstItem="0Cz-pl-H48" firstAttribute="centerY" secondItem="Igf-uB-4uf" secondAttribute="centerY" id="Vyi-jF-rRj"/>
+                            <constraint firstItem="NgJ-nS-IQu" firstAttribute="centerX" secondItem="Igf-uB-4uf" secondAttribute="centerX" id="jnc-qf-qsV"/>
+                            <constraint firstItem="svC-14-bdO" firstAttribute="top" secondItem="NgJ-nS-IQu" secondAttribute="bottom" constant="16" id="nh6-Zr-jc2"/>
+                            <constraint firstAttribute="bottom" secondItem="svC-14-bdO" secondAttribute="bottom" id="uRf-Ps-eWp"/>
+                            <constraint firstItem="NgJ-nS-IQu" firstAttribute="top" secondItem="pRj-nV-76s" secondAttribute="top" constant="16" id="v1C-j8-ror"/>
+                            <constraint firstItem="pRj-nV-76s" firstAttribute="trailing" secondItem="svC-14-bdO" secondAttribute="trailing" id="xdt-hk-mwJ"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Find Group" id="SoL-Gd-fvN">
+                        <barButtonItem key="leftBarButtonItem" image="arrow.backward" catalog="system" id="mfd-ZF-b6u">
+                            <connections>
+                                <action selector="back" destination="jbk-yI-Gri" id="EyO-1n-wmG"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="collectionView" destination="svC-14-bdO" id="Two-Q6-WYb"/>
+                        <outlet property="groupIdentifierTextField" destination="YvI-Xb-T3Y" id="eep-mV-571"/>
+                        <outlet property="loader" destination="0Cz-pl-H48" id="aki-fl-kp2"/>
+                        <outlet property="warningLabel" destination="ajB-jn-FDq" id="nr1-Yg-AnU"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZvD-aK-sQn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4451" y="-344"/>
+        </scene>
+    </scenes>
+    <designables>
+        <designable name="YvI-Xb-T3Y">
+            <size key="intrinsicContentSize" width="145" height="22"/>
+        </designable>
+    </designables>
+    <resources>
+        <image name="arrow.backward" catalog="system" width="128" height="98"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

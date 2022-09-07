@@ -78,7 +78,14 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Friends" id="Sge-PQ-CIO">
+                        <barButtonItem key="leftBarButtonItem" image="chevron.backward" catalog="system" id="gRJ-kH-ChM">
+                            <color key="tintColor" red="0.19115205739999999" green="0.29721339969999999" blue="0.63442862580000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            <connections>
+                                <action selector="back" destination="eAk-Z4-ak7" id="abb-t9-mXW"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" image="person.badge.plus" catalog="system" id="sYE-hq-8oo">
+                            <color key="tintColor" red="0.19115205739999999" green="0.29721339969999999" blue="0.63442862580000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             <connections>
                                 <action selector="searchNewFriends" destination="eAk-Z4-ak7" id="ie7-n4-rNu"/>
                             </connections>
@@ -101,6 +108,7 @@
         </designable>
     </designables>
     <resources>
+        <image name="chevron.backward" catalog="system" width="96" height="128"/>
         <image name="deep-relief" width="600" height="510"/>
         <image name="person.badge.plus" catalog="system" width="128" height="124"/>
         <systemColor name="systemBackgroundColor">

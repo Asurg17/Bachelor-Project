@@ -64,6 +64,7 @@ func (m *GroupManager) searchNewGroups(userId string, groupIdentifier string) (m
 		group["groupCapacity"] = groupCapacity
 		group["groupMembersNum"] = groupMembersNum
 		group["userRole"] = "M"
+		group["newMessagesCount"] = "0"
 
 		groups = append(groups, group)
 	}
@@ -84,12 +85,13 @@ func (m *GroupManager) getGroupMembers(userId string, groupId string) (map[strin
 				,coalesce(s.last_name, '-') last_name
 				,coalesce(s.phone, '-') phone
 				,(select coalesce(max('Y'), 'N')
-						from friendship_requests r
+						from notifications r
 						where ((r.from_user_id = $1
 									and r.to_user_id = s.user_id)
 								or 
 								(r.to_user_id = $1
 									and r.from_user_id = s.user_id))
+							and r.type = 'friendship_request'
 							and r.status = 'N') is_already_sent
 				,(select coalesce(max('Y'), case when s.user_id = $1 then 'Y' else 'N' end)
 						from friends f

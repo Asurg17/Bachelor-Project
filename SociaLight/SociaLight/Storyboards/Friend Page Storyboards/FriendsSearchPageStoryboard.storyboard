@@ -77,7 +77,14 @@
                             <constraint firstItem="HdS-RA-AyF" firstAttribute="top" secondItem="Olm-Eo-l2O" secondAttribute="top" constant="8" id="wF5-Ue-LcY"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Friends" id="LW2-GK-Wkg"/>
+                    <navigationItem key="navigationItem" title="Friends" id="LW2-GK-Wkg">
+                        <barButtonItem key="leftBarButtonItem" image="chevron.backward" catalog="system" id="D3i-ol-NOG">
+                            <color key="tintColor" red="0.19115205739999999" green="0.29721339969999999" blue="0.63442862580000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            <connections>
+                                <action selector="back" destination="bt6-Pt-iXU" id="tYD-Ie-5Io"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="friendNameTextField" destination="q4d-Ns-4dp" id="aId-ey-7H9"/>
                         <outlet property="tableView" destination="Xnh-kV-vLT" id="OYG-iX-Rsa"/>
@@ -95,6 +102,7 @@
         </designable>
     </designables>
     <resources>
+        <image name="chevron.backward" catalog="system" width="96" height="128"/>
         <image name="deep-relief" width="600" height="510"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

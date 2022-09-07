@@ -20,6 +20,10 @@ struct UserIdResponse: Codable {
     let userId: String
 }
 
+struct CheckForNewNotificationsResponse: Codable {
+    let newNotificationsNum: String
+}
+
 // Group
 
 struct GetGroupTitleResponse: Codable {
@@ -58,6 +62,7 @@ struct UserGroup: Codable {
     let groupCapacity: String
     let groupMembersNum: String
     let userRole: String
+    let newMessagesCount: String
 }
 
 // Friends
@@ -123,7 +128,7 @@ struct Notifications: Codable {
 }
 
 struct Notification: Codable {
-    var requestUniqueKey: String
+    var notificationUniqueKey: String
     var fromUserId: String
     var notificationTitle: String
     var notificationText: String

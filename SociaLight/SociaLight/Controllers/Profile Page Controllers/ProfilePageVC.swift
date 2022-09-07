@@ -146,6 +146,15 @@ class ProfilePageVC: UIViewController {
     }
     
     @IBAction func signOut() {
+        if let tc = self.tabBarController,
+           let vcs = tc.viewControllers,
+           let nc = vcs[0] as? UINavigationController,
+           let vc = nc.viewControllers[0] as? MainPageVC {
+            vc.close()
+        } else {
+            fatalError(Constants.fatalError)
+        }
+            
         let keychain = KeychainSwift()
         keychain.delete(Constants.userIdKey)
         self.parent?.navigationController?.popToRootViewController(animated: true)
@@ -162,11 +171,9 @@ class ProfilePageVC: UIViewController {
 }
 
 extension ProfilePageVC: DismissProtocol {
-   
     func refresh() {
         loadUserInfo()
     }
-
 }
 
 extension ProfilePageVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate {

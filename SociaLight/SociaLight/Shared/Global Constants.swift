@@ -10,7 +10,7 @@ import UIKit
 struct ServerStruct {
     // server data
     static let serverScheme: String = "http"
-    static let serverHost: String = "192.168.100.3"
+    static let serverHost: String = "localhost"
     static let serverPort: Int = 9000
 }
 
@@ -20,6 +20,7 @@ struct Constants {
     // Keys
     static let userIdKey: String = "userId"
     static let groupIdKey: String = "groupId"
+    static let lastSeenNotificationKey: String = "lastSeenNotification"
     static let admin: String = "A"
     static let member: String = "M"
     static let activeTaskStatus: String = "A"
@@ -95,8 +96,12 @@ struct Constants {
     static let audioMessageHeight = 40.0
     static let messageWidthMultiplier = 0.7
     static let messageHeightMultiplier = 0.35
+    static let messagesCornerRadius = 15.0
     
     //
+    static let mainWsEndpoint: String = "/mainWsEndpoint?userId="
+    static let messagesWsEndpoint: String = "/messagesWsEndpoint?userId="
+    
     static let getImageURLPrefix: String = ServerStruct.serverScheme + "://" + ServerStruct.serverHost + ":" + ServerStruct.serverPort.description + "/getImage?imageKey="
     static let getAudioURLPrefix: String = ServerStruct.serverScheme + "://" + ServerStruct.serverHost + ":" + ServerStruct.serverPort.description + "/getAudio?audioKey="
     

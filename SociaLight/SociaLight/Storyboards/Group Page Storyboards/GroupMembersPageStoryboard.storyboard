@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Title-->
+        <scene sceneID="Gfh-gY-eOV">
+            <objects>
+                <viewController storyboardIdentifier="GroupMembersPageVC" id="LmA-JZ-goO" customClass="GroupMembersPageVC" customModule="SociaLight" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="y2d-cW-68h">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="great-whale" translatesAutoresizingMaskIntoConstraints="NO" id="4b0-Sf-qik">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                            </imageView>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Uqj-1A-v3U">
+                                <rect key="frame" x="0.0" y="134" width="414" height="762"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qdX-B1-m5O">
+                                <rect key="frame" x="0.0" y="52" width="414" height="50"/>
+                                <subviews>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Member's Name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="c16-so-zCn" customClass="RoundCornerTextField" customModule="SociaLight" customModuleProvider="target">
+                                        <rect key="frame" x="41.5" y="2.5" width="331" height="45"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="paddingLeft">
+                                                <real key="value" value="20"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="paddingRight">
+                                                <real key="value" value="20"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </textField>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="c16-so-zCn" firstAttribute="width" secondItem="qdX-B1-m5O" secondAttribute="width" multiplier="0.8" id="8Xt-TR-aup"/>
+                                    <constraint firstItem="c16-so-zCn" firstAttribute="centerX" secondItem="qdX-B1-m5O" secondAttribute="centerX" id="9QX-dc-4se"/>
+                                    <constraint firstItem="c16-so-zCn" firstAttribute="height" secondItem="qdX-B1-m5O" secondAttribute="height" multiplier="0.9" id="BJO-tJ-8zu"/>
+                                    <constraint firstItem="c16-so-zCn" firstAttribute="centerY" secondItem="qdX-B1-m5O" secondAttribute="centerY" id="LBy-Aa-mK8"/>
+                                    <constraint firstAttribute="height" constant="50" id="PQA-aA-rR0"/>
+                                </constraints>
+                            </view>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="tM6-hH-JGT">
+                                <rect key="frame" x="188.5" y="429.5" width="37" height="37"/>
+                                <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </activityIndicatorView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="M3T-I6-CP1"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="qdX-B1-m5O" firstAttribute="top" secondItem="M3T-I6-CP1" secondAttribute="top" constant="8" id="3gO-eG-MQS"/>
+                            <constraint firstItem="Uqj-1A-v3U" firstAttribute="leading" secondItem="y2d-cW-68h" secondAttribute="leading" id="8Qw-lu-DcG"/>
+                            <constraint firstItem="4b0-Sf-qik" firstAttribute="leading" secondItem="y2d-cW-68h" secondAttribute="leading" id="I4h-XB-wUk"/>
+                            <constraint firstAttribute="trailing" secondItem="Uqj-1A-v3U" secondAttribute="trailing" id="I9l-ir-47Q"/>
+                            <constraint firstItem="tM6-hH-JGT" firstAttribute="centerY" secondItem="y2d-cW-68h" secondAttribute="centerY" id="ISc-NM-guM"/>
+                            <constraint firstItem="Uqj-1A-v3U" firstAttribute="top" secondItem="qdX-B1-m5O" secondAttribute="bottom" constant="32" id="Im9-pH-apq"/>
+                            <constraint firstAttribute="bottom" secondItem="Uqj-1A-v3U" secondAttribute="bottom" id="WmS-26-cBn"/>
+                            <constraint firstItem="4b0-Sf-qik" firstAttribute="top" secondItem="y2d-cW-68h" secondAttribute="top" id="ZhR-If-Dnf"/>
+                            <constraint firstAttribute="trailing" secondItem="4b0-Sf-qik" secondAttribute="trailing" id="aCs-bS-JbI"/>
+                            <constraint firstAttribute="bottom" secondItem="4b0-Sf-qik" secondAttribute="bottom" id="kDX-Kx-eMe"/>
+                            <constraint firstItem="qdX-B1-m5O" firstAttribute="leading" secondItem="M3T-I6-CP1" secondAttribute="leading" id="tXZ-aW-FpA"/>
+                            <constraint firstAttribute="trailing" secondItem="qdX-B1-m5O" secondAttribute="trailing" id="vtN-Yy-wIl"/>
+                            <constraint firstItem="tM6-hH-JGT" firstAttribute="centerX" secondItem="y2d-cW-68h" secondAttribute="centerX" id="xla-K2-OiJ"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Title" id="3yh-eQ-SrL">
+                        <barButtonItem key="leftBarButtonItem" image="chevron.backward" catalog="system" id="Vbz-mF-2Zf">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="back" destination="LmA-JZ-goO" id="U4r-1f-co0"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" image="person.badge.plus" catalog="system" id="Eof-DN-lyH">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="addNewMembers" destination="LmA-JZ-goO" id="HLm-4Z-cMb"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="addNewMemberBarButton" destination="Eof-DN-lyH" id="Nam-G6-TM3"/>
+                        <outlet property="loader" destination="tM6-hH-JGT" id="AGe-Yt-PQB"/>
+                        <outlet property="memberNameTextField" destination="c16-so-zCn" id="Vo8-vQ-2LP"/>
+                        <outlet property="tableView" destination="Uqj-1A-v3U" id="NsA-bm-7tI"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="qbj-Za-vtp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="7951" y="-344"/>
+        </scene>
+    </scenes>
+    <designables>
+        <designable name="c16-so-zCn">
+            <size key="intrinsicContentSize" width="173" height="23"/>
+        </designable>
+    </designables>
+    <resources>
+        <image name="chevron.backward" catalog="system" width="96" height="128"/>
+        <image name="great-whale" width="600" height="500"/>
+        <image name="person.badge.plus" catalog="system" width="128" height="124"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

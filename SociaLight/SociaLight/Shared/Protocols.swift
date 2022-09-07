@@ -11,7 +11,7 @@ protocol DismissProtocol {
     func refresh()
 }
 
-protocol UpdateGroup {
+protocol UpdateGroupProtocol {
     func update(groupTitle: String)
 }
 

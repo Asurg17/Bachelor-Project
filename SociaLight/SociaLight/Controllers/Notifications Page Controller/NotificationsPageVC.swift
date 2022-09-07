@@ -44,8 +44,13 @@ class NotificationsPageVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        getNotifications(lastNotificationUniqueKey: "-1")
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
-        getNotifications()
+        removeNotificationsBadge()
     }
     
     func setupViews() {
@@ -82,24 +87,35 @@ class NotificationsPageVC: UIViewController {
         )
     }
     
+    func removeNotificationsBadge() {
+        if let tabBarItem = self.tabBarController?.tabBar.items?[1] {
+            tabBarItem.badgeValue = nil
+        }
+    }
+    
     func clearTable() {
         tableData = []
         tableView.reloadData()
     }
     
-    func getNotifications() {
-        let userId = getUserId()
-        
-        showLoader(text: "Loading...")
-        service.getUserNotifications(userId: userId) { [weak self] result in
+    func getNotifications(lastNotificationUniqueKey: String) {
+        let parameters = [
+            "userId": getUserId(),
+            "lastNotificationUniqueKey": lastNotificationUniqueKey
+        ]
+        let shouldReload = lastNotificationUniqueKey == "-1"
+        let areNewNotifications = lastNotificationUniqueKey != "-1"
+    
+        if shouldReload { showLoader(text: "Loading...") }
+        service.getUserNotifications(parameters: parameters) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.loader.dismiss(animated: true)
                 self.refreshControl.endRefreshing()
                 switch result {
                 case .success(let response):
-                    self.clearTable()
-                    self.handleSuccess(response: response)
+                    if shouldReload { self.clearTable() }
+                    self.handleSuccess(response: response, shouldReload: shouldReload, areNewNotifications: areNewNotifications)
                 case .failure(let error):
                     self.showWarningAlert(warningText: error.localizedDescription.description)
                 }
@@ -107,13 +123,21 @@ class NotificationsPageVC: UIViewController {
         }
     }
     
-    func handleSuccess(response: Notifications) {
+    func getNewNotifications() {
+        if tableData.isEmpty {
+            getNotifications(lastNotificationUniqueKey: "-1")
+        } else {
+            let lastNotificationUniqueKey = tableData[0].notifications[0].notificationUniqueKey
+            getNotifications(lastNotificationUniqueKey: lastNotificationUniqueKey)
+        }
+    }
+    
+    func handleSuccess(response: Notifications, shouldReload: Bool, areNewNotifications: Bool) {
         for notification in response.notifications {
-            
             let id = notification.sendDate
             
             let notificationCellModel =  NotificationCellModel(
-                requestUniqueKey: notification.requestUniqueKey,
+                notificationUniqueKey: notification.notificationUniqueKey,
                 fromUserId: notification.fromUserId,
                 notificationTitle: notification.notificationTitle,
                 notificationText: notification.notificationText,
@@ -129,14 +153,18 @@ class NotificationsPageVC: UIViewController {
             )
             
             if let sectionIndex = tableData.firstIndex(where: { $0.id == id }) {
-                tableData[sectionIndex].notifications.append(notificationCellModel)
+                if areNewNotifications {
+                    tableData[sectionIndex].notifications.insert(notificationCellModel, at: 0)
+                } else {
+                    tableData[sectionIndex].notifications.append(notificationCellModel)
+                }
                 
-//                tableView.beginUpdates()
-//                tableView.reloadSections(IndexSet(integer: sectionIndex), with: .fade)
-//                tableView.endUpdates()
-            
+                if !shouldReload {
+                    tableView.beginUpdates()
+                    tableView.reloadSections(IndexSet(integer: sectionIndex), with: .fade)
+                    tableView.endUpdates()
+                }
             } else {
-                
                 let section = NotificationsSection(
                     id: id,
                     header: NotificationHeaderModel(title: id),
@@ -145,17 +173,29 @@ class NotificationsPageVC: UIViewController {
                 
                 tableData.append(section)
                 
-//                tableView.beginUpdates()
-//                tableView.insertSections(IndexSet(integer: tableData.count-1), with: .fade)
-//                tableView.endUpdates()
+                if !shouldReload {
+                    tableView.beginUpdates()
+                    tableView.insertSections(IndexSet(integer: tableData.count-1), with: .fade)
+                    tableView.endUpdates()
+                }
             }
-            tableView.reloadData()
+            
+            if shouldReload {
+                tableView.reloadData()
+            }
+        }
+        
+        if tableData.isEmpty {
+            UserDefaults.standard.set("-1", forKey: Constants.lastSeenNotificationKey)
+        } else {
+            let lastNotificationUniqueKey = tableData[0].notifications[0].notificationUniqueKey
+            UserDefaults.standard.set(lastNotificationUniqueKey, forKey: Constants.lastSeenNotificationKey)
         }
     }
     
     func removeFromTable(elem: NotificationCellModel) {
         for section in 0...tableData.count-1 {
-            if let row = tableData[section].notifications.firstIndex(where: { $0.requestUniqueKey == elem.requestUniqueKey && $0.notificationType == elem.notificationType }) {
+            if let row = tableData[section].notifications.firstIndex(where: { $0.notificationUniqueKey == elem.notificationUniqueKey && $0.notificationType == elem.notificationType }) {
                 let indexPath = IndexPath(row: row, section: section)
                 
                 if tableData[indexPath.section].notifications.count == 1 {
@@ -196,7 +236,7 @@ class NotificationsPageVC: UIViewController {
     }
     
     @objc private func didPullToRefresh(_ sender: Any) {
-        getNotifications()
+        getNotifications(lastNotificationUniqueKey: "-1")
     }
 
 }
@@ -207,7 +247,7 @@ extension NotificationsPageVC: NotificationCellDelegate {
         let userId = getUserId()
             
         showLoader(text: "Processing...")
-        service.acceptFriendshipRequest(userId: userId, fromUserId: notification.model.fromUserId, requestUniqueKey: notification.model.requestUniqueKey) { [weak self] result in
+        service.acceptFriendshipRequest(userId: userId, fromUserId: notification.model.fromUserId, requestUniqueKey: notification.model.notificationUniqueKey) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.dismissLoader()
@@ -226,7 +266,7 @@ extension NotificationsPageVC: NotificationCellDelegate {
         let userId = getUserId()
         
         showLoader(text: "Processing...")
-        service.rejectFriendshipRequest(userId: userId, requestUniqueKey: notification.model.requestUniqueKey) { [weak self] result in
+        service.rejectFriendshipRequest(userId: userId, requestUniqueKey: notification.model.notificationUniqueKey) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.dismissLoader()
@@ -245,7 +285,7 @@ extension NotificationsPageVC: NotificationCellDelegate {
         let userId = getUserId()
         
         showLoader(text: "Processing...")
-        service.acceptInvitation(userId: userId, fromUserId: notification.model.fromUserId, groupId: notification.model.groupId, requestUniqueKey: notification.model.requestUniqueKey) { [weak self] result in
+        service.acceptInvitation(userId: userId, fromUserId: notification.model.fromUserId, groupId: notification.model.groupId, requestUniqueKey: notification.model.notificationUniqueKey) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.dismissLoader()
@@ -264,7 +304,7 @@ extension NotificationsPageVC: NotificationCellDelegate {
         let userId = getUserId()
         
         showLoader(text: "Processing...")
-        service.rejectInvitation(userId: userId, requestUniqueKey: notification.model.requestUniqueKey) { [weak self] result in
+        service.rejectInvitation(userId: userId, requestUniqueKey: notification.model.notificationUniqueKey) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.dismissLoader()

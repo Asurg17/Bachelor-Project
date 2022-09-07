@@ -9,7 +9,7 @@ import UIKit
 import SDWebImage
 
 class NotificationCellModel {
-    var requestUniqueKey: String
+    var notificationUniqueKey: String
     var fromUserId: String
     var notificationTitle: String
     var notificationText: String
@@ -25,8 +25,8 @@ class NotificationCellModel {
     
     weak var delegate: NotificationCellDelegate?
 
-    init(requestUniqueKey: String, fromUserId: String, notificationTitle: String, notificationText: String, notificationType: String, groupId: String, groupTitle: String, groupDescription: String, groupCapacity: String, membersCount: String, sendDate: String, sendTime: String, delegate: NotificationCellDelegate?) {
-        self.requestUniqueKey = requestUniqueKey
+    init(notificationUniqueKey: String, fromUserId: String, notificationTitle: String, notificationText: String, notificationType: String, groupId: String, groupTitle: String, groupDescription: String, groupCapacity: String, membersCount: String, sendDate: String, sendTime: String, delegate: NotificationCellDelegate?) {
+        self.notificationUniqueKey = notificationUniqueKey
         self.fromUserId = fromUserId
         self.notificationTitle = notificationTitle
         self.notificationText = notificationText

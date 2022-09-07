@@ -35,7 +35,7 @@ class GroupInfoPageVC: UIViewController, GroupInfoActionViewDelegate {
     
     var groupHasUpdated = false
     
-    var delegate: UpdateGroup?
+    var delegate: UpdateGroupProtocol?
     
     var response: GetGroupTitleAndDescriptionResponse?
     

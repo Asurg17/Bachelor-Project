@@ -101,6 +101,7 @@ class FindGroupPageVC: UIViewController, GroupCellDelegate {
                     groupCapacity: group.groupCapacity,
                     groupMembersNum: group.groupMembersNum,
                     userRole: "M",
+                    newMessagesCount: group.newMessagesCount,
                     delegate: self
                 )
             )
@@ -184,7 +185,7 @@ extension FindGroupPageVC: UICollectionViewDelegateFlowLayout {
     ) -> CGSize {
         let spareWidth = collectionView.frame.width - (2 * Constants.spacing) - ((Constants.itemCountInLine - 1) * Constants.spacing) - Constants.additionalSpacing
         let cellWidth = spareWidth / Constants.itemCountInLine
-        let cellHeight = cellWidth * 1.50
+        let cellHeight = cellWidth * 1.55
         return CGSize(width: cellWidth, height: cellHeight)
     }
     
@@ -201,7 +202,7 @@ extension FindGroupPageVC: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         minimumLineSpacingForSectionAt section: Int
     ) -> CGFloat {
-        return Constants.lineSpacing
+        return 0.0
     }
     
 }

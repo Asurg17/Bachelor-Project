@@ -65,6 +65,18 @@
 		EA9E6BD027FCB93E00101170 /* SociaLight.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = EA9E6BCE27FCB93E00101170 /* SociaLight.xcdatamodeld */; };
 		EA9E6BD227FCB94100101170 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA9E6BD127FCB94100101170 /* Assets.xcassets */; };
 		EA9E6BD527FCB94100101170 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EA9E6BD327FCB94100101170 /* LaunchScreen.storyboard */; };
+		EAA8F48528C9243F00140E88 /* SignUpPageStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EAA8F48428C9243F00140E88 /* SignUpPageStoryboard.storyboard */; };
+		EAA8F48828C9250300140E88 /* TabBarPagesStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EAA8F48728C9250300140E88 /* TabBarPagesStoryboard.storyboard */; };
+		EAA8F48B28C927C600140E88 /* NewGroupPageStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EAA8F48A28C927C600140E88 /* NewGroupPageStoryboard.storyboard */; };
+		EAA8F48E28C9287B00140E88 /* PersonalInfoPopupStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EAA8F48D28C9287B00140E88 /* PersonalInfoPopupStoryboard.storyboard */; };
+		EAA8F49028C9288B00140E88 /* ChangePasswordPoupStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EAA8F48F28C9288B00140E88 /* ChangePasswordPoupStoryboard.storyboard */; };
+		EAA8F49228C928B600140E88 /* SendMeetingInvitationPoupStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EAA8F49128C928B600140E88 /* SendMeetingInvitationPoupStoryboard.storyboard */; };
+		EAA8F49428C9297F00140E88 /* FindGroupPageStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EAA8F49328C9297F00140E88 /* FindGroupPageStoryboard.storyboard */; };
+		EAA8F49628C92A5C00140E88 /* GroupPageStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EAA8F49528C92A5C00140E88 /* GroupPageStoryboard.storyboard */; };
+		EAA8F49828C92ACF00140E88 /* GroupInfoPageStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EAA8F49728C92ACF00140E88 /* GroupInfoPageStoryboard.storyboard */; };
+		EAA8F49A28C92B0D00140E88 /* GroupMembersPageStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EAA8F49928C92B0D00140E88 /* GroupMembersPageStoryboard.storyboard */; };
+		EAA8F49C28C92B3C00140E88 /* AddGroupMembersPageStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EAA8F49B28C92B3C00140E88 /* AddGroupMembersPageStoryboard.storyboard */; };
+		EAA8F49E28C92B7700140E88 /* GroupMediaFilesPageStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EAA8F49D28C92B7700140E88 /* GroupMediaFilesPageStoryboard.storyboard */; };
 		EABCC6622826A4410098EDCA /* TabBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABCC6612826A4410098EDCA /* TabBarVC.swift */; };
 		EAC81DA928C0D6BB00561934 /* NewEventPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC81DA828C0D6BB00561934 /* NewEventPageVC.swift */; };
 		EAC81DAC28C11FE000561934 /* TasksPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC81DAB28C11FDF00561934 /* TasksPageVC.swift */; };
@@ -160,6 +172,18 @@
 		EA9E6BD127FCB94100101170 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EA9E6BD427FCB94100101170 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EA9E6BD627FCB94100101170 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EAA8F48428C9243F00140E88 /* SignUpPageStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SignUpPageStoryboard.storyboard; sourceTree = "<group>"; };
+		EAA8F48728C9250300140E88 /* TabBarPagesStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TabBarPagesStoryboard.storyboard; sourceTree = "<group>"; };
+		EAA8F48A28C927C600140E88 /* NewGroupPageStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = NewGroupPageStoryboard.storyboard; sourceTree = "<group>"; };
+		EAA8F48D28C9287B00140E88 /* PersonalInfoPopupStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PersonalInfoPopupStoryboard.storyboard; sourceTree = "<group>"; };
+		EAA8F48F28C9288B00140E88 /* ChangePasswordPoupStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ChangePasswordPoupStoryboard.storyboard; sourceTree = "<group>"; };
+		EAA8F49128C928B600140E88 /* SendMeetingInvitationPoupStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SendMeetingInvitationPoupStoryboard.storyboard; sourceTree = "<group>"; };
+		EAA8F49328C9297F00140E88 /* FindGroupPageStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = FindGroupPageStoryboard.storyboard; sourceTree = "<group>"; };
+		EAA8F49528C92A5C00140E88 /* GroupPageStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = GroupPageStoryboard.storyboard; sourceTree = "<group>"; };
+		EAA8F49728C92ACF00140E88 /* GroupInfoPageStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = GroupInfoPageStoryboard.storyboard; sourceTree = "<group>"; };
+		EAA8F49928C92B0D00140E88 /* GroupMembersPageStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = GroupMembersPageStoryboard.storyboard; sourceTree = "<group>"; };
+		EAA8F49B28C92B3C00140E88 /* AddGroupMembersPageStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AddGroupMembersPageStoryboard.storyboard; sourceTree = "<group>"; };
+		EAA8F49D28C92B7700140E88 /* GroupMediaFilesPageStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = GroupMediaFilesPageStoryboard.storyboard; sourceTree = "<group>"; };
 		EABCC6612826A4410098EDCA /* TabBarVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarVC.swift; sourceTree = "<group>"; };
 		EAC81DA828C0D6BB00561934 /* NewEventPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEventPageVC.swift; sourceTree = "<group>"; };
 		EAC81DAB28C11FDF00561934 /* TasksPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksPageVC.swift; sourceTree = "<group>"; };
@@ -543,6 +567,46 @@
 			path = SociaLight;
 			sourceTree = "<group>";
 		};
+		EAA8F48328C9241000140E88 /* SignUp Page Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				EAA8F48428C9243F00140E88 /* SignUpPageStoryboard.storyboard */,
+			);
+			path = "SignUp Page Storyboards";
+			sourceTree = "<group>";
+		};
+		EAA8F48628C924DA00140E88 /* TabBar Page Stroyboards */ = {
+			isa = PBXGroup;
+			children = (
+				EAA8F48728C9250300140E88 /* TabBarPagesStoryboard.storyboard */,
+			);
+			path = "TabBar Page Stroyboards";
+			sourceTree = "<group>";
+		};
+		EAA8F48928C9279600140E88 /* Group Page Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				EAA8F48A28C927C600140E88 /* NewGroupPageStoryboard.storyboard */,
+				EAA8F49328C9297F00140E88 /* FindGroupPageStoryboard.storyboard */,
+				EAA8F49528C92A5C00140E88 /* GroupPageStoryboard.storyboard */,
+				EAA8F49728C92ACF00140E88 /* GroupInfoPageStoryboard.storyboard */,
+				EAA8F49928C92B0D00140E88 /* GroupMembersPageStoryboard.storyboard */,
+				EAA8F49B28C92B3C00140E88 /* AddGroupMembersPageStoryboard.storyboard */,
+				EAA8F49D28C92B7700140E88 /* GroupMediaFilesPageStoryboard.storyboard */,
+			);
+			path = "Group Page Storyboards";
+			sourceTree = "<group>";
+		};
+		EAA8F48C28C9285800140E88 /* Popup Page Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				EAA8F48D28C9287B00140E88 /* PersonalInfoPopupStoryboard.storyboard */,
+				EAA8F48F28C9288B00140E88 /* ChangePasswordPoupStoryboard.storyboard */,
+				EAA8F49128C928B600140E88 /* SendMeetingInvitationPoupStoryboard.storyboard */,
+			);
+			path = "Popup Page Storyboards";
+			sourceTree = "<group>";
+		};
 		EAC81DAA28C0FB4900561934 /* Task Page Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -575,9 +639,13 @@
 			children = (
 				EA9E6BCB27FCB93E00101170 /* Main.storyboard */,
 				EA9E6BD327FCB94100101170 /* LaunchScreen.storyboard */,
+				EAA8F48328C9241000140E88 /* SignUp Page Storyboards */,
+				EAA8F48628C924DA00140E88 /* TabBar Page Stroyboards */,
+				EAA8F48928C9279600140E88 /* Group Page Storyboards */,
 				EA64E88528C24A4300CC8964 /* Friend Page Storyboards */,
 				EA64E88328C24A1400CC8964 /* Event Page Storyboards */,
 				EA64E88628C24A7A00CC8964 /* Task Page Stroyboards */,
+				EAA8F48C28C9285800140E88 /* Popup Page Storyboards */,
 				EA64E88428C24A2900CC8964 /* Additional Storyboards */,
 			);
 			path = Storyboards;
@@ -733,27 +801,39 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAA8F48B28C927C600140E88 /* NewGroupPageStoryboard.storyboard in Resources */,
+				EAA8F49E28C92B7700140E88 /* GroupMediaFilesPageStoryboard.storyboard in Resources */,
 				EACA50FC2864EAB600149482 /* SelectedFriendCell.xib in Resources */,
+				EAA8F49828C92ACF00140E88 /* GroupInfoPageStoryboard.storyboard in Resources */,
+				EAA8F49C28C92B3C00140E88 /* AddGroupMembersPageStoryboard.storyboard in Resources */,
+				EAA8F48E28C9287B00140E88 /* PersonalInfoPopupStoryboard.storyboard in Resources */,
+				EAA8F49A28C92B0D00140E88 /* GroupMembersPageStoryboard.storyboard in Resources */,
 				EA64E88928C24AC800CC8964 /* EventPageStoryboard.storyboard in Resources */,
 				EAE7D22928A55E8A0034552F /* ErrorView.xib in Resources */,
 				EA2394C028C3C88D002AAE29 /* SearchFriendCell.xib in Resources */,
 				EA64E88228C2437B00CC8964 /* FriendsPageStoryboard.storyboard in Resources */,
 				EAE7D22428A2BB5A0034552F /* NotificationHeader.xib in Resources */,
+				EAA8F49628C92A5C00140E88 /* GroupPageStoryboard.storyboard in Resources */,
 				EADF48D128998B9E001C4692 /* GroupMemberCell.xib in Resources */,
 				EA7C699928B359670030E755 /* MediaFileCell.xib in Resources */,
 				EA64E87028C14E7700CC8964 /* DropDownCell.xib in Resources */,
+				EAA8F49028C9288B00140E88 /* ChangePasswordPoupStoryboard.storyboard in Resources */,
 				EADF48D828A00C75001C4692 /* NotificationCell.xib in Resources */,
 				EACA50F72864C89500149482 /* FriendCell.xib in Resources */,
+				EAA8F49228C928B600140E88 /* SendMeetingInvitationPoupStoryboard.storyboard in Resources */,
 				EA7C69A228B7B3450030E755 /* EventHeader.xib in Resources */,
+				EAA8F49428C9297F00140E88 /* FindGroupPageStoryboard.storyboard in Resources */,
 				EA7C698D28B17D510030E755 /* ImagePageStoryboard.storyboard in Resources */,
 				EA2394B928C3C70C002AAE29 /* FriendsSearchPageStoryboard.storyboard in Resources */,
 				EAC81DB028C134F100561934 /* TasksPageStoryboard.storyboard in Resources */,
 				EA9E6BD527FCB94100101170 /* LaunchScreen.storyboard in Resources */,
 				EA64E89528C286E100CC8964 /* TaskCell.xib in Resources */,
 				EAF6CF1E288FE210005E0AEE /* GroupInfoActionView.xib in Resources */,
+				EAA8F48528C9243F00140E88 /* SignUpPageStoryboard.storyboard in Resources */,
 				EA9E6BD227FCB94100101170 /* Assets.xcassets in Resources */,
 				EA9E6BCD27FCB93E00101170 /* Main.storyboard in Resources */,
 				EA7C69A728B7B4DC0030E755 /* EventCell.xib in Resources */,
+				EAA8F48828C9250300140E88 /* TabBarPagesStoryboard.storyboard in Resources */,
 				EAC81DAE28C134E300561934 /* NewEventPageStoryboard.storyboard in Resources */,
 				EA485DDD284CC7FA00077373 /* GroupCell.xib in Resources */,
 				EA64E89128C2858A00CC8964 /* TaskHeader.xib in Resources */,

@@ -17,8 +17,8 @@ func NewTaskManager(connectionPool *PGConnectionPool) *TaskManager {
 
 // Manager Functions
 
-func (m *TaskManager) getEventTasks(params GetEventTasksParams) (map[string][]map[string]string, error) {
-	if !isUserValid(params.UserId, m.connectionPool.db) {
+func (m *TaskManager) getEventTasks(userId string, eventKey string) (map[string][]map[string]string, error) {
+	if !isUserValid(userId, m.connectionPool.db) {
 		return nil, errors.New("can't search new groups. user not valid")
 	}
 
@@ -40,7 +40,7 @@ func (m *TaskManager) getEventTasks(params GetEventTasksParams) (map[string][]ma
 						else 2 end),
 					t.inp_date desc;`
 
-	rows, err := m.connectionPool.db.Query(getQuery, params.EventKey, params.UserId)
+	rows, err := m.connectionPool.db.Query(getQuery, eventKey, userId)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -80,8 +80,8 @@ func (m *TaskManager) getEventTasks(params GetEventTasksParams) (map[string][]ma
 	return response, nil
 }
 
-func (m *TaskManager) getUserTasks(params GetUserTasksParams) (map[string][]map[string]string, error) {
-	if !isUserValid(params.UserId, m.connectionPool.db) {
+func (m *TaskManager) getUserTasks(userId string, currentDate string) (map[string][]map[string]string, error) {
+	if !isUserValid(userId, m.connectionPool.db) {
 		return nil, errors.New("can't search new groups. user not valid")
 	}
 
@@ -95,15 +95,20 @@ func (m *TaskManager) getUserTasks(params GetUserTasksParams) (map[string][]map[
 						t.status
 				from tasks t,
 				events e
-				where user_id = $1
-				and   e.event_key = t.event_key
+				where t.user_id = $1
+				and e.event_key = t.event_key
 				and e.formatted_date >= $2
+				and (case when e.group_id is not null
+						then exists(select *
+							from group_members m
+							where m.group_id = e.group_id
+							and m.user_id = t.user_id) else false end)
 				order by e.formatted_date,
 					(case when e.event_time = '-:-' then 2 else 1 end),
 					e.event_time,
 					t.inp_date desc;`
 
-	rows, err := m.connectionPool.db.Query(getQuery, params.UserId, params.CurrentDate)
+	rows, err := m.connectionPool.db.Query(getQuery, userId, currentDate)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -143,15 +148,15 @@ func (m *TaskManager) getUserTasks(params GetUserTasksParams) (map[string][]map[
 	return response, nil
 }
 
-func (m *TaskManager) createNewTask(params CreateNewTaskParams) error {
-	if !isUserValid(params.UserId, m.connectionPool.db) || !isUserValid(params.AssigneeId, m.connectionPool.db) {
+func (m *TaskManager) createNewTask(userId string, assigneeId string, task string, eventUniqueKey string) error {
+	if !isUserValid(userId, m.connectionPool.db) || !isUserValid(assigneeId, m.connectionPool.db) {
 		return errors.New("can't search new groups. user not valid")
 	}
 
 	insertQuery := `insert into tasks(user_id, event_key, task)
 					values ($1, $2, $3);`
 
-	_, err := m.connectionPool.db.Exec(insertQuery, params.AssigneeId, params.EventUniqueKey, params.Task)
+	_, err := m.connectionPool.db.Exec(insertQuery, assigneeId, eventUniqueKey, task)
 	if err != nil {
 		return err
 	}
@@ -159,8 +164,8 @@ func (m *TaskManager) createNewTask(params CreateNewTaskParams) error {
 	return nil
 }
 
-func (m *TaskManager) doneTask(params DoneTaskTaskParams) error {
-	if !isUserValid(params.UserId, m.connectionPool.db) {
+func (m *TaskManager) doneTask(userId string, taskId string) error {
+	if !isUserValid(userId, m.connectionPool.db) {
 		return errors.New("can't search new groups. user not valid")
 	}
 
@@ -168,7 +173,7 @@ func (m *TaskManager) doneTask(params DoneTaskTaskParams) error {
 					where id = $1
 					and user_id = $2;`
 
-	_, err := m.connectionPool.db.Exec(updateQuery, params.TaskId, params.UserId)
+	_, err := m.connectionPool.db.Exec(updateQuery, taskId, userId)
 	if err != nil {
 		return err
 	}

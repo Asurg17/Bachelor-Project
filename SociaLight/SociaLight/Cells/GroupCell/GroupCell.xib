@@ -16,6 +16,13 @@
                 <rect key="frame" x="0.0" y="0.0" width="138" height="208"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
+                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wqi-Eq-MXr" customClass="RoundCornerView" customModule="SociaLight" customModuleProvider="target">
+                        <rect key="frame" x="111.5" y="16" width="10.5" height="10.5"/>
+                        <color key="backgroundColor" red="1" green="0.065431795061399733" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="Wqi-Eq-MXr" secondAttribute="height" multiplier="1:1" id="OKA-g2-tGx"/>
+                        </constraints>
+                    </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZZ0-4V-gph">
                         <rect key="frame" x="0.0" y="0.0" width="138" height="208"/>
                         <subviews>
@@ -75,17 +82,21 @@
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
+                <constraint firstItem="Wqi-Eq-MXr" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="16" id="25i-uY-DLi"/>
                 <constraint firstItem="uSW-vK-gKn" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="2Te-98-ndu"/>
                 <constraint firstAttribute="bottom" secondItem="ZZ0-4V-gph" secondAttribute="bottom" id="3k8-aH-brX"/>
                 <constraint firstAttribute="trailing" secondItem="ZZ0-4V-gph" secondAttribute="trailing" id="8sO-R8-HeH"/>
                 <constraint firstAttribute="trailing" secondItem="uSW-vK-gKn" secondAttribute="trailing" id="EAO-l2-Fex"/>
                 <constraint firstItem="ZZ0-4V-gph" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="PLB-T9-y2H"/>
+                <constraint firstAttribute="trailing" secondItem="Wqi-Eq-MXr" secondAttribute="trailing" constant="16" id="QhB-ig-0aq"/>
+                <constraint firstItem="Wqi-Eq-MXr" firstAttribute="width" secondItem="gTV-IL-0wX" secondAttribute="width" multiplier="0.075" id="axS-aL-oSq"/>
                 <constraint firstItem="ZZ0-4V-gph" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="bw3-xX-eIc"/>
                 <constraint firstItem="uSW-vK-gKn" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="bzM-V7-G5Q"/>
                 <constraint firstAttribute="bottom" secondItem="uSW-vK-gKn" secondAttribute="bottom" id="raM-Tp-NcA"/>
             </constraints>
             <size key="customSize" width="138" height="208"/>
             <connections>
+                <outlet property="bagdeView" destination="Wqi-Eq-MXr" id="zuz-VN-edM"/>
                 <outlet property="groupDescriptionLabel" destination="C3w-Ga-9oc" id="8RN-bH-byx"/>
                 <outlet property="groupImage" destination="da7-eP-LpN" id="yQD-0A-RJP"/>
                 <outlet property="groupLabel" destination="cXk-mz-n3k" id="WdT-Uu-bFG"/>

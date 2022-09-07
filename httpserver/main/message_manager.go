@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"errors"
+	"strconv"
 
 	"github.com/gorilla/websocket"
 )
@@ -18,6 +19,45 @@ func NewMessageManager(connectionPool *PGConnectionPool) *MessageManager {
 }
 
 // Manager Functions
+
+func (m *MessageManager) updateGroupMessagesLastFetchTime(userId string, groupId string, maxMessageId int) error {
+	var alreadyExists bool
+
+	getQuery := `select true
+				from last_group_messages_fetch_time t
+				where t.user_id = $1
+				and t.group_id = $2;`
+
+	if err := m.connectionPool.db.QueryRow(getQuery, userId, groupId).Scan(&alreadyExists); err != nil {
+		if err == sql.ErrNoRows {
+			alreadyExists = false
+		} else {
+			return err
+		}
+	}
+
+	if alreadyExists {
+		updateQuery := `update last_group_messages_fetch_time t
+						set last_message_id = $1
+						where t.user_id = $2
+						and t.group_id = $3;`
+
+		_, err := m.connectionPool.db.Exec(updateQuery, maxMessageId, userId, groupId)
+		if err != nil {
+			return err
+		}
+	} else {
+		insertQuery := `insert into last_group_messages_fetch_time(user_id, group_id, last_message_id)
+						values($1, $2, $3);`
+
+		_, err := m.connectionPool.db.Exec(insertQuery, userId, groupId, maxMessageId)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
 
 func (m *MessageManager) notifyGroupMembers(messageId string, groupId string) error {
 	getQuery := `select m.user_id
@@ -43,6 +83,16 @@ func (m *MessageManager) notifyGroupMembers(messageId string, groupId string) er
 				msgConnectionsMutex.Unlock()
 				return err
 			}
+		} else {
+			mainConnectionsMutex.Lock()
+			if mainConn, found := mainConnections[userId]; found {
+				if err := mainConn.WriteMessage(websocket.TextMessage, []byte(groupId)); err != nil {
+					msgConnectionsMutex.Unlock()
+					mainConnectionsMutex.Unlock()
+					return err
+				}
+			}
+			mainConnectionsMutex.Unlock()
 		}
 		msgConnectionsMutex.Unlock()
 	}
@@ -85,6 +135,8 @@ func (m *MessageManager) getAllGroupMessages(userId string, groupId string) (map
 		return nil, errors.New("can't get group messages. user not valid")
 	}
 
+	maxMessageId := -1
+
 	getQuery := `select m.* 
 				from (select m.id,
 						m.sender_id,
@@ -111,7 +163,7 @@ func (m *MessageManager) getAllGroupMessages(userId string, groupId string) (map
 	messages := make([]map[string]string, 0)
 
 	for rows.Next() {
-		var messageUniqueKey string
+		var messageUniqueKey int
 		var senderId string
 		var senderName string
 		var messageId string
@@ -124,8 +176,9 @@ func (m *MessageManager) getAllGroupMessages(userId string, groupId string) (map
 		if err != nil {
 			return nil, err
 		}
+		if messageUniqueKey > maxMessageId { maxMessageId = messageUniqueKey }
 		message := make(map[string]string)
-		message["messageUniqueKey"] = messageUniqueKey
+		message["messageUniqueKey"] = strconv.Itoa(messageUniqueKey)
 		message["senderId"] = senderId
 		message["senderName"] = senderName
 		message["messageId"] = messageId
@@ -138,6 +191,11 @@ func (m *MessageManager) getAllGroupMessages(userId string, groupId string) (map
 		messages = append(messages, message)
 	}
 
+	err = m.updateGroupMessagesLastFetchTime(userId, groupId, maxMessageId)
+	if err != nil {
+		return nil, err
+	}
+
 	response := make(map[string][]map[string]string)
 	response["messages"] = messages
 
@@ -148,6 +206,8 @@ func (m *MessageManager) getGroupNewMessages(userId string, groupId string, last
 	if !isUserValid(userId, m.connectionPool.db) {
 		return nil, errors.New("can't get group messages. user not valid")
 	}
+
+	maxMessageId := -1
 
 	getQuery := `select m.id,
 						m.sender_id,
@@ -174,7 +234,7 @@ func (m *MessageManager) getGroupNewMessages(userId string, groupId string, last
 	messages := make([]map[string]string, 0)
 
 	for rows.Next() {
-		var messageUniqueKey string
+		var messageUniqueKey int
 		var senderId string
 		var senderName string
 		var messageId string
@@ -187,8 +247,9 @@ func (m *MessageManager) getGroupNewMessages(userId string, groupId string, last
 		if err != nil {
 			return nil, err
 		}
+		if messageUniqueKey > maxMessageId { maxMessageId = messageUniqueKey }
 		message := make(map[string]string)
-		message["messageUniqueKey"] = messageUniqueKey
+		message["messageUniqueKey"] = strconv.Itoa(messageUniqueKey)
 		message["senderId"] = senderId
 		message["senderName"] = senderName
 		message["messageId"] = messageId
@@ -199,6 +260,11 @@ func (m *MessageManager) getGroupNewMessages(userId string, groupId string, last
 		message["duration"] = duration
 
 		messages = append(messages, message)
+	}
+
+	err = m.updateGroupMessagesLastFetchTime(userId, groupId, maxMessageId)
+	if err != nil {
+		return nil, err
 	}
 
 	response := make(map[string][]map[string]string)

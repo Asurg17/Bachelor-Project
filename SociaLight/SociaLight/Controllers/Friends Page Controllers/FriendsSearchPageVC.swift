@@ -123,6 +123,10 @@ class FriendsSearchPageVC: UIViewController {
         loader.show(in: self.view)
     }
     
+    @IBAction func back() {
+        navigationController?.popViewController(animated: true)
+    }
+    
     @objc private func didPullToRefresh(_ sender: Any) {
         searchFriends()
     }

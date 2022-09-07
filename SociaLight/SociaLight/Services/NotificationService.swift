@@ -20,17 +20,66 @@ class NotificationService {
         components.port = ServerStruct.serverPort
     }
     
-    func getUserNotifications(userId: String, completion: @escaping (Result<Notifications, Error>) -> ()) {
+    func checkForNewNotifications(parameters: [String: String], completion: @escaping (Result<CheckForNewNotificationsResponse, Error>) -> ()) {
+        
+        components.path = "/checkForNewNotifications"
+        
+        if let url = components.url {
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+            } catch let error {
+                completion(.failure(error))
+            }
+            
+            let task = URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let httpUrlResponse = response as? HTTPURLResponse {
+                        if httpUrlResponse.statusCode == 200 {
+                            if let data = data {
+                                let decoder = JSONDecoder()
+                                do {
+                                    let resp = try decoder.decode(CheckForNewNotificationsResponse.self, from: data)
+                                    completion(.success(resp))
+                                } catch {
+                                    completion(.failure(error))
+                                }
+                            } else {
+                                completion(.failure(ServiceError.noData))
+                            }
+                        } else {
+                            completion(.failure(NSError(domain: "",
+                                                        code: httpUrlResponse.statusCode,
+                                                        userInfo: [NSLocalizedDescriptionKey: httpUrlResponse.value(forHTTPHeaderField: "Error") ?? Constants.unspecifiedErrorText]
+                                                       )))
+                        }
+                    } else {
+                       completion(.failure(NSError(domain: "",
+                                                   code: 400,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Bad response!"]
+                                                  )))
+                    }
+                })
+            task.resume()
+        } else {
+            completion(.failure(ServiceError.invalidParameters))
+        }
+    }
+    
+    func getUserNotifications(parameters: [String: String], completion: @escaping (Result<Notifications, Error>) -> ()) {
         
         components.path = "/getUserNotifications"
         
         if let url = components.url {
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
-            
-            let parameters = [
-                "userId": userId
-            ]
             
             do {
                 request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)

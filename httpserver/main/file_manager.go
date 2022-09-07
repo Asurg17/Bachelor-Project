@@ -17,21 +17,21 @@ func NewFileManager(connectionPool *PGConnectionPool) *FileManager {
 // Manager Functions
 
 func (m *FileManager) uploadImage(imageKey string, imageBytes []byte) error {
-	var isAlreadyExists bool
+	var alreadyExists bool
 
 	getQuery := `select true
 				from media_files
 				where file_key = $1;`
 
-	if err := m.connectionPool.db.QueryRow(getQuery, imageKey).Scan(&isAlreadyExists); err != nil {
+	if err := m.connectionPool.db.QueryRow(getQuery, imageKey).Scan(&alreadyExists); err != nil {
 		if err == sql.ErrNoRows {
-			isAlreadyExists = false
+			alreadyExists = false
 		} else {
 			return err
 		}
 	}
 
-	if isAlreadyExists {
+	if alreadyExists {
 		updateQuery := `update media_files
 						set file = $1
 						where file_key = $2;`

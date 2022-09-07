@@ -16,10 +16,11 @@ class GroupCellModel {
     var groupCapacity: String
     var groupMembersNum: String
     var userRole: String
+    var newMessagesCount: String
     
     weak var delegate: GroupCellDelegate?
     
-    init(groupId: String, groupTitle: String, groupDescription: String, groupImageURL: String, groupCapacity: String, groupMembersNum: String, userRole: String, delegate: GroupCellDelegate?) {
+    init(groupId: String, groupTitle: String, groupDescription: String, groupImageURL: String, groupCapacity: String, groupMembersNum: String, userRole: String, newMessagesCount: String, delegate: GroupCellDelegate?) {
         self.groupId = groupId
         self.groupTitle = groupTitle
         self.groupDescription = groupDescription
@@ -27,15 +28,16 @@ class GroupCellModel {
         self.groupCapacity = groupCapacity
         self.groupMembersNum = groupMembersNum
         self.userRole = userRole
+        self.newMessagesCount = newMessagesCount
         self.delegate = delegate
     }
 }
 
 class GroupCell: UICollectionViewCell {
     
+    @IBOutlet var bagdeView: UIView!
     @IBOutlet var outerView: UIView!
     @IBOutlet var imageOuterView: UIView!
-    
     @IBOutlet var groupImage: UIImageView!
     @IBOutlet var groupLabel: UILabel!
     @IBOutlet var groupDescriptionLabel: UILabel!
@@ -67,6 +69,7 @@ class GroupCell: UICollectionViewCell {
         
         groupLabel.text = model.groupTitle
         groupDescriptionLabel.text = model.groupDescription
+        bagdeView.isHidden = model.newMessagesCount == "0"
     }
     
     @IBAction func navigateToMainPage() {

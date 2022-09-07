@@ -174,31 +174,31 @@ extension UIViewController {
     // Navigation
     
     func navigateToSignUpPage() {
-        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyBoard: UIStoryboard = UIStoryboard(name: "SignUpPageStoryboard", bundle: nil)
         let signUpPageController = storyBoard.instantiateViewController(withIdentifier: "SignUpPageVC") as! SignUpPageVC
         self.navigationController?.pushViewController(signUpPageController, animated: true)
     }
     
     func navigateToMainPage() {
-        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyBoard: UIStoryboard = UIStoryboard(name: "TabBarPagesStoryboard", bundle: nil)
         let tabBarController = storyBoard.instantiateViewController(withIdentifier: "MainPage") as! UITabBarController
         self.navigationController?.pushViewController(tabBarController, animated: true)
     }
     
     func navigateToFindGroupPage() {
-        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyBoard: UIStoryboard = UIStoryboard(name: "FindGroupPageStoryboard", bundle: nil)
         let findGroupController = storyBoard.instantiateViewController(withIdentifier: "FindGroupPageVC") as! FindGroupPageVC
         self.navigationController?.pushViewController(findGroupController, animated: true)
     }
     
     func navigateToNewGroupPage() {
-        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyBoard: UIStoryboard = UIStoryboard(name: "NewGroupPageStoryboard", bundle: nil)
         let newGroupControlles = storyBoard.instantiateViewController(withIdentifier: "NewGroupFirstPageVC") as! NewGroupFirstPageVC
         self.navigationController?.pushViewController(newGroupControlles, animated: true)
     }
     
     func navigateToNewGroupSecondVC(group: Group) {
-        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyBoard: UIStoryboard = UIStoryboard(name: "NewGroupPageStoryboard", bundle: nil)
         let newGroupSecondPageController = storyBoard.instantiateViewController(withIdentifier: "NewGroupSecondPageVC") as! NewGroupSecondPageVC
         newGroupSecondPageController.group = group
         self.navigationController?.pushViewController(newGroupSecondPageController, animated: true)
@@ -207,13 +207,13 @@ extension UIViewController {
     func navigateToGroupPage(groupId: String, isUserGroupMember: Bool) {
         UserDefaults.standard.set(groupId, forKey: Constants.groupIdKey)
         UserDefaults.standard.set(isUserGroupMember, forKey: "isUserGroupMember")
-        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyBoard: UIStoryboard = UIStoryboard(name: "GroupPageStoryboard", bundle: nil)
         let groupPageController = storyBoard.instantiateViewController(withIdentifier: "GroupPageVC") as! GroupPageVC
         self.navigationController?.pushViewController(groupPageController, animated: true)
     }
     
     func navigateToGrouInfoPage(vc: GroupPageVC) {
-        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyBoard: UIStoryboard = UIStoryboard(name: "GroupInfoPageStoryboard", bundle: nil)
         let groupInfoPagePageController = storyBoard.instantiateViewController(withIdentifier: "GroupInfoPageVC") as! GroupInfoPageVC
         groupInfoPagePageController.delegate = vc
         groupInfoPagePageController.title = ""
@@ -221,21 +221,21 @@ extension UIViewController {
     }
     
     func navigateToGroupMembersPage() {
-        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyBoard: UIStoryboard = UIStoryboard(name: "GroupMembersPageStoryboard", bundle: nil)
         let groupMembersPageController = storyBoard.instantiateViewController(withIdentifier: "GroupMembersPageVC") as! GroupMembersPageVC
         groupMembersPageController.title = "Group Members"
         self.navigationController?.pushViewController(groupMembersPageController, animated: true)
     }
     
     func navigateToGroupMediaFilesPage() {
-        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyBoard: UIStoryboard = UIStoryboard(name: "GroupMediaFilesPageStoryboard", bundle: nil)
         let groupMediaFilesPageController = storyBoard.instantiateViewController(withIdentifier: "GroupMediaFilesPageVC") as! GroupMediaFilesPageVC
         groupMediaFilesPageController.title = "Group Media Files"
         self.navigationController?.pushViewController(groupMediaFilesPageController, animated: true)
     }
     
     func navigateToAddGroupMembersPage() {
-        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyBoard: UIStoryboard = UIStoryboard(name: "AddGroupMembersPageStoryboard", bundle: nil)
         let addGroupMembersPageController = storyBoard.instantiateViewController(withIdentifier: "AddGroupMembersPageVC") as! AddGroupMembersPageVC
         addGroupMembersPageController.title = "Add Group Members"
         self.navigationController?.pushViewController(addGroupMembersPageController, animated: true)
@@ -249,7 +249,7 @@ extension UIViewController {
     }
     
     func navigateToUserProfilePage(userId: String) {
-        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyBoard: UIStoryboard = UIStoryboard(name: "TabBarPagesStoryboard", bundle: nil)
         let userProfilePageController = storyBoard.instantiateViewController(withIdentifier: "ProfilePageVC") as! ProfilePageVC
         userProfilePageController.currUserId = userId
         userProfilePageController.hidesBottomBarWhenPushed = true
@@ -273,7 +273,7 @@ extension UIViewController {
     }
     
     func navigateToSendMeetingInvitationPopupPage() {
-        let storyboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyboard: UIStoryboard = UIStoryboard(name: "SendMeetingInvitationPoupStoryboard", bundle: nil)
         let sendMeetingInvitatioPopupPageController = storyboard.instantiateViewController(withIdentifier: "SendMeetingInvitationPopupVC") as! SendMeetingInvitationPopupVC
         sendMeetingInvitatioPopupPageController.providesPresentationContextTransitionStyle = true
         sendMeetingInvitatioPopupPageController.definesPresentationContext = true
@@ -283,7 +283,7 @@ extension UIViewController {
     }
     
     func navigateToPersonalInfoPopupPage(vc: ProfilePageVC) {
-        let storyboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyboard: UIStoryboard = UIStoryboard(name: "PersonalInfoPopupStoryboard", bundle: nil)
         let personalInfoPopupPageController = storyboard.instantiateViewController(withIdentifier: "PersonalInfoPopupVC") as! PersonalInfoPopupVC
         personalInfoPopupPageController.providesPresentationContextTransitionStyle = true
         personalInfoPopupPageController.definesPresentationContext = true
@@ -294,7 +294,7 @@ extension UIViewController {
     }
 
     func navigateToChangePasswordPopupPage() {
-        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyBoard: UIStoryboard = UIStoryboard(name: "ChangePasswordPoupStoryboard", bundle: nil)
         let changePasswordPopupPageController = storyBoard.instantiateViewController(withIdentifier: "ChangePasswordPopupVC") as! ChangePasswordPopupVC
         changePasswordPopupPageController.providesPresentationContextTransitionStyle = true
         changePasswordPopupPageController.definesPresentationContext = true
@@ -320,7 +320,7 @@ extension UIViewController {
     }
     
     func navigateToEventsPage() {
-        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyBoard: UIStoryboard = UIStoryboard(name: "TabBarPagesStoryboard", bundle: nil)
         let eventsPageController = storyBoard.instantiateViewController(withIdentifier: "EventsPageVC") as! EventsPageVC
         eventsPageController.title = "Event"
         eventsPageController.groupId = getGroupId()

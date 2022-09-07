@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Title-->
+        <scene sceneID="wjF-R7-DBW">
+            <objects>
+                <viewController storyboardIdentifier="GroupInfoPageVC" id="zvs-uq-UQP" customClass="GroupInfoPageVC" customModule="SociaLight" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Qd4-bG-Mw9">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="great-whale" translatesAutoresizingMaskIntoConstraints="NO" id="A2W-MW-9rZ">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="GroupIcon" translatesAutoresizingMaskIntoConstraints="NO" id="gnZ-QD-rbq" customClass="RoundUIImageView" customModule="SociaLight" customModuleProvider="target">
+                                <rect key="frame" x="134.5" y="44" width="145" height="145"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="gnZ-QD-rbq" secondAttribute="height" multiplier="1:1" id="TrG-2e-EsB"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pfj-8S-cnw">
+                                <rect key="frame" x="20.5" y="205" width="373" height="0.0"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Heu-gQ-Zw4">
+                                <rect key="frame" x="31" y="213" width="352" height="0.0"/>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="Occ-Lt-cgl">
+                                <rect key="frame" x="32" y="245" width="350" height="250"/>
+                                <subviews>
+                                    <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="BVT-89-izf" customClass="GroupInfoActionView" customModule="SociaLight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="350" height="50"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="AMv-pd-31V"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="iconImage" value="person.3.fill" catalog="system"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="labelText" value="See group members"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="RaE-TO-d8X" customClass="GroupInfoActionView" customModule="SociaLight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="50" width="350" height="50"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="iconImage" value="photo" catalog="system"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="labelText" value="View media &amp; files"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="6KK-FL-JbY" customClass="GroupInfoActionView" customModule="SociaLight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="100" width="350" height="50"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="iconImage" value="calendar" catalog="system"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="labelText" value="View Group Events"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="50D-WW-pct" customClass="GroupInfoActionView" customModule="SociaLight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="150" width="350" height="50"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="iconImage" value="calendar.badge.plus" catalog="system"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="labelText" value="Create New Event"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="Qw9-HJ-iZR" customClass="GroupInfoActionView" customModule="SociaLight" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="200" width="350" height="50"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="iconImage" value="rectangle.portrait.and.arrow.right" catalog="system"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="labelText" value="Leave Group"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="isLeftArrowHidden" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="colour">
+                                                <color key="value" systemColor="systemPinkColor"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                </subviews>
+                            </stackView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="6bH-Hf-DdL">
+                                <rect key="frame" x="188.5" y="429.5" width="37" height="37"/>
+                                <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </activityIndicatorView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="H8I-dh-Veu"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="H8I-dh-Veu" firstAttribute="trailing" secondItem="Occ-Lt-cgl" secondAttribute="trailing" constant="32" id="0xx-dI-18w"/>
+                            <constraint firstItem="6bH-Hf-DdL" firstAttribute="centerX" secondItem="Qd4-bG-Mw9" secondAttribute="centerX" id="Ap7-P9-41c"/>
+                            <constraint firstItem="Occ-Lt-cgl" firstAttribute="leading" secondItem="H8I-dh-Veu" secondAttribute="leading" constant="32" id="GpW-dA-S0e"/>
+                            <constraint firstItem="Heu-gQ-Zw4" firstAttribute="width" secondItem="Qd4-bG-Mw9" secondAttribute="width" multiplier="0.85" id="LMd-Uk-Mbm"/>
+                            <constraint firstItem="Pfj-8S-cnw" firstAttribute="width" secondItem="Qd4-bG-Mw9" secondAttribute="width" multiplier="0.9" id="Udg-Z5-eBL"/>
+                            <constraint firstItem="Pfj-8S-cnw" firstAttribute="centerX" secondItem="Qd4-bG-Mw9" secondAttribute="centerX" id="aDh-8h-AeX"/>
+                            <constraint firstItem="6bH-Hf-DdL" firstAttribute="centerY" secondItem="Qd4-bG-Mw9" secondAttribute="centerY" id="dTN-M6-sXH"/>
+                            <constraint firstAttribute="trailing" secondItem="A2W-MW-9rZ" secondAttribute="trailing" id="dV3-QD-Y4b"/>
+                            <constraint firstItem="gnZ-QD-rbq" firstAttribute="top" secondItem="H8I-dh-Veu" secondAttribute="top" id="eM6-wP-oMM"/>
+                            <constraint firstItem="Heu-gQ-Zw4" firstAttribute="top" secondItem="Pfj-8S-cnw" secondAttribute="bottom" constant="8" id="f42-TO-gIh"/>
+                            <constraint firstAttribute="bottom" secondItem="A2W-MW-9rZ" secondAttribute="bottom" id="kby-5k-yfs"/>
+                            <constraint firstItem="gnZ-QD-rbq" firstAttribute="width" secondItem="Qd4-bG-Mw9" secondAttribute="width" multiplier="0.35" id="mn1-XS-MgA"/>
+                            <constraint firstItem="Occ-Lt-cgl" firstAttribute="centerX" secondItem="Qd4-bG-Mw9" secondAttribute="centerX" id="plt-jg-yzF"/>
+                            <constraint firstItem="Heu-gQ-Zw4" firstAttribute="centerX" secondItem="Qd4-bG-Mw9" secondAttribute="centerX" id="s0e-7F-Scz"/>
+                            <constraint firstItem="gnZ-QD-rbq" firstAttribute="centerX" secondItem="Qd4-bG-Mw9" secondAttribute="centerX" id="tUl-ec-EeH"/>
+                            <constraint firstItem="A2W-MW-9rZ" firstAttribute="top" secondItem="Qd4-bG-Mw9" secondAttribute="top" id="u4O-5l-B2q"/>
+                            <constraint firstItem="A2W-MW-9rZ" firstAttribute="leading" secondItem="Qd4-bG-Mw9" secondAttribute="leading" id="wwb-RI-4th"/>
+                            <constraint firstItem="Occ-Lt-cgl" firstAttribute="top" secondItem="Heu-gQ-Zw4" secondAttribute="bottom" constant="32" id="xkp-le-RoA"/>
+                            <constraint firstItem="Pfj-8S-cnw" firstAttribute="top" secondItem="gnZ-QD-rbq" secondAttribute="bottom" constant="16" id="yWp-Bb-IkE"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Title" id="5KY-5e-6G3" userLabel="Navigation Item">
+                        <barButtonItem key="leftBarButtonItem" image="chevron.backward" catalog="system" id="Vhf-uI-m6E">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="back" destination="zvs-uq-UQP" id="A14-lg-pqs"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="actionStackView" destination="Occ-Lt-cgl" id="MCR-k0-K4e"/>
+                        <outlet property="createNewEventActionView" destination="50D-WW-pct" id="02W-FH-jFe"/>
+                        <outlet property="groupDescriptionLabel" destination="Heu-gQ-Zw4" id="XG9-HI-wLG"/>
+                        <outlet property="groupImageView" destination="gnZ-QD-rbq" id="zd6-0O-bBN"/>
+                        <outlet property="groupMembersActionView" destination="BVT-89-izf" id="n19-V6-H3M"/>
+                        <outlet property="groupNameLabel" destination="Pfj-8S-cnw" id="zYk-jw-R8I"/>
+                        <outlet property="leaveGroupActionView" destination="Qw9-HJ-iZR" id="sly-jP-ReH"/>
+                        <outlet property="loader" destination="6bH-Hf-DdL" id="Dz8-JE-XkW"/>
+                        <outlet property="seeMediaActionView" destination="RaE-TO-d8X" id="tvT-VW-hgx"/>
+                        <outlet property="viewGroupEventsActionView" destination="6KK-FL-JbY" id="4j7-0h-Xci"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="uDS-DB-ZZM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="7049" y="43"/>
+        </scene>
+    </scenes>
+    <designables>
+        <designable name="gnZ-QD-rbq">
+            <size key="intrinsicContentSize" width="100" height="100"/>
+        </designable>
+    </designables>
+    <resources>
+        <image name="GroupIcon" width="100" height="100"/>
+        <image name="calendar" catalog="system" width="128" height="106"/>
+        <image name="calendar.badge.plus" catalog="system" width="128" height="108"/>
+        <image name="chevron.backward" catalog="system" width="96" height="128"/>
+        <image name="great-whale" width="600" height="500"/>
+        <image name="person.3.fill" catalog="system" width="128" height="61"/>
+        <image name="photo" catalog="system" width="128" height="93"/>
+        <image name="rectangle.portrait.and.arrow.right" catalog="system" width="128" height="108"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemPinkColor">
+            <color red="1" green="0.17647058823529413" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

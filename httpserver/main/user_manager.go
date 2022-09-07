@@ -74,6 +74,13 @@ func (m *UserManager) getUserGroups(userId string) (map[string][]map[string]stri
 					    from group_members 
 						where group_id = m.group_id) members_count
 					   ,m.user_role
+					   ,(select count(*)
+						from messages ms
+						where ms.group_id = s.group_id
+						and ms.id > coalesce((select coalesce(last_message_id, -1)
+											from last_group_messages_fetch_time t
+											where t.user_id = $1
+											and t.group_id = ms.group_id), -1)) new_messages_count
 				from groups s
 					,group_members m
 				where s.group_id = m.group_id
@@ -96,7 +103,8 @@ func (m *UserManager) getUserGroups(userId string) (map[string][]map[string]stri
 		var groupCapacity string
 		var groupMembersNum string
 		var userRole string
-		err = rows.Scan(&groupId, &groupTitle, &groupDescription, &groupCapacity, &groupMembersNum, &userRole)
+		var newMessagesCount string
+		err = rows.Scan(&groupId, &groupTitle, &groupDescription, &groupCapacity, &groupMembersNum, &userRole, &newMessagesCount)
 		if err != nil {
 			return nil, err
 		}
@@ -107,6 +115,7 @@ func (m *UserManager) getUserGroups(userId string) (map[string][]map[string]stri
 		group["groupCapacity"] = groupCapacity
 		group["groupMembersNum"] = groupMembersNum
 		group["userRole"] = userRole
+		group["newMessagesCount"] = newMessagesCount
 
 		groups = append(groups, group)
 	}
@@ -163,8 +172,8 @@ func (m *UserManager) getUserFriends(userId string) (map[string][]map[string]str
 	return response, nil
 }
 
-func (m *UserManager) searchNewFriends(params SearchNewFriendsParams) (map[string][]map[string]string, error) {
-	if !isUserValid(params.UserId, m.connectionPool.db) {
+func (m *UserManager) searchNewFriends(userId string, firstName string, lastName string) (map[string][]map[string]string, error) {
+	if !isUserValid(userId, m.connectionPool.db) {
 		return nil, errors.New("can't get users. user not valid")
 	}
 
@@ -181,12 +190,13 @@ func (m *UserManager) searchNewFriends(params SearchNewFriendsParams) (map[strin
 								where f.user_id = $1
 								and f.friend_id = s.user_id)
 			 	and not exists (select *
-					   			from friendship_requests r
+					   			from notifications r
 								where ((r.from_user_id = $1 and r.to_user_id = s.user_id)
 								   or (r.from_user_id = s.user_id and r.to_user_id = $1))
+								and r.type = 'friendship_request'
 								and r.status = 'N');`
 
-	rows, err := m.connectionPool.db.Query(getQuery, params.UserId, params.FirstName, params.LastName)
+	rows, err := m.connectionPool.db.Query(getQuery, userId, firstName, lastName)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -218,15 +228,15 @@ func (m *UserManager) searchNewFriends(params SearchNewFriendsParams) (map[strin
 	return response, nil
 }
 
-func (m *UserManager) sendFriendshipRequestToUser(params SendFriendshipRequestToUserParams) error {
-	if !isUserValid(params.FromUserId, m.connectionPool.db) || !isUserValid(params.ToUSerId, m.connectionPool.db) {
+func (m *UserManager) sendFriendshipRequestToUser(fromUserId string, toUSerId string) error {
+	if !isUserValid(fromUserId, m.connectionPool.db) || !isUserValid(toUSerId, m.connectionPool.db) {
 		return errors.New("can't send friendship request. user not valid")
 	}
 
-	insertQuery := `insert into friendship_requests(from_user_id, to_user_id) 
-					values ($1, $2);`
+	insertQuery := `insert into notifications(from_user_id, to_user_id, type) 
+					values ($1, $2, 'friendship_request');`
 
-	_, err := m.connectionPool.db.Exec(insertQuery, params.FromUserId, params.ToUSerId)
+	_, err := m.connectionPool.db.Exec(insertQuery, fromUserId, toUSerId)
 	if err != nil {
 		return err
 	}
@@ -252,10 +262,11 @@ func (m *UserManager) getUserFriendsForGroup(userId string, groupId string) (map
 								where m.group_id = $2
 								and m.user_id = f.friend_id)
 				and not exists (select *
-							    from invitations i
+							    from notifications i
 								where i.group_id = $2
 								and i.to_user_id = f.friend_id
-								and i.status = 'N');`
+								and i.status = 'N'
+								and i.type = 'group_invitation');`
 
 	rows, err := m.connectionPool.db.Query(getQuery, userId, groupId)
 	if err != nil && err != sql.ErrNoRows {
@@ -310,17 +321,19 @@ func (m *UserManager) addUserToGroup(userId string, groupId string, userRole str
 				--
 				insert into notifications(from_user_id, to_user_id, notification_text, group_id)
 				select s.to_user_id, s.from_user_id, 'Accepted your invitation to ', s.group_id
-				from invitations s
+				from notifications s
 				where s.group_id = groupId
 				and s.to_user_id = userId
 				and s.status = 'N'
+				and s.type = 'group_invitation'
 				fetch first 1 row only;
 				--
-				update invitations
+				update notifications
 			 	set status = 'A'
 				where group_id = groupId
 				and to_user_id = userId
-				and status = 'N';
+				and status = 'N'
+				and type = 'group_invitation';
 				--
 				commit;
 				--

@@ -47,8 +47,9 @@ func main() {
 	messageManager := NewMessageManager(connectionPool)
 	eventManager := NewEventManager(connectionPool)
 	taskManager := NewTaskManager(connectionPool)
+	sharedManager := NewSharedManager(connectionPool)
 
 	// Server
-	server := NewServer(signInUpManager, userManager, groupManager, fileManager, notificationManager, messageManager, eventManager, taskManager)
+	server := NewServer(signInUpManager, userManager, groupManager, fileManager, notificationManager, messageManager, eventManager, taskManager, sharedManager)
 	server.Start()
 }
