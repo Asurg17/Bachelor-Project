@@ -171,13 +171,24 @@ class NotificationsPageVC: UIViewController {
                     notifications: [notificationCellModel]
                 )
                 
-                tableData.append(section)
-                
-                if !shouldReload {
-                    tableView.beginUpdates()
-                    tableView.insertSections(IndexSet(integer: tableData.count-1), with: .fade)
-                    tableView.endUpdates()
+                if areNewNotifications {
+                    tableData.insert(section, at: 0)
+                    
+                    if !shouldReload {
+                        tableView.beginUpdates()
+                        tableView.insertSections(IndexSet(integer: 0), with: .fade)
+                        tableView.endUpdates()
+                    }
+                } else {
+                    tableData.append(section)
+                    
+                    if !shouldReload {
+                        tableView.beginUpdates()
+                        tableView.insertSections(IndexSet(integer: tableData.count-1), with: .fade)
+                        tableView.endUpdates()
+                    }
                 }
+                
             }
             
             if shouldReload {
@@ -254,6 +265,7 @@ extension NotificationsPageVC: NotificationCellDelegate {
                 switch result {
                 case .success(_):
                     self.removeFromTable(elem: notification.model)
+                    notification.enableButtons()
                 case .failure(let error):
                     self.showWarningAlert(warningText: error.localizedDescription.description)
                     notification.enableButtons()
@@ -273,6 +285,7 @@ extension NotificationsPageVC: NotificationCellDelegate {
                 switch result {
                 case .success(_):
                     self.removeFromTable(elem: notification.model)
+                    notification.enableButtons()
                 case .failure(let error):
                     self.showWarningAlert(warningText: error.localizedDescription.description)
                     notification.enableButtons()
@@ -292,6 +305,7 @@ extension NotificationsPageVC: NotificationCellDelegate {
                 switch result {
                 case .success(_):
                     self.removeFromTable(elem: notification.model)
+                    notification.enableButtons()
                 case .failure(let error):
                     self.showWarningAlert(warningText: error.localizedDescription.description)
                     notification.enableButtons()
@@ -311,6 +325,7 @@ extension NotificationsPageVC: NotificationCellDelegate {
                 switch result {
                 case .success(_):
                     self.removeFromTable(elem: notification.model)
+                    notification.enableButtons()
                 case .failure(let error):
                     self.showWarningAlert(warningText: error.localizedDescription.description)
                     notification.enableButtons()

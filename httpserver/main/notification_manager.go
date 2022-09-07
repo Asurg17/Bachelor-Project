@@ -345,13 +345,6 @@ func (m *NotificationManager) sendFriendshipRequest(fromUserId string, toUserId 
 								where s.user_id = $1
 								and s.group_id = $3);`
 
-	// insertQuery := `insert into friendship_requests(from_user_id, to_user_id) 
-	// 				select CAST($1 AS VARCHAR), CAST($2 AS VARCHAR)
-	// 				where exists (select s.user_id
-	// 							from group_members s
-	// 							where s.user_id = $1
-	// 							and s.group_id = $3);`
-
 	_, err := m.connectionPool.db.Exec(insertQuery, fromUserId, toUserId, groupId)
 	if err != nil {
 		return err
@@ -461,17 +454,6 @@ func (m *NotificationManager) sendGroupInvitations(userId string, groupId string
 								where s.user_id = $1
 								and s.friend_id = $2);`
 
-		// query := `insert into invitations ("from_user_id", "to_user_id", "group_id") 
-		// 			select  CAST($1 AS VARCHAR), CAST($2 AS VARCHAR), CAST($3 AS VARCHAR)
-		// 			where not exists (select *
-		// 							from invitations i
-		// 							where i.to_user_id = $2
-		// 							and i.group_id = $3
-		// 							and i.status = 'N')
-		// 			and exists (select *
-		// 						from friends s
-		// 						where s.user_id = $1
-		// 						and s.friend_id = $2);`
 		_, err := m.connectionPool.db.Exec(query, userId, groupMemberId, groupId)
 		if err != nil { //invitations_uk means someone already has sent invitations to user
 			return err
