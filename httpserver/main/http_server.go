@@ -311,8 +311,6 @@ func randomString(length int) string {
 	return fmt.Sprintf("%x", b)[:length]
 }
 
-//  ################################################################################################################
-
 // SignIn-SignUp
 
 func (s *Server) registerNewUser(w http.ResponseWriter, req *http.Request) {
@@ -1355,10 +1353,6 @@ func (s *Server) mainWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	mainConnections[userId] = ws
 	mainConnectionsMutex.Unlock()
 
-	fmt.Println(len(mainConnections))
-	fmt.Println(mainConnections)
-	log.Println("Client Successfully Connected...")
-
 	mainWsEndpointReader(ws, userId)
 }
 
@@ -1366,7 +1360,6 @@ func mainWsEndpointReader(conn *websocket.Conn, userId string) {
 	for {
 		_, _, err := conn.ReadMessage()
 		if err != nil {
-			print(err)
 			mainConnectionsMutex.Lock()
 			delete(mainConnections, userId)
 			mainConnectionsMutex.Unlock()
@@ -1390,10 +1383,6 @@ func (s *Server) messagesWsEndpoint(w http.ResponseWriter, r *http.Request) {
 	msgConnectionsMutex.Lock()
 	msgConnections[userId] = ws
 	msgConnectionsMutex.Unlock()
-
-	fmt.Println(len(msgConnections))
-	fmt.Println(msgConnections)
-	log.Println("Client Successfully Connected...")
 
 	messagesWsEndpointReader(ws, userId)
 }

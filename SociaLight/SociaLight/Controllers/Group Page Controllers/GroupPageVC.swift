@@ -82,6 +82,7 @@ class GroupPageVC: MessagesViewController {
         refreshControl.isUserInteractionEnabled = false
         messagesCollectionView.alwaysBounceVertical = true
         messagesCollectionView.refreshControl = refreshControl
+        
     }
     
     override func viewDidLayoutSubviews() {
@@ -452,7 +453,7 @@ class GroupPageVC: MessagesViewController {
         if let url = URL(string: "ws://\(ServerStruct.serverHost):\(ServerStruct.serverPort)\(Constants.messagesWsEndpoint)\(getUserId())") {
             webSocket = session.webSocketTask(with: url)
             webSocket?.resume()
-        } // esle way
+        }
     }
     
     func ping() {
@@ -486,7 +487,6 @@ class GroupPageVC: MessagesViewController {
                     break
                 }
             case .failure(let error):
-                
                 print("Received error: \(error)")
             }
             

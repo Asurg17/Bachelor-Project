@@ -244,7 +244,7 @@ class MainPageVC: UIViewController, GroupCellDelegate {
         if let url = URL(string: "ws://\(ServerStruct.serverHost):\(ServerStruct.serverPort)\(Constants.mainWsEndpoint)\(getUserId())") {
             webSocket = session.webSocketTask(with: url)
             webSocket?.resume()
-        } // esle way
+        }
     }
     
     func ping() {
@@ -282,7 +282,6 @@ class MainPageVC: UIViewController, GroupCellDelegate {
                     break
                 }
             case .failure(let error):
-                
                 print("Received error: \(error)")
             }
             
