@@ -25,11 +25,11 @@ func (m *TaskManager) getEventTasks(userId string, eventKey string) (map[string]
 	getQuery := `select t.user_id,
 						(select u.first_name || ' ' || u.last_name
 						from users u
-						where u.user_id = t.user_id) name,
+						where u.user_id = t.user_id) as name,
 						t.event_key,
 						t.task,
 						e.event_date,
-						coalesce(e.event_time, '-:-'),
+						coalesce(e.event_time, '-:-') as time,
 						t.id,
 						t.status
 				from events e,
@@ -86,11 +86,11 @@ func (m *TaskManager) getUserTasks(userId string, currentDate string) (map[strin
 	}
 
 	getQuery := `select t.user_id,
-						'Event: ' || e.event_title name,
+						'Event: ' || e.event_title as name,
 						t.event_key,
 						t.task,
 						e.event_date,
-						coalesce(e.event_time, '-:-'),
+						coalesce(e.event_time, '-:-') as time,
 						t.id,
 						t.status
 				from tasks t,

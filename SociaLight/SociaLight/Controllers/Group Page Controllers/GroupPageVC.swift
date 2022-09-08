@@ -82,7 +82,6 @@ class GroupPageVC: MessagesViewController {
         refreshControl.isUserInteractionEnabled = false
         messagesCollectionView.alwaysBounceVertical = true
         messagesCollectionView.refreshControl = refreshControl
-        
     }
     
     override func viewDidLayoutSubviews() {

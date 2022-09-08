@@ -8,10 +8,10 @@
 import UIKit
 
 struct ServerStruct {
-    // server data
+    // server data //46.49.35.44:8080
     static let serverScheme: String = "http"
-    static let serverHost: String = "localhost"
-    static let serverPort: Int = 9000
+    static let serverHost: String = "localhost" //"46.49.35.44"
+    static let serverPort: Int = 9000 //8080
 }
 
 // ----------------Constants--------------

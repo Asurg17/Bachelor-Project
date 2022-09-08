@@ -29,7 +29,7 @@ func (m *GroupManager) searchNewGroups(userId string, groupIdentifier string) (m
 				 		g.group_capacity,
 						(select count(*) 
 						from group_members
-						where group_id = g.group_id) members_count
+						where group_id = g.group_id) as members_count
 				from groups g
 				where (lower(g.group_title) like lower('%' || $2 || '%')
 				or lower(g.group_description) like lower('%' || $2 || '%'))
@@ -82,8 +82,8 @@ func (m *GroupManager) getGroupMembers(userId string, groupId string) (map[strin
 
 	getQuery := `select s.user_id
 				,s.first_name
-				,coalesce(s.last_name, '-') last_name
-				,coalesce(s.phone, '-') phone
+				,coalesce(s.last_name, '-') as last_name
+				,coalesce(s.phone, '-') as phone
 				,(select coalesce(max('Y'), 'N')
 						from notifications r
 						where ((r.from_user_id = $1
@@ -92,11 +92,11 @@ func (m *GroupManager) getGroupMembers(userId string, groupId string) (map[strin
 								(r.to_user_id = $1
 									and r.from_user_id = s.user_id))
 							and r.type = 'friendship_request'
-							and r.status = 'N') is_already_sent
+							and r.status = 'N') as is_already_sent
 				,(select coalesce(max('Y'), case when s.user_id = $1 then 'Y' else 'N' end)
 						from friends f
 						where f.user_id = $1
-						and f.friend_id = s.user_id) are_already_friends
+						and f.friend_id = s.user_id) as are_already_friends
 				,m.user_role
 				from users s
 				,group_members m
@@ -204,7 +204,7 @@ func (m *GroupManager) getGroupTitleAndDescription(userId string, groupId string
 						coalesce((select m.user_role
 						from group_members m
 						where m.group_id = $1
-						and m.user_id = $2), 'M') user_role
+						and m.user_id = $2), 'M') as user_role
 				from groups s
 				where s.group_id = $1;`
 

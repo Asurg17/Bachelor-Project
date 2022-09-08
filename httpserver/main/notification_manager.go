@@ -80,7 +80,7 @@ func (m *NotificationManager) notifyGroupMembers(fromUserId string, text string,
 		if userId != fromUserId {
 			_, err := m.connectionPool.db.Exec(insertQuery, fromUserId, userId, text, groupId)
 			if err != nil {
-			return err
+				return err
 			}
 
 			mainConnectionsMutex.Lock()
@@ -134,7 +134,7 @@ func (m *NotificationManager) checkForNewNotifications(userId string, lastSeenNo
 									where m.group_id = coalesce(n.group_id, '')
 									and m.user_id = n.to_user_id)))
 				and n.id > $2;`
-	
+
 	param := lastSeenNotificationUniqueKey
 
 	if lastSeenNotificationUniqueKey == "-1" {
@@ -146,11 +146,11 @@ func (m *NotificationManager) checkForNewNotifications(userId string, lastSeenNo
 			if err != sql.ErrNoRows {
 				return nil, err
 			}
-		}	
+		}
 
 		if len(lastFetchTime) > 0 {
 			print(lastFetchTime)
-		
+
 			getQuery = `select count(*)
 						from notifications n
 						where n.to_user_id = $1
@@ -170,11 +170,10 @@ func (m *NotificationManager) checkForNewNotifications(userId string, lastSeenNo
 											where m.group_id = coalesce(n.group_id, '')
 											and m.user_id = n.to_user_id)))
 						and to_char(n.inp_date, 'YYYY-MM-DD HH24:MI:SS:MS') > $2;`
-			
+
 			param = lastFetchTime
 		}
 	}
-	
 
 	if e := m.connectionPool.db.QueryRow(getQuery, userId, param).Scan(&newNotificationsNum); e != nil {
 		if e == sql.ErrNoRows {
@@ -200,21 +199,21 @@ func (m *NotificationManager) getUserNotifications(userId string, lastNotificati
 		return nil, err
 	}
 
-	getQuery := `select n.id notification_unique_key
-					,n.from_user_id from_user_id
-					,us.first_name || ' ' || us.last_name notification_title
-					,n.notification_text || coalesce(g.group_title, '') notification_text
-					,n.type notification_type
-					,coalesce(g.group_id, '') group_id
-					,coalesce(g.group_title, '') group_title
-					,coalesce(g.group_description, '') group_description
-					,coalesce(g.group_capacity, 0) group_capacity
+	getQuery := `select n.id as notification_unique_key
+					,n.from_user_id as from_user_id
+					,us.first_name || ' ' || us.last_name as notification_title
+					,n.notification_text || coalesce(g.group_title, '') as notification_text
+					,n.type as notification_type
+					,coalesce(g.group_id, '') as group_id
+					,coalesce(g.group_title, '') as group_title
+					,coalesce(g.group_description, '') as group_description
+					,coalesce(g.group_capacity, 0) as group_capacity
 					,(select count(*)
 					from group_members 
-					where group_id = g.group_id) members_count
-					,to_char(n.inp_date, 'DD FMMonth YYYY') send_date
-					,to_char(n.inp_date, 'HH24:MI') send_time
-					,n.inp_date dt
+					where group_id = g.group_id) as members_count
+					,to_char(n.inp_date, 'DD FMMonth YYYY') as send_date
+					,to_char(n.inp_date, 'HH24:MI') as send_time
+					,n.inp_date as dt
 				from notifications n
 				join users us on us.user_id = n.from_user_id
 				left join groups g on g.group_id = n.group_id
@@ -225,19 +224,19 @@ func (m *NotificationManager) getUserNotifications(userId string, lastNotificati
 				and n.type = 'default'
 				and n.id > $2
 				UNION ALL
-				select r.id notification_unique_key
-					,s.user_id from_user_id
-					,s.first_name || ' ' || s.last_name notification_title
-					,'Sent you friendship request' notification_text
-					,r.type notification_type
-					,'' group_id
-					,'' group_title
-					,'' group_description
-					,0 group_capacity
-					,0 members_count
-					,to_char(r.inp_date, 'DD FMMonth YYYY') send_date
-					,to_char(r.inp_date, 'HH24:MI') send_time
-					,r.inp_date dt
+				select r.id as notification_unique_key
+					,s.user_id as from_user_id
+					,s.first_name || ' ' || s.last_name as notification_title
+					,'Sent you friendship request' as notification_text
+					,r.type as notification_type
+					,'' as group_id
+					,'' as group_title
+					,'' as group_description
+					,0 as group_capacity
+					,0 as members_count
+					,to_char(r.inp_date, 'DD FMMonth YYYY') as send_date
+					,to_char(r.inp_date, 'HH24:MI') as send_time
+					,r.inp_date as dt
 				from notifications r,
 				users s
 				where r.to_user_id = $1
@@ -246,21 +245,21 @@ func (m *NotificationManager) getUserNotifications(userId string, lastNotificati
 				and r.type = 'friendship_request'
 				and r.id > $2
 				UNION ALL
-				select s.id notification_unique_key
-					,u.user_id from_user_id
-					,u.first_name || ' ' || u.last_name notification_title
-					,'Invited you to joing group: ' || g.group_title notification_text
-					,s.type notification_type
+				select s.id as notification_unique_key
+					,u.user_id as from_user_id
+					,u.first_name || ' ' || u.last_name as notification_title
+					,'Invited you to joing group: ' || g.group_title as notification_text
+					,s.type as notification_type
 					,g.group_id
 					,g.group_title
 					,g.group_description
 					,g.group_capacity
 					,(select count(*)
 					from group_members 
-					where group_id = g.group_id) members_count
-					,to_char(s.inp_date, 'DD FMMonth YYYY') send_date
-					,to_char(s.inp_date, 'HH24:MI') send_time
-					,s.inp_date dt
+					where group_id = g.group_id) as members_count
+					,to_char(s.inp_date, 'DD FMMonth YYYY') as send_date
+					,to_char(s.inp_date, 'HH24:MI') as send_time
+					,s.inp_date as dt
 				from notifications s,
 				groups g,
 				users u
@@ -354,7 +353,7 @@ func (m *NotificationManager) sendFriendshipRequest(fromUserId string, toUserId 
 	if err != nil {
 		return err
 	}
-	
+
 	return nil
 }
 
@@ -553,7 +552,7 @@ func (m *NotificationManager) createNewNotification(userId string, toUserId stri
 
 		_, err := m.connectionPool.db.Exec(insertQuery, userId, toUserId, text)
 		if err != nil {
-		return err
+			return err
 		}
 
 		err = m.notifyUserAboutNewNotification(toUserId)

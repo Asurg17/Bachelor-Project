@@ -29,8 +29,8 @@ func (m *EventManager) getEvents(userId string, groupId string, currentDate stri
 		queryParam = groupId
 		getQuery = `select e.event_key,
 							e.creator_user_id,
-							coalesce(e.to_user_id, '') user_id,
-							coalesce(e.group_id, '') group_id,
+							coalesce(e.to_user_id, '') as user_id,
+							coalesce(e.group_id, '') as group_id,
 							(case when e.to_user_id is null
 							then (select 'Group: ' || group_title
 								from groups g
@@ -41,13 +41,13 @@ func (m *EventManager) getEvents(userId string, groupId string, currentDate stri
 								where u.user_id = e.creator_user_id)
 							else (select 'User: ' || u.first_name || ' ' || u.last_name
 									from users u
-								where u.user_id = e.to_user_id) end) event_header,
+								where u.user_id = e.to_user_id) end) as event_header,
 							e.event_title,
-							coalesce(e.event_description, '') eventDescription,
+							coalesce(e.event_description, '') as eventDescription,
 							e.event_place,
 							e.event_type,
 							e.event_date,
-							coalesce(e.event_time, '-:-') event_time
+							coalesce(e.event_time, '-:-') as event_time
 					from events e
 					where e.group_id = $1
 					and e.formatted_date >= $3
@@ -59,8 +59,8 @@ func (m *EventManager) getEvents(userId string, groupId string, currentDate stri
 	} else {
 		getQuery = `select e.event_key,
 							e.creator_user_id,
-							coalesce(e.to_user_id, '') user_id,
-							coalesce(e.group_id, '') group_id,
+							coalesce(e.to_user_id, '') as user_id,
+							coalesce(e.group_id, '') as group_id,
 							(case when e.to_user_id is null
 							then (select 'Group: ' || group_title
 								from groups g
@@ -71,13 +71,13 @@ func (m *EventManager) getEvents(userId string, groupId string, currentDate stri
 									where u.user_id = e.creator_user_id)
 							else (select 'User: ' || u.first_name || ' ' || u.last_name
 									from users u
-								where u.user_id = e.to_user_id) end) event_header,
+								where u.user_id = e.to_user_id) end) as event_header,
 							e.event_title,
-							coalesce(e.event_description, '') eventDescription,
+							coalesce(e.event_description, '') as eventDescription,
 							e.event_place,
 							e.event_type,
 							e.event_date,
-							coalesce(e.event_time, '-:-') event_time
+							coalesce(e.event_time, '-:-') as event_time
 					from events e
 					where (e.to_user_id = $1 
 						or e.group_id in (select group_id
@@ -139,8 +139,8 @@ func (m *EventManager) getEvent(userId string, eventUniqueKey string) (map[strin
 	}
 
 	getQuery := `select e.creator_user_id,
-						coalesce(e.to_user_id, '') user_id,
-						coalesce(e.group_id, '') group_id,
+						coalesce(e.to_user_id, '') as user_id,
+						coalesce(e.group_id, '') as group_id,
 						(case when e.to_user_id is null
 						then (select group_title
 							from groups g
@@ -151,13 +151,13 @@ func (m *EventManager) getEvent(userId string, eventUniqueKey string) (map[strin
 							where u.user_id = e.creator_user_id)
 						else (select u.first_name || ' ' || u.last_name
 								from users u
-							where u.user_id = e.to_user_id) end) event_header,
+							where u.user_id = e.to_user_id) end) as event_header,
 						e.event_title,
-						coalesce(e.event_description, '') eventDescription,
+						coalesce(e.event_description, '') as eventDescription,
 						e.event_place,
 						e.event_type,
 						e.event_date,
-						coalesce(e.event_time, '-:-') event_time
+						coalesce(e.event_time, '-:-') as event_time
 				from events e
 				where e.event_key = $1;`
 

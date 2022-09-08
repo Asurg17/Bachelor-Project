@@ -35,12 +35,12 @@ func (m *UserManager) getUserInfo(userId string) (map[string]string, error) {
 
 	getQuery := `select s.username, 
 						s.first_name,
-						coalesce(s.last_name, '-') last_name,
-						coalesce(s.gender, '-') gender,
-						coalesce(cast(s.age as varchar), '-') age,
-						coalesce(s.location, '-') location,
-						coalesce(s.birthdate, '-') birthdate,
-						coalesce(s.phone, '-') phone
+						coalesce(s.last_name, '-') as last_name,
+						coalesce(s.gender, '-') as gender,
+						coalesce(cast(s.age as varchar), '-') as age,
+						coalesce(s.location, '-') as location,
+						coalesce(s.birthdate, '-') as birthdate,
+						coalesce(s.phone, '-') as phone
 				from users s
 				where s.user_id = $1;`
 
@@ -72,7 +72,7 @@ func (m *UserManager) getUserGroups(userId string) (map[string][]map[string]stri
 					   ,s.group_capacity
 					   ,(select count(*)
 					    from group_members 
-						where group_id = m.group_id) members_count
+						where group_id = m.group_id) as members_count
 					   ,m.user_role
 					   ,(select count(*)
 						from messages ms
@@ -80,7 +80,7 @@ func (m *UserManager) getUserGroups(userId string) (map[string][]map[string]stri
 						and ms.id > coalesce((select coalesce(last_message_id, -1)
 											from last_group_messages_fetch_time t
 											where t.user_id = $1
-											and t.group_id = ms.group_id), -1)) new_messages_count
+											and t.group_id = ms.group_id), -1)) as new_messages_count
 				from groups s
 					,group_members m
 				where s.group_id = m.group_id
@@ -133,8 +133,8 @@ func (m *UserManager) getUserFriends(userId string) (map[string][]map[string]str
 
 	getQuery := `select s.user_id
 					,s.first_name
-					,coalesce(s.last_name, '-') last_name
-					,coalesce(s.phone, '-') phone
+					,coalesce(s.last_name, '-') as last_name
+					,coalesce(s.phone, '-') as phone
 				from users s
 				,friends f
 				where f.user_id = $1
@@ -179,8 +179,8 @@ func (m *UserManager) searchNewFriends(userId string, firstName string, lastName
 
 	getQuery := `select s.user_id
 					   ,s.first_name
-						,coalesce(s.last_name, '-') last_name
-						,coalesce(s.phone, '-') phone
+						,coalesce(s.last_name, '-') as last_name
+						,coalesce(s.phone, '-') as phone
 				from users s
 				where (lower(s.first_name) like lower('%' || $2 || '%'))
 				and (lower(s.last_name) like lower('%' || $3 || '%'))
@@ -251,8 +251,8 @@ func (m *UserManager) getUserFriendsForGroup(userId string, groupId string) (map
 
 	getQuery := `select s.user_id
 					,s.first_name
-					,coalesce(s.last_name, '-') last_name
-					,coalesce(s.phone, '-') phone
+					,coalesce(s.last_name, '-') as last_name
+					,coalesce(s.phone, '-') as phone
 				from users s
 				,friends f
 				where f.user_id = $1

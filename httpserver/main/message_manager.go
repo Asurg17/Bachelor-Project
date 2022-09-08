@@ -142,7 +142,7 @@ func (m *MessageManager) getAllGroupMessages(userId string, groupId string) (map
 						m.sender_id,
 						(select s.first_name
 						from users s
-						where s.user_id = m.sender_id) name,
+						where s.user_id = m.sender_id) as name,
 						m.message_id,
 						m.send_date,
 						m.type,
@@ -151,7 +151,7 @@ func (m *MessageManager) getAllGroupMessages(userId string, groupId string) (map
 						m.duration
 					from messages m
 					where m.group_id = $1
-					order by m.id desc limit 30) m
+					order by m.id desc limit 30) as m
 					order by id;`
 
 	rows, err := m.connectionPool.db.Query(getQuery, groupId)
@@ -176,7 +176,9 @@ func (m *MessageManager) getAllGroupMessages(userId string, groupId string) (map
 		if err != nil {
 			return nil, err
 		}
-		if messageUniqueKey > maxMessageId { maxMessageId = messageUniqueKey }
+		if messageUniqueKey > maxMessageId {
+			maxMessageId = messageUniqueKey
+		}
 		message := make(map[string]string)
 		message["messageUniqueKey"] = strconv.Itoa(messageUniqueKey)
 		message["senderId"] = senderId
@@ -213,7 +215,7 @@ func (m *MessageManager) getGroupNewMessages(userId string, groupId string, last
 						m.sender_id,
 						(select s.first_name
 						from users s
-						where s.user_id = m.sender_id) name,
+						where s.user_id = m.sender_id) as name,
 						m.message_id,
 						m.send_date,
 						m.type,
@@ -247,7 +249,9 @@ func (m *MessageManager) getGroupNewMessages(userId string, groupId string, last
 		if err != nil {
 			return nil, err
 		}
-		if messageUniqueKey > maxMessageId { maxMessageId = messageUniqueKey }
+		if messageUniqueKey > maxMessageId {
+			maxMessageId = messageUniqueKey
+		}
 		message := make(map[string]string)
 		message["messageUniqueKey"] = strconv.Itoa(messageUniqueKey)
 		message["senderId"] = senderId
@@ -283,7 +287,7 @@ func (m *MessageManager) getGroupOldMessages(userId string, groupId string, firs
 						m.sender_id,
 						(select s.first_name
 						from users s
-						where s.user_id = m.sender_id) name,
+						where s.user_id = m.sender_id) as name,
 						m.message_id,
 						m.send_date,
 						m.type,
@@ -293,7 +297,7 @@ func (m *MessageManager) getGroupOldMessages(userId string, groupId string, firs
 					from messages m
 					where m.group_id = $1
 					and m.id < $2
-					order by m.id desc limit 30) m
+					order by m.id desc limit 30) as m
 					order by id;`
 
 	rows, err := m.connectionPool.db.Query(getQuery, groupId, firstMessageUniqueKey)
