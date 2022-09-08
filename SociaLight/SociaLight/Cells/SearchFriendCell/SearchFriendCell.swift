@@ -28,6 +28,8 @@ class SearchFriendCell: UITableViewCell {
     @IBOutlet private var userImageView: UIImageView!
     @IBOutlet private var userName: UILabel!
     @IBOutlet private var actionButton: UIButton!
+    
+    private var isFrienshipRequestAlreadySent = false
 
     var model: SearchFriendCellModel!
     
@@ -47,6 +49,8 @@ class SearchFriendCell: UITableViewCell {
         )
         
         userName.text = model.userFristName + " " + model.userLastName
+        actionButton.setImage(UIImage(systemName: "person.badge.plus"), for: .normal)
+        isFrienshipRequestAlreadySent = false
     }
 
     override func layoutSubviews() {
@@ -65,7 +69,10 @@ class SearchFriendCell: UITableViewCell {
     }
     
     @IBAction func handleActionButtonClick() {
-        model.delegate?.sendFriendshipRequest(self)
+        if !isFrienshipRequestAlreadySent {
+            isFrienshipRequestAlreadySent = true
+            model.delegate?.sendFriendshipRequest(self)
+        }
     }
     
     @IBAction func handleUserClick() {

@@ -32,14 +32,14 @@ func (m *EventManager) getEvents(userId string, groupId string, currentDate stri
 							coalesce(e.to_user_id, '') user_id,
 							coalesce(e.group_id, '') group_id,
 							(case when e.to_user_id is null
-							then (select group_title
+							then (select 'Group: ' || group_title
 								from groups g
 								where g.group_id = e.group_id)
 							when e.to_user_id = $2 then 
-							(select u.first_name || ' ' || u.last_name
+							(select 'User: ' || u.first_name || ' ' || u.last_name
 									from users u
 								where u.user_id = e.creator_user_id)
-							else (select u.first_name || ' ' || u.last_name
+							else (select 'User: ' || u.first_name || ' ' || u.last_name
 									from users u
 								where u.user_id = e.to_user_id) end) event_header,
 							e.event_title,
@@ -62,14 +62,14 @@ func (m *EventManager) getEvents(userId string, groupId string, currentDate stri
 							coalesce(e.to_user_id, '') user_id,
 							coalesce(e.group_id, '') group_id,
 							(case when e.to_user_id is null
-							then (select group_title
+							then (select 'Group: ' || group_title
 								from groups g
 								where g.group_id = e.group_id)
 							when e.to_user_id = $2 then 
-								(select u.first_name || ' ' || u.last_name
+								(select 'User: ' || u.first_name || ' ' || u.last_name
 									from users u
 									where u.user_id = e.creator_user_id)
-							else (select u.first_name || ' ' || u.last_name
+							else (select 'User: ' || u.first_name || ' ' || u.last_name
 									from users u
 								where u.user_id = e.to_user_id) end) event_header,
 							e.event_title,

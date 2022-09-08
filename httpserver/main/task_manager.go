@@ -86,7 +86,7 @@ func (m *TaskManager) getUserTasks(userId string, currentDate string) (map[strin
 	}
 
 	getQuery := `select t.user_id,
-						e.event_title name,
+						'Event: ' || e.event_title name,
 						t.event_key,
 						t.task,
 						e.event_date,

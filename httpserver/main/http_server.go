@@ -75,7 +75,7 @@ type SearchNewFriendsParams struct {
 
 type SendFriendshipRequestToUserParams struct {
 	FromUserId string
-	ToUSerId   string
+	ToUserId   string
 }
 
 type AddUserToGroupParams struct {
@@ -515,7 +515,14 @@ func (s *Server) sendFriendshipRequestToUser(w http.ResponseWriter, req *http.Re
 		return
 	}
 
-	err = s.userManager.sendFriendshipRequestToUser(params.FromUserId, params.ToUSerId)
+	err = s.userManager.sendFriendshipRequestToUser(params.FromUserId, params.ToUserId)
+	if err != nil {
+		w.Header().Set("Error", err.Error())
+		w.WriteHeader(500)
+		return
+	}
+
+	err = s.notificationManager.notifyUserAboutNewNotification(params.ToUserId)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
