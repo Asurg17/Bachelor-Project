@@ -152,12 +152,12 @@ type GetGroupMediaFilesParams struct {
 // Notification structs
 
 type CheckForNewNotificationsParams struct {
-	UserId	                      string
+	UserId                        string
 	LastSeenNotificationUniqueKey string
 }
 
 type GetUserNotificationsParams struct {
-	UserId					  string
+	UserId                    string
 	LastNotificationUniqueKey string
 }
 
@@ -1226,7 +1226,7 @@ func (s *Server) createNewEvent(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = s.notificationManager.createNewNotification(params.UserId, "", "Created new Event(" + params.EventName + ") at Group: ", params.GroupId)
+	err = s.notificationManager.createNewNotification(params.UserId, "", "Created new Event("+params.EventName+") at Group: ", params.GroupId)
 	if err != nil {
 		w.Header().Set("Error", err.Error())
 		w.WriteHeader(500)
@@ -1308,7 +1308,7 @@ func (s *Server) createNewTask(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if params.UserId != params.AssigneeId {
-		err = s.notificationManager.createNewNotification(params.UserId, params.AssigneeId, "Assigned you new Task: " + params.Task, "")
+		err = s.notificationManager.createNewNotification(params.UserId, params.AssigneeId, "Assigned you new Task: "+params.Task, "")
 		if err != nil {
 			w.Header().Set("Error", err.Error())
 			w.WriteHeader(500)
@@ -1500,5 +1500,5 @@ func (s *Server) Start() {
 	http.HandleFunc("/messagesWsEndpoint", s.messagesWsEndpoint)
 
 	// Listen And Serve
-	log.Fatal(http.ListenAndServe(":9000", nil))
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
